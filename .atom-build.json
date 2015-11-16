@@ -1,0 +1,5 @@
+{
+  "cmd": "love",
+  "args": ["{PROJECT_PATH}"],
+  "sh": false
+}
