@@ -1,6 +1,6 @@
 Gamestate = require 'lib.gamestate'
 
-ObjectPalette = require 'state.object-palette'
+EntityPalette = require 'state.entity-palette'
 
 function love.load()
   --load project
@@ -12,7 +12,7 @@ function love.load()
     })
   end
 
-  Gamestate.switch(ObjectPalette)
+  Gamestate.switch(EntityPalette)
   Gamestate.registerEvents()
 end
 

@@ -18,17 +18,17 @@ end
 
 
 
-local ObjectPalette = {}
+local EntityPalette = {}
 
-function ObjectPalette:enter()
+function EntityPalette:enter()
   self:generateButtons()
 end
 
-function ObjectPalette:add(x, y, entity)
+function EntityPalette:add(x, y, entity)
   table.insert(self.buttons, EntityButton(x, y, bSize, bSize, entity))
 end
 
-function ObjectPalette:generateButtons()
+function EntityPalette:generateButtons()
   local lg = love.graphics
 
   self.buttons = {}
@@ -53,20 +53,20 @@ function ObjectPalette:generateButtons()
   end
 end
 
-function ObjectPalette:resize()
+function EntityPalette:resize()
   self:generateButtons()
 end
 
-function ObjectPalette:update(dt)
+function EntityPalette:update(dt)
   for _, button in pairs(self.buttons) do
     button:update(dt)
   end
 end
 
-function ObjectPalette:draw()
+function EntityPalette:draw()
   for _, button in pairs(self.buttons) do
     button:draw()
   end
 end
 
-return ObjectPalette
+return EntityPalette
