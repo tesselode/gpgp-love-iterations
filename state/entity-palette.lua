@@ -1,4 +1,4 @@
-local bSize    = 100
+local bSize  = 100
 local bSpace = 1.5
 
 
@@ -14,6 +14,27 @@ end
 
 function EntityButton:draw()
   EntityButton.super.draw(self)
+
+  if self.entity.image then
+    local image = self.entity.image
+
+    love.graphics.setColor(255, 255, 255)
+
+    --draw entity image
+    local x, y = self:getCenter()
+    local ox = image:getWidth() / 2
+    local oy = image:getHeight() / 2
+    local scale
+    if self.w / image:getWidth() < self.h / image:getHeight() then
+      scale = self.w / image:getWidth() * .5
+    else
+      scale = self.h / image:getHeight() * .5
+    end
+    love.graphics.draw(image, x, y, 0, scale, scale, ox, oy)
+
+    --print entity name
+    love.graphics.printf(self.entity.name, self.x, self.y + self.h - 20, self.w, 'center')
+  end
 end
 
 

@@ -3,6 +3,8 @@ Gamestate = require 'lib.gamestate'
 EntityPalette = require 'state.entity-palette'
 
 function love.load()
+  love.graphics.setDefaultFilter('nearest', 'nearest')
+
   --load project
   entities = {}
   for _, entity in pairs(love.filesystem.load('project/entities.lua')()) do

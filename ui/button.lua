@@ -3,6 +3,8 @@ local Object = require 'lib.classic'
 local Button = Object:extend()
 
 function Button:new(x, y, w, h)
+  x = math.floor(x)
+  y = math.floor(y)
   self.x, self.y, self.w, self.h = x, y, w, h
 
   self.mouseOver     = false
@@ -15,6 +17,10 @@ function Button:new(x, y, w, h)
     hover   = {139, 164, 179},
     pressed = {55, 93, 111},
   }
+end
+
+function Button:getCenter()
+  return self.x + self.w / 2, self.y + self.h / 2
 end
 
 function Button:update(dt)
