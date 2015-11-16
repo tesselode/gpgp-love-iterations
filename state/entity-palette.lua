@@ -3,7 +3,8 @@ local bSpace = 1.5
 
 
 
-local Button = require 'ui.button'
+local Button    = require 'ui.button'
+local Scrollbar = require 'ui.scrollbar'
 
 local EntityButton = Button:extend()
 
@@ -33,7 +34,8 @@ function EntityButton:draw()
     love.graphics.draw(image, x, y, 0, scale, scale, ox, oy)
 
     --print entity name
-    love.graphics.printf(self.entity.name, self.x, self.y + self.h - 20, self.w, 'center')
+    local x, y = self.x, self.y + self.h - 20
+    love.graphics.printf(self.entity.name, x, y, self.w, 'center')
   end
 end
 
@@ -43,6 +45,8 @@ local EntityPalette = {}
 
 function EntityPalette:enter()
   self:generateButtons()
+
+  self.scrollbar = Scrollbar(750, 10, 100, 50, 550)
 end
 
 function EntityPalette:add(x, y, entity)
@@ -82,12 +86,17 @@ function EntityPalette:update(dt)
   for _, button in pairs(self.buttons) do
     button:update(dt)
   end
+  self.scrollbar:update(dt)
 end
 
 function EntityPalette:draw()
   for _, button in pairs(self.buttons) do
     button:draw()
   end
+  self.scrollbar:draw()
+
+  love.graphics.setColor(255, 255, 255)
+  love.graphics.print(self.scrollbar:getValue())
 end
 
 return EntityPalette
