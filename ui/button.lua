@@ -1,6 +1,4 @@
-local Object = require 'lib.classic'
-
-local Button = Object:extend()
+local Button = Class:extend()
 
 function Button:new(x, y, w, h)
   x = math.floor(x)

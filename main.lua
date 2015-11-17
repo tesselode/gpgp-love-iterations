@@ -1,6 +1,8 @@
-Gamestate = require 'lib.gamestate'
+Class = require 'lib.classic'
 
-EntityPalette = require 'state.entity-palette'
+local Gamestate = require 'lib.gamestate'
+
+local EntityPalette = require 'state.entity-palette'
 
 function love.load()
   love.graphics.setDefaultFilter('nearest', 'nearest')
