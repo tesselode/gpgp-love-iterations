@@ -1,4 +1,5 @@
-Class = require 'lib.classic'
+Class  = require 'lib.classic'
+Vector = require 'lib.vector'
 
 local Gamestate = require 'lib.gamestate'
 
