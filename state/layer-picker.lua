@@ -6,7 +6,9 @@ local MenuOption = require 'ui.menu-option'
 local LayerPicker = {}
 
 function LayerPicker:enter()
-  self.groupMenu = ScrollArea(10, 10, lg.getWidth() / 2 - 40, lg.getHeight())
+  local center = lg.getWidth() / 2
+
+  self.groupMenu = ScrollArea(10, 10, center - 40, lg.getHeight())
   for n, group in pairs(level.groups) do
     local y = self.groupMenu.contentHeight
     local menuOption = MenuOption(0, y, self.groupMenu.w, group.name)
@@ -14,7 +16,7 @@ function LayerPicker:enter()
     self.groupMenu:expand(menuOption.h)
   end
 
-  self.layerMenu = ScrollArea(lg.getWidth() / 2 + 10, 10, lg.getWidth() / 2 - 40, lg.getHeight())
+  self.layerMenu = ScrollArea(center + 10, 10, center - 40, lg.getHeight())
   for n, layer in pairs(level.groups[1].layers) do
     local y = self.layerMenu.contentHeight
     local menuOption = MenuOption(0, y, self.layerMenu.w, layer.name)
