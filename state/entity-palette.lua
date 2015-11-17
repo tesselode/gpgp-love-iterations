@@ -52,11 +52,11 @@ function EntityPalette:init()
 
   self.scrollArea = ScrollArea(0, 0, lg.getWidth() - 10, lg.getHeight())
 
-  local gridWidth          = math.floor(lg.getWidth() / (bSize * bSpace))
+  local gridWidth          = math.floor(self.scrollArea.w / (bSize * bSpace))
   local buttonTotalWidth   = gridWidth * bSize
   local buttonSpacingWidth = (gridWidth - 1) * bSize * (bSpace - 1)
   local totalWidth         = buttonTotalWidth + buttonSpacingWidth
-  local offsetX            = (lg.getWidth() - totalWidth) / 2
+  local offsetX            = (self.scrollArea.w - totalWidth) / 2
   local offsetY            = 50
 
   self.scrollArea:expand(offsetY + bSize * bSpace)

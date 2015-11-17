@@ -21,8 +21,9 @@ function Button:getCenter()
   return self.x + self.w / 2, self.y + self.h / 2
 end
 
-function Button:update(dt)
-  local mx, my     = love.mouse.getX(), love.mouse.getY()
+function Button:update(dt, ox, oy)
+  ox, oy           = ox or 0, oy or 0
+  local mx, my     = love.mouse.getX() + ox, love.mouse.getY() + oy
   local x, y, w, h = self.x, self.y, self.w, self.h
 
   --detect mouse presses/releases

@@ -29,9 +29,16 @@ function ScrollArea:getScrollDistance()
   end
 end
 
+function ScrollArea:getAreaOffset()
+  local x = self.x
+  local y = self.y - self:getScrollDistance() * self.scrollbar:getValue()
+  return x, y
+end
+
 function ScrollArea:update(dt)
   for _, item in pairs(self.items) do
-    item:update(dt)
+    local x, y = self:getAreaOffset()
+    item:update(dt, -x, -y)
   end
   if self:getScrollDistance() > 0 then
     self.scrollbar.h = self.h * (self.h / self.contentHeight)
@@ -43,12 +50,14 @@ function ScrollArea:draw()
   local lg = love.graphics
 
   --draw contents
+  lg.setScissor(self.x, self.y, self.w, self.h)
   lg.push()
-  lg.translate(0, -self:getScrollDistance() * self.scrollbar:getValue())
+  lg.translate(self:getAreaOffset())
   for _, item in pairs(self.items) do
     item:draw()
   end
   lg.pop()
+  lg.setScissor()
 
   if self:getScrollDistance() > 0 then
     self.scrollbar:draw()
