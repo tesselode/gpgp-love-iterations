@@ -1,10 +1,10 @@
 Class = require 'lib.classic'
 
 local Gamestate = require 'lib.gamestate'
-local Serpent   = require 'lib.serpent'
 
 local EntityPalette = require 'state.entity-palette'
 local LayerPicker   = require 'state.layer-picker'
+local Editor        = require 'state.editor'
 
 function love.load()
   love.graphics.setDefaultFilter('nearest', 'nearest')
@@ -19,10 +19,8 @@ function love.load()
   end
   level = love.filesystem.load('project/level.lua')()
 
-  Gamestate.switch(LayerPicker)
+  Gamestate.switch(Editor)
   Gamestate.registerEvents()
-
-  print(Serpent.block(level, {comment = false}))
 end
 
 function love.keypressed(key)
