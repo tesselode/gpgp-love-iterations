@@ -3,6 +3,7 @@ Class = require 'lib.classic'
 local Gamestate = require 'lib.gamestate'
 
 local EntityPalette = require 'state.entity-palette'
+local LayerPicker   = require 'state.layer-picker'
 
 function love.load()
   love.graphics.setDefaultFilter('nearest', 'nearest')
@@ -15,8 +16,9 @@ function love.load()
       image = love.graphics.newImage('project/images/'..entity.image)
     })
   end
+  level = love.filesystem.load('project/level.lua')()
 
-  Gamestate.switch(EntityPalette)
+  Gamestate.switch(LayerPicker)
   Gamestate.registerEvents()
 end
 

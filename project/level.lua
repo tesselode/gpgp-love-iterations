@@ -4,7 +4,7 @@ return {
   height = 15,
   groups = {
     {
-      name = 'Main'
+      name = 'Main',
       layers = {
         {
           name = 'Entities',
@@ -13,7 +13,7 @@ return {
         {
           name = 'Geometry',
           type = 'geometry'
-        }
+        },
       }
     }
   }
