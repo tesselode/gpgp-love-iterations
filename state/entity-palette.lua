@@ -3,8 +3,8 @@ local bSpace = 1.5
 
 
 
-local Button    = require 'ui.button'
-local Scrollbar = require 'ui.scrollbar'
+local Button     = require 'ui.button'
+local ScrollArea = require 'ui.scroll-area'
 
 local EntityButton = Button:extend()
 
@@ -44,19 +44,13 @@ end
 local EntityPalette = {}
 
 function EntityPalette:enter()
-  self:generateButtons()
-
-  self.scrollbar = Scrollbar(750, 10, 100, 50, 550)
+  self:init()
 end
 
-function EntityPalette:add(x, y, entity)
-  table.insert(self.buttons, EntityButton(x, y, bSize, bSize, entity))
-end
-
-function EntityPalette:generateButtons()
+function EntityPalette:init()
   local lg = love.graphics
 
-  self.buttons = {}
+  self.scrollArea = ScrollArea(0, 0, lg.getWidth() - 10, lg.getHeight())
 
   local gridWidth          = math.floor(lg.getWidth() / (bSize * bSpace))
   local buttonTotalWidth   = gridWidth * bSize
@@ -73,30 +67,21 @@ function EntityPalette:generateButtons()
     end
     local x = offsetX + gridX * bSize * bSpace
     local y = offsetY + gridY * bSize * bSpace
-    self:add(x, y, entity)
+    self.scrollArea:add(EntityButton(x, y, bSize, bSize, entity))
     gridX = gridX + 1
   end
 end
 
 function EntityPalette:resize()
-  self:generateButtons()
+  self:init()
 end
 
 function EntityPalette:update(dt)
-  for _, button in pairs(self.buttons) do
-    button:update(dt)
-  end
-  self.scrollbar:update(dt)
+  self.scrollArea:update(dt)
 end
 
 function EntityPalette:draw()
-  for _, button in pairs(self.buttons) do
-    button:draw()
-  end
-  self.scrollbar:draw()
-
-  love.graphics.setColor(255, 255, 255)
-  love.graphics.print(self.scrollbar:getValue())
+  self.scrollArea:draw(dt)
 end
 
 return EntityPalette
