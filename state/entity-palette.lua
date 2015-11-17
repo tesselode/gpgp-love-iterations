@@ -57,12 +57,15 @@ function EntityPalette:init()
   local buttonSpacingWidth = (gridWidth - 1) * bSize * (bSpace - 1)
   local totalWidth         = buttonTotalWidth + buttonSpacingWidth
   local offsetX            = (lg.getWidth() - totalWidth) / 2
-  local offsetY            = 100
+  local offsetY            = 50
+
+  self.scrollArea:expand(offsetY + bSize * bSpace)
 
   local gridX, gridY = 0, 0
   for _, entity in pairs(entities) do
     if gridX == gridWidth then
       gridY = gridY + 1
+      self.scrollArea:expand(bSize * bSpace)
       gridX = 0
     end
     local x = offsetX + gridX * bSize * bSpace
