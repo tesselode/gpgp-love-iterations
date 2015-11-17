@@ -18,7 +18,15 @@ function love.load()
       image = love.graphics.newImage('project/images/'..entity.image)
     })
   end
+  --load level
   level = love.filesystem.load('project/level.lua')()
+  for _, group in pairs(level.groups) do
+    for _, layer in pairs(group.layers) do
+      if not layer.entities then
+        layer.entities = {}
+      end
+    end
+  end
 
   Gamestate.switch(Editor)
   Gamestate.registerEvents()
