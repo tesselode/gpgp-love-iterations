@@ -1,6 +1,7 @@
 Class = require 'lib.classic'
 
 local Gamestate = require 'lib.gamestate'
+local Serpent   = require 'lib.serpent'
 
 local EntityPalette = require 'state.entity-palette'
 local LayerPicker   = require 'state.layer-picker'
@@ -20,6 +21,8 @@ function love.load()
 
   Gamestate.switch(LayerPicker)
   Gamestate.registerEvents()
+
+  print(Serpent.block(level, {comment = false}))
 end
 
 function love.keypressed(key)
