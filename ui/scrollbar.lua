@@ -18,14 +18,17 @@ end
 function Scrollbar:update(dt)
   Scrollbar.super.update(self, dt)
 
+  --track mouse movement
   self.mouseYPrev = self.mouseY
   self.mouseY     = love.mouse.getY()
   deltaY          = self.mouseY - self.mouseYPrev
 
+  --dragging
   if self.pressed then
     self.y = self.y + deltaY
   end
 
+  --stay in bounds
   if self.y < self.top then
     self.y = self.top
   end
