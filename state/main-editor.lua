@@ -6,21 +6,23 @@ local Grid = require 'class.grid'
 local MainEditor = {}
 
 function MainEditor:enter()
-  self.grid           = Grid()
+  self.grid          = Grid()
+  self.selectedGroup = Project.groups[1]
+  self.selectedLayer = self.selectedGroup.layers[1]
 end
 
 function MainEditor:update(dt)
   self.grid:update(dt)
 
   --place objects
-  --[[if self.grid:getCursorWithinMap() then
+  if self.grid:getCursorWithinMap() then
     if love.mouse.isDown('l') then
-      self:place()
+      self.selectedLayer:place(self.grid.cursor.x, self.grid.cursor.y)
     end
     if love.mouse.isDown('r') then
-      self:remove()
+      self.selectedLayer:remove(self.grid.cursor.x, self.grid.cursor.y)
     end
-  end]]
+  end
 end
 
 function MainEditor:mousepressed(x, y, button)
@@ -38,6 +40,11 @@ function MainEditor:draw()
       for _, layer in pairs(group.layers) do
         layer:draw()
       end
+    end
+
+    if self.grid:getCursorWithinMap() then
+      self.grid:drawCursor()
+      self.selectedLayer:drawCursorImage(self.grid.cursor.x, self.grid.cursor.y)
     end
   end)
 end
