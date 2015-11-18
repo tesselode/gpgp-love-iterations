@@ -47,6 +47,28 @@ function Editor:mousepressed(x, y, button)
   self.grid:mousepressed(x, y, button)
 end
 
+function Editor:drawLayer(layer)
+  for _, entity in pairs(layer.entities) do
+    --find the entity to draw
+    local e
+    for _, entityDef in pairs(Project.entities) do
+      if entityDef.name == entity.name then
+        e = entityDef
+        break
+      end
+    end
+    --draw the entity
+    if e then
+      local i  = e.image
+      local x  = entity.x
+      local y  = entity.y
+      local sx = (e.width or 1) / i:getWidth()
+      local sy = (e.height or 1) / i:getHeight()
+      lg.draw(i, x, y, 0, sx, sy)
+    end
+  end
+end
+
 function Editor:draw()
   self.grid:drawTransformed(function()
     self.grid:drawBorder()
@@ -56,24 +78,7 @@ function Editor:draw()
     lg.setColor(255, 255, 255)
     for _, group in pairs(Project.level.groups) do
       for _, layer in pairs(group.layers) do
-        for _, entity in pairs(layer.entities) do
-          --find the entity to draw
-          local e
-          for _, entityDef in pairs(Project.entities) do
-            if entityDef.name == entity.name then
-              e = entityDef
-              break
-            end
-          end
-          if e then
-            local i  = e.image
-            local x  = entity.x
-            local y  = entity.y
-            local sx = (e.width or 1) / i:getWidth()
-            local sy = (e.height or 1) / i:getHeight()
-            lg.draw(i, x, y, 0, sx, sy)
-          end
-        end
+        self:drawLayer(layer)
       end
     end
 
