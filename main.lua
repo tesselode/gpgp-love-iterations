@@ -1,7 +1,12 @@
-Class = require 'lib.classic'
+Class  = require 'lib.classic'
+Vector = require 'lib.vector'
 
 function love.load()
   require('project-manager'):load()
+
+  local Gamestate = require 'lib.gamestate'
+  Gamestate.switch(require('state.main-editor'))
+  Gamestate.registerEvents()
 end
 
 function love.keypressed(key)
