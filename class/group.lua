@@ -2,10 +2,11 @@ local Group = Class:extend()
 
 function Group:new(data)
   self.data = data
-  print(self.data.name)
   self.layers = {}
   for _, layer in pairs(self.data.layers) do
-    self:addLayer(require('class.layer')(layer))
+    if layer.type == 'entity' then
+      self:addLayer(require('class.entity-layer')(layer))
+    end
   end
 end
 
