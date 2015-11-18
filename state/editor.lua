@@ -47,15 +47,6 @@ function Editor:mousepressed(x, y, button)
   self.grid:mousepressed(x, y, button)
 end
 
-function Editor:drawCursorImage()
-  local i  = self.selectedEntity.image
-  local x  = self.grid.cursor.x
-  local y  = self.grid.cursor.y
-  local sx = (self.selectedEntity.width or 1) / i:getWidth()
-  local sy = (self.selectedEntity.height or 1) / i:getHeight()
-  lg.draw(i, x, y, 0, sx, sy)
-end
-
 function Editor:draw()
   self.grid:drawTransformed(function()
     self.grid:drawBorder()
@@ -86,8 +77,8 @@ function Editor:draw()
       end
     end
 
-    self.grid:drawCursor()
-    self:drawCursorImage()
+    local e = self.selectedEntity
+    self.grid:drawCursor(e.image, e.width, e.height)
   end)
 end
 
