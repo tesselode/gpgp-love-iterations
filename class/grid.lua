@@ -88,14 +88,6 @@ function Grid:drawCursor(i, w, h)
   if self:getCursorWithinMap() then
     lg.setColor(255, 255, 255, 100)
     lg.rectangle('fill', self.cursor.x, self.cursor.y, 1, 1)
-
-    if i then
-      local x  = self.cursor.x
-      local y  = self.cursor.y
-      local sx = (w or 1) / i:getWidth()
-      local sy = (h or 1) / i:getHeight()
-      lg.draw(i, x, y, 0, sx, sy)
-    end
   end
 end
 
