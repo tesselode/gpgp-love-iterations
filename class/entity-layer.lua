@@ -4,8 +4,6 @@ function EntityLayer:new(data)
   self.entities = {}
   self.selected = Project.entities[1]
   self:load(data)
-
-  self:place(3, 5)
 end
 
 function EntityLayer:place(x, y)
@@ -23,6 +21,10 @@ end
 
 function EntityLayer:load(data)
   self.data = data
+end
+
+function EntityLayer:openPalette()
+  require('lib.gamestate').push(require('state.entity-palette'), self)
 end
 
 function EntityLayer:drawCursorImage(x, y)

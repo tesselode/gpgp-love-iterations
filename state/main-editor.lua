@@ -25,6 +25,12 @@ function MainEditor:update(dt)
   end
 end
 
+function MainEditor:keypressed(key)
+  if key == ' ' then
+    self.selectedLayer:openPalette()
+  end
+end
+
 function MainEditor:mousepressed(x, y, button)
   self.grid:mousepressed(x, y, button)
 end

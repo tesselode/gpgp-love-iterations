@@ -2,6 +2,8 @@ Class  = require 'lib.classic'
 Vector = require 'lib.vector'
 
 function love.load()
+  love.graphics.setDefaultFilter('nearest', 'nearest')
+
   require('project-manager'):load()
 
   local Gamestate = require 'lib.gamestate'
@@ -13,8 +15,4 @@ function love.keypressed(key)
   if key == 'escape' then
     love.event.quit()
   end
-end
-
-function love.draw()
-  Project.groups[1].layers[1]:draw()
 end
