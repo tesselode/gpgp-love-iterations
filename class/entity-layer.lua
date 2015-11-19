@@ -21,6 +21,7 @@ end
 
 function EntityLayer:load(data)
   self.data = data
+  self.name = self.data.name
 end
 
 function EntityLayer:openPalette()

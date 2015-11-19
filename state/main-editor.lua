@@ -29,6 +29,9 @@ function MainEditor:keypressed(key)
   if key == ' ' then
     self.selectedLayer:openPalette()
   end
+  if key == 'f5' then
+    require('lib.gamestate').push(require('state.layer-picker'))
+  end
 end
 
 function MainEditor:mousepressed(x, y, button)

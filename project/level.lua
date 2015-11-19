@@ -12,8 +12,12 @@ return {
         },
         {
           name = 'Geometry',
-          type = 'geometry'
+          type = 'entity'
         },
+        {
+          name = 'Tiles',
+          type = 'entity',
+        }
       }
     }
   }

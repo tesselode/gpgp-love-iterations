@@ -2,6 +2,7 @@ local Group = Class:extend()
 
 function Group:new(data)
   self.data = data
+  self.name = self.data.name
   self.layers = {}
   for _, layer in pairs(self.data.layers) do
     if layer.type == 'entity' then

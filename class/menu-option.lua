@@ -1,4 +1,4 @@
-local Button = require 'ui.button'
+local Button = require 'class.button'
 
 local MenuOption = Button:extend()
 
