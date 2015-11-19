@@ -12,11 +12,12 @@ return {
         },
         {
           name = 'Geometry',
-          type = 'entity'
+          type = 'geometry'
         },
         {
           name = 'Tiles',
-          type = 'entity',
+          type = 'tile',
+          tileset = 'Main'
         }
       }
     },
