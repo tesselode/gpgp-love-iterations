@@ -2,10 +2,11 @@ local Button = require 'class.button'
 
 local MenuOption = Button:extend()
 
-function MenuOption:new(x, y, w, text)
-  self.font = love.graphics.newFont(24)
+function MenuOption:new(x, y, w, text, onPressed)
+  self.font      = love.graphics.newFont(24)
   MenuOption.super.new(self, x, y, w, self.font:getHeight('test'))
-  self.text = text
+  self.text      = text
+  self.onPressed = onPressed or function() end
 end
 
 function MenuOption:draw()

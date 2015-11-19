@@ -19,6 +19,27 @@ return {
           type = 'entity',
         }
       }
-    }
+    },
+    {
+      name = 'Stupid',
+      layers = {
+        {
+          name = 'Butts',
+          type = 'entity'
+        },
+        {
+          name = 'Poop',
+          type = 'entity'
+        },
+        {
+          name = 'Farts',
+          type = 'entity',
+        },
+        {
+          name = 'Entities',
+          type = 'entity',
+        }
+      }
+    },
   }
 }

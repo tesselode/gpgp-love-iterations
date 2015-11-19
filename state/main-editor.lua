@@ -56,6 +56,10 @@ function MainEditor:draw()
       self.selectedLayer:drawCursorImage(self.grid.cursor.x, self.grid.cursor.y)
     end
   end)
+
+  love.graphics.setColor(255, 255, 255)
+  love.graphics.print(self.selectedGroup.name)
+  love.graphics.print(self.selectedLayer.name, 0, 20)
 end
 
 return MainEditor
