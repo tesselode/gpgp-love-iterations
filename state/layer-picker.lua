@@ -52,6 +52,12 @@ function LayerPicker:resize()
   self:generateMenu()
 end
 
+function LayerPicker:keypressed(key)
+  if key == 'f5' then
+    require('lib.gamestate').pop()
+  end
+end
+
 function LayerPicker:update(dt)
   self.groupMenu:update(dt)
   self.layerMenu:update(dt)
