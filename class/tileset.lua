@@ -8,5 +8,8 @@ function Tileset:new(data)
 end
 
 function Tileset:draw()
-  love.graphics.draw(self.image)
+  local scale = 1 / self.tileSize
+  love.graphics.draw(self.image, 0, 0, 0, 1 / self.tileSize)
 end
+
+return Tileset

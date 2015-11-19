@@ -6,7 +6,7 @@ local Grid = require 'class.grid'
 local MainEditor = {}
 
 function MainEditor:enter()
-  self.grid          = Grid()
+  self.grid          = Grid(Project.width, Project.height)
   self.selectedGroup = Project.groups[1]
   self.selectedLayer = self.selectedGroup.layers[1]
 end

@@ -1,7 +1,7 @@
 local ProjectManager = {}
 
 function ProjectManager.load()
-  Project = {entities = {}, tilesets, groups = {}}
+  Project = {entities = {}, tilesets = {}, groups = {}}
 
   --load entities
   for _, entity in pairs(love.filesystem.load('project/entities.lua')()) do

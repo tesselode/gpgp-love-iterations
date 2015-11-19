@@ -7,30 +7,33 @@ end
 
 local Grid = Class:extend()
 
-function Grid:new()
-  self.mousePos  = Vector()
-  self.mousePrev = Vector()
+function Grid:new(width, height)
+  self.mousePos     = Vector()
+  self.mousePrev    = Vector()
 
-  self.pan            = Vector(lg.getWidth() / 2, lg.getHeight() / 2)
-  self.scale          = 25
-  self.displayPan     = self.pan
-  self.displayScale   = self.scale
-  self.cursor         = Vector()
+  self.width        = width
+  self.height       = height
+
+  self.pan          = Vector(lg.getWidth() / 2, lg.getHeight() / 2)
+  self.scale        = 25
+  self.displayPan   = self.pan
+  self.displayScale = self.scale
+  self.cursor       = Vector()
 end
 
 function Grid:getRelativeMousePos()
   local pos   = Vector()
-  pos.x = (lm.getX() - self.displayPan.x) / self.scale + Project.width / 2
-  pos.y = (lm.getY() - self.displayPan.y) / self.scale + Project.height / 2
+  pos.x = (lm.getX() - self.displayPan.x) / self.scale + self.width / 2
+  pos.y = (lm.getY() - self.displayPan.y) / self.scale + self.height / 2
   return pos
 end
 
 function Grid:getCursorWithinMap()
   local c = self.cursor
   return c.x >= 0
-     and c.x < Project.width
+     and c.x < self.width
      and c.y >= 0
-     and c.y < Project.height
+     and c.y < self.height
 end
 
 function Grid:update(dt)
@@ -67,20 +70,20 @@ end
 function Grid:drawBorder()
   love.graphics.setColor(255, 255, 255)
   love.graphics.setLineWidth(1 / self.displayScale)
-  lg.line(0, 0, Project.width, 0)
-  lg.line(0, Project.height, Project.width, Project.height)
-  lg.line(0, 0, 0, Project.height)
-  lg.line(Project.width, 0, Project.width, Project.height)
+  lg.line(0, 0, self.width, 0)
+  lg.line(0, self.height, self.width, self.height)
+  lg.line(0, 0, 0, self.height)
+  lg.line(self.width, 0, self.width, self.height)
 end
 
 function Grid:drawGrid()
   lg.setColor(255, 255, 255, 100)
   love.graphics.setLineWidth(1 / self.displayScale)
-  for i = 1, Project.width - 1 do
-    lg.line(i, 0, i, Project.height)
+  for i = 1, self.width - 1 do
+    lg.line(i, 0, i, self.height)
   end
-  for i = 1, Project.height - 1 do
-    lg.line(0, i, Project.width, i)
+  for i = 1, self.height - 1 do
+    lg.line(0, i, self.width, i)
   end
 end
 
@@ -95,7 +98,7 @@ function Grid:drawTransformed(f)
   lg.push()
   lg.translate(self.displayPan.x, self.displayPan.y)
   lg.scale(self.displayScale)
-  lg.translate(-Project.width / 2, -Project.height / 2)
+  lg.translate(-self.width / 2, -self.height / 2)
   f()
   lg.pop()
 end

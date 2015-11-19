@@ -7,6 +7,8 @@ function Group:new(data)
   for _, layer in pairs(self.data.layers) do
     if layer.type == 'entity' then
       self:addLayer(require('class.entity-layer')(layer))
+    elseif layer.type == 'tile' then
+      self:addLayer(require('class.tile-layer')(layer))
     end
   end
 end
