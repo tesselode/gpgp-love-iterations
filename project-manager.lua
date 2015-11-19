@@ -1,7 +1,7 @@
 local ProjectManager = {}
 
 function ProjectManager.load()
-  Project = {entities = {}, groups = {}}
+  Project = {entities = {}, tilesets, groups = {}}
 
   --load entities
   for _, entity in pairs(love.filesystem.load('project/entities.lua')()) do
@@ -9,6 +9,11 @@ function ProjectManager.load()
       name  = entity.name,
       image = love.graphics.newImage('project/images/'..entity.image),
     })
+  end
+
+  --load tilesets
+  for _, tileset in pairs(love.filesystem.load('project/tilesets.lua')()) do
+    table.insert(Project.tilesets, require('class.tileset')(tileset))
   end
 
   local levelData = love.filesystem.load('project/level.lua')()
