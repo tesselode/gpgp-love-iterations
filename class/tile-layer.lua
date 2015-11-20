@@ -36,13 +36,11 @@ function TileLayer:load(data)
 end
 
 function TileLayer:openPalette()
-  require('lib.gamestate').push(require('state.tile-palette'), self.tileset)
+  require('lib.gamestate').push(require('state.tile-palette'), self)
 end
 
 function TileLayer:drawCursorImage(x, y)
   love.graphics.setColor(255, 255, 255, 100)
-  local x = (x - 1) * Project.tileSize
-  local y = (y - 1) * Project.tileSize
   self.tileset:drawTile(x, y, self.selected.x, self.selected.y)
 end
 
@@ -55,6 +53,7 @@ function TileLayer:draw()
     local sy = (entity.entity.height or 1) / i:getHeight()
     love.graphics.draw(i, x, y, 0, sx, sy)
   end]]
+  print(self.selected.x, self.selected.y)
 end
 
 return TileLayer

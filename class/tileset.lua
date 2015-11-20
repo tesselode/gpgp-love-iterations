@@ -16,9 +16,10 @@ function Tileset:drawTile(posX, posY, tileX, tileY)
   local x      = (tileX - 1) * self.tileSize
   local y      = (tileY - 1) * self.tileSize
   local w, h   = self.tileSize, self.tileSize
-  local sw, sh = self.image: getWidth(), self.image: getHeight()
+  local sw, sh = self.image:getWidth(), self.image:getHeight()
   local quad   = love.graphics.newQuad(x, y, w, h, sw, sh)
-  love.graphics.draw(self.image, quad, posX, posY)
+  local scale  = 1 / self.tileSize
+  love.graphics.draw(self.image, quad, posX - 1, posY - 1, 0, scale)
 end
 
 return Tileset

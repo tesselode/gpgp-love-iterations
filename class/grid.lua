@@ -54,8 +54,8 @@ function Grid:update(dt)
 
   --cursor
   local relativeMousePos = self:getRelativeMousePos()
-  self.cursor.x          = math.floor(relativeMousePos.x)
-  self.cursor.y          = math.floor(relativeMousePos.y)
+  self.cursor.x          = math.floor(relativeMousePos.x) + 1
+  self.cursor.y          = math.floor(relativeMousePos.y) + 1
 end
 
 function Grid:mousepressed(x, y, button)
@@ -90,7 +90,7 @@ end
 function Grid:drawCursor(i, w, h)
   if self:getCursorWithinMap() then
     lg.setColor(255, 255, 255, 100)
-    lg.rectangle('fill', self.cursor.x, self.cursor.y, 1, 1)
+    lg.rectangle('fill', self.cursor.x - 1, self.cursor.y - 1, 1, 1)
   end
 end
 

@@ -33,7 +33,7 @@ function EntityLayer:drawCursorImage(x, y)
     local i = self.selected.image
     local sx = (self.selected.width or 1) / i:getWidth()
     local sy = (self.selected.height or 1) / i:getHeight()
-    love.graphics.draw(i, x, y, 0, sx, sy)
+    love.graphics.draw(i, x - 1, y - 1, 0, sx, sy)
   end
 end
 
