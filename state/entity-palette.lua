@@ -47,7 +47,8 @@ end
 local EntityPalette = {}
 
 function EntityPalette:enter(previous, layer)
-  self.layer = layer
+  self.previous = previous
+  self.layer    = layer
   self:generateMenu()
 end
 
@@ -78,6 +79,17 @@ function EntityPalette:generateMenu()
     self.scrollArea:add(EntityButton(x, y, bSize, bSize, entity, self.layer))
     gridX = gridX + 1
   end
+
+  --cosmetic
+  self.background = love.graphics.newCanvas()
+  self.background:clear(Color.AlmostBlack)
+  self.background:renderTo(function()
+    local gaussianblur      = require('lib.shine').gaussianblur()
+    gaussianblur.parameters = {sigma = 5}
+    gaussianblur:draw(function()
+      self.previous:draw()
+    end)
+  end)
 end
 
 function EntityPalette:keypressed(key)
@@ -95,6 +107,8 @@ function EntityPalette:update(dt)
 end
 
 function EntityPalette:draw()
+  love.graphics.setColor(150, 150, 150)
+  love.graphics.draw(self.background)
   self.scrollArea:draw(dt)
 end
 
