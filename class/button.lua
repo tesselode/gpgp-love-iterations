@@ -11,9 +11,9 @@ function Button:new(x, y, w, h)
   self.pressed       = false
 
   self.color = {
-    normal  = {90, 120, 135},
-    hover   = {139, 164, 179},
-    pressed = {55, 93, 111},
+    normal  = Color.Dark,
+    hover   = Color.Medium,
+    pressed = Color.Darkish,
   }
 end
 

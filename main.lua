@@ -1,8 +1,11 @@
 Class  = require 'lib.classic'
 Vector = require 'lib.vector'
 
+require 'colors'
+
 function love.load()
   love.graphics.setDefaultFilter('nearest', 'nearest')
+  love.graphics.setBackgroundColor(Color.AlmostBlack)
 
   require('project-manager'):load()
 

@@ -68,7 +68,7 @@ function Grid:mousepressed(x, y, button)
 end
 
 function Grid:drawBorder()
-  love.graphics.setColor(255, 255, 255)
+  love.graphics.setColor(Color.AlmostWhite)
   love.graphics.setLineWidth(1 / self.displayScale)
   lg.line(0, 0, self.width, 0)
   lg.line(0, self.height, self.width, self.height)
@@ -77,7 +77,7 @@ function Grid:drawBorder()
 end
 
 function Grid:drawGrid()
-  lg.setColor(255, 255, 255, 100)
+  lg.setColor(Color.AlmostWhiteTransparent)
   love.graphics.setLineWidth(1 / self.displayScale)
   for i = 1, self.width - 1 do
     lg.line(i, 0, i, self.height)
