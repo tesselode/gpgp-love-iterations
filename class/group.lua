@@ -9,6 +9,8 @@ function Group:new(data)
       self:addLayer(require('class.entity-layer')(layer))
     elseif layer.type == 'tile' then
       self:addLayer(require('class.tile-layer')(layer))
+    elseif layer.type == 'geometry' then
+      self:addLayer(require('class.geometry-layer')(layer))
     end
   end
 end
