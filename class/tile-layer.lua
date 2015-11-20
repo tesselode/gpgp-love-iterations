@@ -40,12 +40,10 @@ function TileLayer:openPalette()
 end
 
 function TileLayer:drawCursorImage(x, y)
-  --[[if self.selected.image then
-    local i = self.selected.image
-    local sx = (self.selected.width or 1) / i:getWidth()
-    local sy = (self.selected.height or 1) / i:getHeight()
-    love.graphics.draw(i, x, y, 0, sx, sy)
-  end]]
+  love.graphics.setColor(255, 255, 255, 100)
+  local x = (x - 1) * Project.tileSize
+  local y = (y - 1) * Project.tileSize
+  self.tileset:drawTile(x, y, self.selected.x, self.selected.y)
 end
 
 function TileLayer:draw()

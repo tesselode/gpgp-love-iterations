@@ -12,4 +12,13 @@ function Tileset:draw()
   love.graphics.draw(self.image, 0, 0, 0, 1 / self.tileSize)
 end
 
+function Tileset:drawTile(posX, posY, tileX, tileY)
+  local x      = (tileX - 1) * self.tileSize
+  local y      = (tileY - 1) * self.tileSize
+  local w, h   = self.tileSize, self.tileSize
+  local sw, sh = self.image: getWidth(), self.image: getHeight()
+  local quad   = love.graphics.newQuad(x, y, w, h, sw, sh)
+  love.graphics.draw(self.image, quad, posX, posY)
+end
+
 return Tileset
