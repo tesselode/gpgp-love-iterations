@@ -9,6 +9,32 @@ function EntityButton:new(x, y, w, h, entity, layer)
   EntityButton.super.new(self, x, y, w, h)
   self.entity = entity
   self.layer = layer
+
+  self.color = {
+    normal  = {0, 0, 0, 0},
+    hover   = {0, 0, 0, 0},
+    pressed = {0, 0, 0, 0},
+  }
+
+  --cosmetic
+  self.glow = love.graphics.newCanvas(bSize, bSize)
+  self.glow:renderTo(function()
+    local whiteShader = love.graphics.newShader[[
+      vec4 effect(vec4 color, sampler2D texture, vec2 uv, vec2 sc)
+      {
+        return vec4(1.0, 1.0, 1.0, texture2D(texture, uv).a) * color;
+      }
+    ]]
+
+    local gaussianblur      = require('lib.shine').gaussianblur()
+    gaussianblur.parameters = {sigma = 16}
+
+    gaussianblur:draw(function()
+      love.graphics.setShader(whiteShader)
+      self:drawImage(bSize / 2, bSize / 2)
+      love.graphics.setShader()
+    end)
+  end)
 end
 
 function EntityButton:onPressed()
@@ -16,16 +42,13 @@ function EntityButton:onPressed()
   require('lib.gamestate').pop()
 end
 
-function EntityButton:draw()
-  EntityButton.super.draw(self)
-
-  love.graphics.setColor(255, 255, 255)
+function EntityButton:drawImage(x, y, cs)
+  cs = cs or 1
 
   if self.entity.image then
     local image = self.entity.image
 
     --draw entity image
-    local x, y = self:getCenter()
     local ox = image:getWidth() / 2
     local oy = image:getHeight() / 2
     local scale
@@ -34,8 +57,24 @@ function EntityButton:draw()
     else
       scale = self.h / image:getHeight() * .5
     end
-    love.graphics.draw(image, x, y, 0, scale, scale, ox, oy)
+    love.graphics.draw(image, x, y, 0, scale * cs, scale * cs, ox, oy)
   end
+end
+
+function EntityButton:draw()
+  EntityButton.super.draw(self)
+
+  if self.mouseOver then
+    love.graphics.setColor(255, 255, 255)
+    love.graphics.setBlendMode('additive')
+    for i = 1, 3 do
+      love.graphics.draw(self.glow, self.x, self.y)
+    end
+    love.graphics.setBlendMode('alpha')
+  end
+
+  love.graphics.setColor(255, 255, 255)
+  self:drawImage(self:getCenter())
 
   --print entity name
   local x, y = self.x, self.y + self.h - 20
