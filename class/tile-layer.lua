@@ -45,15 +45,9 @@ function TileLayer:drawCursorImage(x, y)
 end
 
 function TileLayer:draw()
-  --[[for _, entity in pairs(self.entities) do
-    local i  = entity.entity.image
-    local x  = entity.x
-    local y  = entity.y
-    local sx = (entity.entity.width or 1) / i:getWidth()
-    local sy = (entity.entity.height or 1) / i:getHeight()
-    love.graphics.draw(i, x, y, 0, sx, sy)
-  end]]
-  print(self.selected.x, self.selected.y)
+  for _, tile in pairs(self.tiles) do
+    self.tileset:drawTile(tile.posX, tile.posY, tile.tileX, tile.tileY)
+  end
 end
 
 return TileLayer
