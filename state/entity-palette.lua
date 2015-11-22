@@ -95,7 +95,7 @@ function EntityPalette:enter(previous, layer)
   self.canvasAlpha = 0
   self.canvasY     = 100
   self.tween       = require('lib.flux').group()
-  self.tween:to(self, .25, {canvasY = 0, canvasAlpha = 255})
+  self.tween:to(self, .5, {canvasY = 0, canvasAlpha = 255}):ease('quartout')
 end
 
 function EntityPalette:generateMenu()

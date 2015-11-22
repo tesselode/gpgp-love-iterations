@@ -9,6 +9,12 @@ function LayerPicker:enter(previous)
   self.mainEditor    = previous
   self.selectedGroup = previous.selectedGroup
   self:generateMenu()
+
+  --cosmetic
+  self.canvasAlpha = 0
+  self.canvasY     = 100
+  self.tween       = require('lib.flux').group()
+  self.tween:to(self, .5, {canvasY = 0, canvasAlpha = 255}):ease('quartout')
 end
 
 function LayerPicker:generateMenu()
@@ -28,6 +34,18 @@ function LayerPicker:generateMenu()
   end
 
   self:generateLayerMenu()
+
+  --cosmetic
+  self.canvas     = love.graphics.newCanvas()
+  self.background = love.graphics.newCanvas()
+  self.background:clear(Color.AlmostBlack)
+  self.background:renderTo(function()
+    local gaussianblur      = require('lib.shine').gaussianblur()
+    gaussianblur.parameters = {sigma = 5}
+    gaussianblur:draw(function()
+      self.mainEditor:draw()
+    end)
+  end)
 end
 
 function LayerPicker:generateLayerMenu(group)
@@ -59,13 +77,23 @@ function LayerPicker:keypressed(key)
 end
 
 function LayerPicker:update(dt)
+  self.tween:update(dt)
   self.groupMenu:update(dt)
   self.layerMenu:update(dt)
 end
 
 function LayerPicker:draw()
-  self.groupMenu:draw()
-  self.layerMenu:draw()
+  love.graphics.setColor(150, 150, 150)
+  love.graphics.draw(self.background)
+
+  self.canvas:clear(0, 0, 0, 0)
+  self.canvas:renderTo(function()
+    self.groupMenu:draw()
+    self.layerMenu:draw()
+  end)
+
+  love.graphics.setColor(255, 255, 255, self.canvasAlpha)
+  love.graphics.draw(self.canvas, 0, self.canvasY)
 end
 
 return LayerPicker
