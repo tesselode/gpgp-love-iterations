@@ -6,6 +6,7 @@ local MenuOption = require 'class.menu-option'
 local LevelPicker = {}
 
 function LevelPicker:enter(previous)
+  self.previous = previous
   self:generateMenu()
 
   --cosmetic
@@ -36,6 +37,17 @@ function LevelPicker:generateMenu()
 
   --cosmetic
   self.canvas = love.graphics.newCanvas()
+  if self.previous == require('state.main-editor') then
+    self.background = love.graphics.newCanvas()
+    self.background:clear(Color.AlmostBlack)
+    self.background:renderTo(function()
+      local gaussianblur      = require('lib.shine').gaussianblur()
+      gaussianblur.parameters = {sigma = 5}
+      gaussianblur:draw(function()
+        self.previous:draw()
+      end)
+    end)
+  end
 end
 
 function LevelPicker:resize()
@@ -47,7 +59,18 @@ function LevelPicker:update(dt)
   self.menu:update(dt)
 end
 
+function LevelPicker:keypressed(key)
+  if key == 'escape' and Project and self.previous then
+    require('lib.gamestate').pop()
+  end
+end
+
 function LevelPicker:draw()
+  if self.background then
+    love.graphics.setColor(150, 150, 150)
+    love.graphics.draw(self.background)
+  end
+
   self.canvas:clear(0, 0, 0, 0)
   self.canvas:renderTo(function()
     self.menu:draw()

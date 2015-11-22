@@ -32,9 +32,12 @@ function MainEditor:keypressed(key)
   if key == 'f5' then
     require('lib.gamestate').push(require('state.layer-picker'))
   end
-  if key == 's' then
-    if love.keyboard.isDown('lctrl') then
+  if love.keyboard.isDown('lctrl') then
+    if key == 's' then
       require('project-manager').save()
+    end
+    if key == 'o' then
+      require('lib.gamestate').push(require('state.level-picker'))
     end
   end
 end
