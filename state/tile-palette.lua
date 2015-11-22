@@ -29,7 +29,7 @@ function TilePalette:mousepressed(x, y, button)
 end
 
 function TilePalette:mousereleased(x, y, button)
-  if self.grid:getCursorWithinMap() then
+  if self.grid:getCursorWithinMap() and button == 'l' then
     self.layer.selected = self.grid.cursor
     require('lib.gamestate').pop()
   end
