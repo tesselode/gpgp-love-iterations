@@ -18,6 +18,12 @@ function TilePalette:update(dt)
   self.grid:update(dt)
 end
 
+function TilePalette:keypressed(key)
+  if key == ' ' then
+    require('lib.gamestate').pop()
+  end
+end
+
 function TilePalette:mousepressed(x, y, button)
   self.grid:mousepressed(x, y, button)
 end
