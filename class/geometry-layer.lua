@@ -39,9 +39,9 @@ function GeometryLayer:openPalette() end
 
 function GeometryLayer:drawCursorImage(x, y) end
 
-function GeometryLayer:draw()
+function GeometryLayer:draw(alpha)
   for _, block in pairs(self.blocks) do
-    love.graphics.setColor(230, 230, 230)
+    love.graphics.setColor(230, 230, 230, alpha)
     love.graphics.rectangle('fill', block.x - 1, block.y - 1, 1, 1)
   end
 end

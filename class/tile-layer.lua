@@ -55,7 +55,8 @@ function TileLayer:drawCursorImage(x, y)
   self.tileset:drawTile(x, y, self.selected.x, self.selected.y)
 end
 
-function TileLayer:draw()
+function TileLayer:draw(alpha)
+  love.graphics.setColor(255, 255, 255, alpha)
   for _, tile in pairs(self.tiles) do
     self.tileset:drawTile(tile.posX, tile.posY, tile.tileX, tile.tileY)
   end

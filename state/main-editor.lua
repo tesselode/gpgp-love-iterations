@@ -6,9 +6,12 @@ local Grid = require 'class.grid'
 local MainEditor = {}
 
 function MainEditor:enter()
-  self.grid          = Grid(Project.width, Project.height)
-  self.selectedGroup = Project.groups[1]
-  self.selectedLayer = self.selectedGroup.layers[1]
+  self.grid           = Grid(Project.width, Project.height)
+  self.selectedGroup  = Project.groups[1]
+  self.selectedLayer  = self.selectedGroup.layers[1]
+
+  self.visibleMode = 1
+  self.ghostLayers = false
 end
 
 function MainEditor:update(dt)
@@ -26,17 +29,36 @@ function MainEditor:update(dt)
 end
 
 function MainEditor:keypressed(key)
+  --open palette
   if key == ' ' then
     self.selectedLayer:openPalette()
   end
+
+  --layer picker
   if key == 'f5' then
     require('lib.gamestate').push(require('state.layer-picker'))
   end
+
+  --change layer visibility
+  if key == 'v' then
+    self.visibleMode = self.visibleMode + 1
+    if self.visibleMode == 4 then
+      self.visibleMode = 1
+    end
+  end
+
+  --toggle ghost layers
+  if key == 'b' then
+    self.ghostLayers = not self.ghostLayers
+  end
+
   if love.keyboard.isDown('lctrl') then
+    --save
     if key == 's' then
       require('project-manager').save()
       conversation:say('displayMessage', 'Saved level "'..Project.levelName..'"')
     end
+    --open
     if key == 'o' then
       require('lib.gamestate').push(require('state.level-picker'))
     end
@@ -56,7 +78,15 @@ function MainEditor:draw()
     lg.setColor(255, 255, 255)
     for i = 1, #Project.groups do
       for j = 1, #Project.groups[i].layers do
-        Project.groups[i].layers[j]:draw()
+        local layer = Project.groups[i].layers[j]
+        local visible = (self.visibleMode == 1)
+          or (self.visibleMode == 2 and layer.group == self.selectedLayer.group)
+          or (self.visibleMode == 3 and layer == self.selectedLayer)
+        if visible then
+          layer:draw()
+        elseif self.ghostLayers then
+          layer:draw(50)
+        end
       end
     end
 

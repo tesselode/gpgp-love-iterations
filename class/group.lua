@@ -16,6 +16,11 @@ function Group:new(data)
   end
 end
 
+function Group:addLayer(layer)
+  table.insert(self.layers, layer)
+  layer.group = self
+end
+
 function Group:save()
   local toSave = {
     name   = self.name,
@@ -26,10 +31,6 @@ function Group:save()
     table.insert(toSave.layers, layer:save())
   end
   return toSave
-end
-
-function Group:addLayer(layer)
-  table.insert(self.layers, layer)
 end
 
 return Group

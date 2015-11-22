@@ -21,5 +21,23 @@ return {
         }
       }
     },
+    {
+      name = 'Secondary',
+      layers = {
+        {
+          name = 'Entities',
+          type = 'entity'
+        },
+        {
+          name = 'Geometry',
+          type = 'geometry'
+        },
+        {
+          name = 'Tiles',
+          type = 'tile',
+          tileset = 'Main'
+        }
+      }
+    },
   }
 }

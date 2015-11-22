@@ -31,12 +31,6 @@ function love.update(dt)
   end
 end
 
-function love.keypressed(key)
-  if key == 's' then
-    conversation:say('displayMessage', 'hello world!')
-  end
-end
-
 function love.draw()
   local c = Color.AlmostWhite
   love.graphics.setColor(c[1], c[2], c[3], message.alpha)

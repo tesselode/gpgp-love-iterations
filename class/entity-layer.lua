@@ -67,7 +67,8 @@ function EntityLayer:drawCursorImage(x, y)
   end
 end
 
-function EntityLayer:draw()
+function EntityLayer:draw(alpha)
+  love.graphics.setColor(255, 255, 255, 100)
   for _, entity in pairs(self.entities) do
     local i  = entity.entity.image
     local x  = entity.x
