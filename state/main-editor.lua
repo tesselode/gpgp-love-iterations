@@ -50,9 +50,9 @@ function MainEditor:draw()
 
     --draw layers
     lg.setColor(255, 255, 255)
-    for _, group in pairs(Project.groups) do
-      for _, layer in pairs(group.layers) do
-        layer:draw()
+    for i = 1, #Project.groups do
+      for j = 1, #Project.groups[i].layers do
+        Project.groups[i].layers[j]:draw()
       end
     end
 
