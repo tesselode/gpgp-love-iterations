@@ -33,6 +33,8 @@ function TileLayer:load(data)
       break
     end
   end
+  --SEE GEOMETRY-LAYER.LUA FOR A POTENTIAL PROBLEM WITH THIS
+  self.tiles = self.data.tiles
 end
 
 function TileLayer:save()

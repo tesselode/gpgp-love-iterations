@@ -19,8 +19,12 @@ function GeometryLayer:remove(x, y)
 end
 
 function GeometryLayer:load(data)
-  self.data = data
-  self.name = data.name
+  self.data   = data
+  self.name   = data.name
+  --[[NOTE TO SELF: IS THIS WRONG? SINCE SELF.BLOCKS IS A REFERENCE TO
+  SELF.DATA.BLOCKS, CHANGING SELF.BLOCKS MIGHT CHANGE SELF.DATA.BLOCKS,
+  WHICH MIGHT BE UNWANTED BEHAVIOR]]
+  self.blocks = self.data.blocks
 end
 
 function GeometryLayer:save()
