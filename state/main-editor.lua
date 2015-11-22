@@ -7,8 +7,7 @@ local MainEditor = {}
 
 function MainEditor:enter()
   self.grid           = Grid(Project.width, Project.height)
-  self.selectedGroup  = Project.groups[1]
-  self.selectedLayer  = self.selectedGroup.layers[1]
+  self.selectedLayer  = Project.groups[1].layers[1]
 
   self.visibleMode = 1
   self.ghostLayers = false

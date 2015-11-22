@@ -7,7 +7,7 @@ local LayerPicker = {}
 
 function LayerPicker:enter(previous)
   self.mainEditor    = previous
-  self.selectedGroup = previous.selectedGroup
+  self.selectedGroup = previous.selectedLayer.group
   self:generateMenu()
 
   --cosmetic
@@ -26,9 +26,12 @@ function LayerPicker:generateMenu()
     local w = self.groupMenu.w
     local menuOption = MenuOption(0, y, w, group.name, function(menuOption)
       self.selectedGroup = menuOption.group
-      self:generateLayerMenu()
+      self:generateMenu()
     end)
     menuOption.group = group
+    if menuOption.group == self.selectedGroup then
+      menuOption.textColor = Color.Accent
+    end
     self.groupMenu:add(menuOption)
     self.groupMenu:expand(menuOption.h)
   end
