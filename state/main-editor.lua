@@ -78,10 +78,6 @@ function MainEditor:draw()
       lg.printf(string, mx + 15, my + 15, 100)
     end
   end
-
-  lg.setColor(255, 255, 255)
-  lg.print(self.selectedGroup.name)
-  lg.print(self.selectedLayer.name, 0, 20)
 end
 
 return MainEditor

@@ -79,6 +79,8 @@ function EntityButton:draw()
 
   --print entity name
   local x, y = self.x, self.y + self.h - 20
+  love.graphics.setFont(Font.Small)
+  love.graphics.setColor(Color.AlmostWhite)
   love.graphics.printf(self.entity.name, x, y, self.w, 'center')
 end
 
