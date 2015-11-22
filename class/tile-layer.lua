@@ -34,7 +34,7 @@ function TileLayer:load(data)
     end
   end
   --SEE GEOMETRY-LAYER.LUA FOR A POTENTIAL PROBLEM WITH THIS
-  self.tiles = self.data.tiles
+  self.tiles = self.data.tiles or {}
 end
 
 function TileLayer:save()

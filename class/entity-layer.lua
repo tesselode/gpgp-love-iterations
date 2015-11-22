@@ -30,10 +30,12 @@ end
 function EntityLayer:load(data)
   self.data = data
   self.name = self.data.name
-  for _, entity in pairs(self.data.entities) do
-    for _, e in pairs(Project.entities) do
-      if e.name == entity.entity then
-        table.insert(self.entities, {x = entity.x, y = entity.y, entity = e})
+  if self.data.entities then
+    for _, entity in pairs(self.data.entities) do
+      for _, e in pairs(Project.entities) do
+        if e.name == entity.entity then
+          table.insert(self.entities, {x = entity.x, y = entity.y, entity = e})
+        end
       end
     end
   end

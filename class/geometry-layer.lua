@@ -24,7 +24,7 @@ function GeometryLayer:load(data)
   --[[NOTE TO SELF: IS THIS WRONG? SINCE SELF.BLOCKS IS A REFERENCE TO
   SELF.DATA.BLOCKS, CHANGING SELF.BLOCKS MIGHT CHANGE SELF.DATA.BLOCKS,
   WHICH MIGHT BE UNWANTED BEHAVIOR]]
-  self.blocks = self.data.blocks
+  self.blocks = self.data.blocks or {}
 end
 
 function GeometryLayer:save()
