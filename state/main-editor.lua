@@ -68,18 +68,17 @@ function MainEditor:draw()
     local entity = self.selectedLayer:getAt(x, y)
     if entity then
       local mx, my = lm.getX(), lm.getY()
-      lg.setColor(Color.Darkish)
-      love.graphics.rectangle('fill', mx + 50, my + 50, 100, 50)
+      lg.setColor(Color.Dark)
+      lg.rectangle('fill', mx + 10, my + 10, 100, 50)
       local string = entity.entity.name..'\nx: '..entity.x..'\ny: '..entity.y
       lg.setColor(Color.AlmostWhite)
-      love.graphics.printf(string, mx + 55, my + 55, 100)
-      print(string)
+      lg.printf(string, mx + 15, my + 15, 100)
     end
   end
 
-  love.graphics.setColor(255, 255, 255)
-  love.graphics.print(self.selectedGroup.name)
-  love.graphics.print(self.selectedLayer.name, 0, 20)
+  lg.setColor(255, 255, 255)
+  lg.print(self.selectedGroup.name)
+  lg.print(self.selectedLayer.name, 0, 20)
 end
 
 return MainEditor
