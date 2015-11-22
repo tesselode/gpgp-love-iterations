@@ -35,6 +35,7 @@ function EntityLayer:load(data)
       for _, e in pairs(Project.entities) do
         if e.name == entity.entity then
           table.insert(self.entities, {x = entity.x, y = entity.y, entity = e})
+          break
         end
       end
     end
@@ -60,7 +61,7 @@ end
 
 function EntityLayer:drawCursorImage(x, y)
   if self.selected.image then
-    local i = self.selected.image
+    local i  = self.selected.image
     local sx = (self.selected.width or 1) / i:getWidth()
     local sy = (self.selected.height or 1) / i:getHeight()
     love.graphics.draw(i, x - 1, y - 1, 0, sx, sy)
@@ -68,7 +69,7 @@ function EntityLayer:drawCursorImage(x, y)
 end
 
 function EntityLayer:draw(alpha)
-  love.graphics.setColor(255, 255, 255, 100)
+  love.graphics.setColor(255, 255, 255, alpha)
   for _, entity in pairs(self.entities) do
     local i  = entity.entity.image
     local x  = entity.x

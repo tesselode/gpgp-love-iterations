@@ -75,7 +75,6 @@ function MainEditor:draw()
     self.grid:drawGrid()
 
     --draw layers
-    lg.setColor(255, 255, 255)
     for i = 1, #Project.groups do
       for j = 1, #Project.groups[i].layers do
         local layer = Project.groups[i].layers[j]
