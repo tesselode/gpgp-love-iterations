@@ -43,6 +43,7 @@ end
 function EntityButton:onPressed()
   self.layer.selected = self.entity
   require('lib.gamestate').pop()
+  conversation:say('displayMessage', 'Selected entity "'..self.entity.name..'"')
 end
 
 function EntityButton:drawImage(x, y)

@@ -59,6 +59,8 @@ function LayerPicker:generateLayerMenu(group)
       self.mainEditor.selectedGroup = self.selectedGroup
       self.mainEditor.selectedLayer = menuOption.layer
       require('lib.gamestate').pop()
+      conversation:say('displayMessage',
+        'Switched to layer "'..menuOption.layer.name..'"')
     end)
     menuOption.layer = layer
     self.layerMenu:add(menuOption)

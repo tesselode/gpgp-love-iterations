@@ -35,6 +35,7 @@ function MainEditor:keypressed(key)
   if love.keyboard.isDown('lctrl') then
     if key == 's' then
       require('project-manager').save()
+      conversation:say('displayMessage', 'Saved level "'..Project.levelName..'"')
     end
     if key == 'o' then
       require('lib.gamestate').push(require('state.level-picker'))
