@@ -72,9 +72,11 @@ function MainEditor:draw()
     if entity then
       local mx, my = lm.getX(), lm.getY()
       lg.setColor(Color.Dark)
-      lg.rectangle('fill', mx + 10, my + 10, 100, 50)
+      local h = Font.Small:getHeight('test') * 3 + 10
+      lg.rectangle('fill', mx + 10, my + 10, 100, h)
       local string = entity.entity.name..'\nx: '..entity.x..'\ny: '..entity.y
       lg.setColor(Color.AlmostWhite)
+      lg.setFont(Font.Small)
       lg.printf(string, mx + 15, my + 15, 100)
     end
   end

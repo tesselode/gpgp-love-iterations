@@ -20,7 +20,7 @@ end
 function LayerPicker:generateMenu()
   local center = lg.getWidth() / 2
 
-  self.groupMenu = ScrollArea(10, 10, center - 40, lg.getHeight())
+  self.groupMenu = ScrollArea(10, 80, center - 40, lg.getHeight() - 80)
   for n, group in pairs(Project.groups) do
     local y = self.groupMenu.contentHeight
     local w = self.groupMenu.w
@@ -51,7 +51,7 @@ end
 function LayerPicker:generateLayerMenu(group)
   local center = lg.getWidth() / 2
 
-  self.layerMenu = ScrollArea(center + 10, 10, center - 40, lg.getHeight())
+  self.layerMenu = ScrollArea(center + 10, 80, center - 40, lg.getHeight() - 80)
   for n, layer in pairs(self.selectedGroup.layers) do
     local y = self.layerMenu.contentHeight
     local w = self.layerMenu.w
@@ -88,6 +88,10 @@ function LayerPicker:draw()
 
   self.canvas:clear(0, 0, 0, 0)
   self.canvas:renderTo(function()
+    love.graphics.setColor(Color.AlmostWhite)
+    love.graphics.setFont(Font.Big)
+    love.graphics.print('Groups', 10, 10)
+    love.graphics.print('Layers', love.graphics.getWidth() / 2 + 10, 10)
     self.groupMenu:draw()
     self.layerMenu:draw()
   end)

@@ -1,3 +1,5 @@
+local lg = love.graphics
+
 local bSize  = 100
 local bSpace = 1.5
 
@@ -17,9 +19,9 @@ function EntityButton:new(x, y, w, h, entity, layer)
   }]]
 
   --cosmetic
-  --self.glow = love.graphics.newCanvas(bSize, bSize)
+  --self.glow = lg.newCanvas(bSize, bSize)
   --self.glow:renderTo(function()
-    --local whiteShader = love.graphics.newShader[[
+    --local whiteShader = lg.newShader[[
       --vec4 effect(vec4 color, sampler2D texture, vec2 uv, vec2 sc)
       --{
         --return vec4(1.0, 1.0, 1.0, texture2D(texture, uv).a) * color;
@@ -30,10 +32,10 @@ function EntityButton:new(x, y, w, h, entity, layer)
     --gaussianblur.parameters = {sigma = 16}
 
     --gaussianblur:draw(function()
-      --love.graphics.setShader(whiteShader)
-      --love.graphics.setColor(255, 255, 255)
+      --lg.setShader(whiteShader)
+      --lg.setColor(255, 255, 255)
       --self:drawImage(bSize / 2, bSize / 2)
-      --love.graphics.setShader()
+      --lg.setShader()
     --end)
   --end)
 end
@@ -58,7 +60,7 @@ function EntityButton:drawImage(x, y)
     else
       scale = self.h / image:getHeight() * .5
     end
-    love.graphics.draw(image, x, y, 0, scale, scale, ox, oy)
+    lg.draw(image, x, y, 0, scale, scale, ox, oy)
   end
 end
 
@@ -66,22 +68,22 @@ function EntityButton:draw()
   EntityButton.super.draw(self)
 
   --[[if self.mouseOver then
-    love.graphics.setColor(255, 255, 255)
-    love.graphics.setBlendMode('additive')
+    lg.setColor(255, 255, 255)
+    lg.setBlendMode('additive')
     for i = 1, 3 do
-      love.graphics.draw(self.glow, self.x, self.y)
+      lg.draw(self.glow, self.x, self.y)
     end
-    love.graphics.setBlendMode('alpha')
+    lg.setBlendMode('alpha')
   end]]
 
-  love.graphics.setColor(255, 255, 255)
+  lg.setColor(255, 255, 255)
   self:drawImage(self:getCenter())
 
   --print entity name
   local x, y = self.x, self.y + self.h - 20
-  love.graphics.setFont(Font.Small)
-  love.graphics.setColor(Color.AlmostWhite)
-  love.graphics.printf(self.entity.name, x, y, self.w, 'center')
+  lg.setFont(Font.Small)
+  lg.setColor(Color.AlmostWhite)
+  lg.printf(self.entity.name, x, y, self.w, 'center')
 end
 
 
@@ -101,10 +103,8 @@ function EntityPalette:enter(previous, layer)
 end
 
 function EntityPalette:generateMenu()
-  local lg = love.graphics
-
   local ScrollArea = require 'class.scroll-area'
-  self.scrollArea = ScrollArea(0, 0, lg.getWidth() - 10, lg.getHeight())
+  self.scrollArea = ScrollArea(0, 80, lg.getWidth() - 10, lg.getHeight() - 80)
 
   local gridWidth          = math.floor(self.scrollArea.w / (bSize * bSpace))
   local buttonTotalWidth   = gridWidth * bSize
@@ -129,8 +129,8 @@ function EntityPalette:generateMenu()
   end
 
   --cosmetic
-  self.canvas     = love.graphics.newCanvas()
-  self.background = love.graphics.newCanvas()
+  self.canvas     = lg.newCanvas()
+  self.background = lg.newCanvas()
   self.background:clear(Color.AlmostBlack)
   self.background:renderTo(function()
     local gaussianblur      = require('lib.shine').gaussianblur()
@@ -157,16 +157,19 @@ function EntityPalette:update(dt)
 end
 
 function EntityPalette:draw()
-  love.graphics.setColor(150, 150, 150)
-  love.graphics.draw(self.background)
+  lg.setColor(150, 150, 150)
+  lg.draw(self.background)
 
   self.canvas:clear(0, 0, 0, 0)
   self.canvas:renderTo(function()
+    lg.setColor(Color.AlmostWhite)
+    lg.setFont(Font.Big)
+    lg.printf('Entities', 10, 40, lg.getWidth() - 20, 'center')
     self.scrollArea:draw(dt)
   end)
 
-  love.graphics.setColor(255, 255, 255, self.canvasAlpha)
-  love.graphics.draw(self.canvas, 0, self.canvasY)
+  lg.setColor(255, 255, 255, self.canvasAlpha)
+  lg.draw(self.canvas, 0, self.canvasY)
 end
 
 return EntityPalette

@@ -19,7 +19,7 @@ end
 function LevelPicker:generateMenu()
   local center = lg.getWidth() / 2
 
-  self.menu = ScrollArea(10, 10, center - 40, lg.getHeight())
+  self.menu = ScrollArea(10, 80, center - 40, lg.getHeight() - 80)
   for _, file in pairs(love.filesystem.getDirectoryItems('project/levels')) do
     if file:find '.lua' then
       local y = self.menu.contentHeight
@@ -73,6 +73,9 @@ function LevelPicker:draw()
 
   self.canvas:clear(0, 0, 0, 0)
   self.canvas:renderTo(function()
+    love.graphics.setColor(Color.AlmostWhite)
+    love.graphics.setFont(Font.Big)
+    love.graphics.print('Open file...', 10, 10)
     self.menu:draw()
   end)
 
