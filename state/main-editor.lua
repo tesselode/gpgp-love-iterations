@@ -62,6 +62,21 @@ function MainEditor:draw()
     end
   end)
 
+  --draw entity tooltips
+  if self.selectedLayer.data.type == 'entity' then
+    local x, y = self.grid.cursor.x, self.grid.cursor.y
+    local entity = self.selectedLayer:getAt(x, y)
+    if entity then
+      local mx, my = lm.getX(), lm.getY()
+      lg.setColor(Color.Darkish)
+      love.graphics.rectangle('fill', mx + 50, my + 50, 100, 50)
+      local string = entity.entity.name..'\nx: '..entity.x..'\ny: '..entity.y
+      lg.setColor(Color.AlmostWhite)
+      love.graphics.printf(string, mx + 55, my + 55, 100)
+      print(string)
+    end
+  end
+
   love.graphics.setColor(255, 255, 255)
   love.graphics.print(self.selectedGroup.name)
   love.graphics.print(self.selectedLayer.name, 0, 20)

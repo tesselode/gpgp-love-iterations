@@ -6,6 +6,14 @@ function EntityLayer:new(data)
   self:load(data)
 end
 
+function EntityLayer:getAt(x, y)
+  for _, entity in pairs(self.entities) do
+    if entity.x == x and entity.y == y then
+      return entity
+    end
+  end
+end
+
 function EntityLayer:place(x, y)
   self:remove(x, y)
   table.insert(self.entities, {x = x, y = y, entity = self.selected})
