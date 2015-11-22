@@ -23,6 +23,14 @@ function GeometryLayer:load(data)
   self.name = data.name
 end
 
+function GeometryLayer:save()
+  return {
+    name   = self.name,
+    type   = 'geometry',
+    blocks = self.blocks,
+  }
+end
+
 function GeometryLayer:openPalette() end
 
 function GeometryLayer:drawCursorImage(x, y) end

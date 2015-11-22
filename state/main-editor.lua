@@ -32,6 +32,11 @@ function MainEditor:keypressed(key)
   if key == 'f5' then
     require('lib.gamestate').push(require('state.layer-picker'))
   end
+  if key == 's' then
+    if love.keyboard.isDown('lctrl') then
+      require('project-manager').save()
+    end
+  end
 end
 
 function MainEditor:mousepressed(x, y, button)

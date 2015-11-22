@@ -15,6 +15,18 @@ function Group:new(data)
   end
 end
 
+function Group:save()
+  local toSave = {
+    name   = self.name,
+    layers = {},
+  }
+  for i = 1, #self.layers do
+    local layer = self.layers[i]
+    table.insert(toSave.layers, layer:save())
+  end
+  return toSave
+end
+
 function Group:addLayer(layer)
   table.insert(self.layers, layer)
 end

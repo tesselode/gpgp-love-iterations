@@ -24,6 +24,19 @@ function EntityLayer:load(data)
   self.name = self.data.name
 end
 
+function EntityLayer:save()
+  local toSave = {
+    name     = self.name,
+    type     = 'entity',
+    entities = {},
+  }
+  for i = 1, #self.entities do
+    local e = self.entities[i]
+    table.insert(toSave.entities, {x = e.x, y = e.y, entity = e.entity.name})
+  end
+  return toSave
+end
+
 function EntityLayer:openPalette()
   require('lib.gamestate').push(require('state.entity-palette'), self)
 end

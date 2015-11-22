@@ -35,6 +35,15 @@ function TileLayer:load(data)
   end
 end
 
+function TileLayer:save()
+  return {
+    name    = self.name,
+    type    = 'tile',
+    tileset = self.tileset.name,
+    tiles   = self.tiles,
+  }
+end
+
 function TileLayer:openPalette()
   require('lib.gamestate').push(require('state.tile-palette'), self)
 end

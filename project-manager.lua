@@ -29,4 +29,21 @@ function ProjectManager.load()
   Project.height   = levelData.height
 end
 
+function ProjectManager.save()
+  local toSave = {
+    tileSize = Project.tileSize,
+    width    = Project.width,
+    height   = Project.height,
+    groups   = {},
+  }
+
+  for i = 1, #Project.groups do
+    local group = Project.groups[i]
+    table.insert(toSave.groups, group:save())
+  end
+
+  local data = require('lib.serpent').block(toSave, {comment = false})
+  love.filesystem.write('level.lua', 'return '..data)
+end
+
 return ProjectManager
