@@ -7,10 +7,8 @@ function love.load()
   love.graphics.setDefaultFilter('nearest', 'nearest')
   love.graphics.setBackgroundColor(Color.AlmostBlack)
 
-  require('project-manager'):load()
-
   local Gamestate = require 'lib.gamestate'
-  Gamestate.switch(require('state.main-editor'))
+  Gamestate.switch(require('state.level-picker'))
   Gamestate.registerEvents()
 end
 

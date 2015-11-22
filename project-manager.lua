@@ -1,7 +1,7 @@
 local ProjectManager = {}
 
-function ProjectManager.load()
-  Project = {entities = {}, tilesets = {}, groups = {}}
+function ProjectManager.load(name)
+  Project = {levelName = name, entities = {}, tilesets = {}, groups = {}}
 
   --load entities
   for _, entity in pairs(love.filesystem.load('project/entities.lua')()) do
@@ -16,7 +16,7 @@ function ProjectManager.load()
     table.insert(Project.tilesets, require('class.tileset')(tileset))
   end
 
-  local levelData = love.filesystem.load('project/level.lua')()
+  local levelData = love.filesystem.load('project/levels/'..name..'.lua')()
 
   --load groups and layers
   for _, group in pairs(levelData.groups) do
@@ -43,7 +43,9 @@ function ProjectManager.save()
   end
 
   local data = require('lib.serpent').block(toSave, {comment = false})
-  love.filesystem.write('level.lua', 'return '..data)
+  local path = 'project/levels/'..Project.levelName..'.lua'
+  love.filesystem.createDirectory('project/levels')
+  love.filesystem.write(path, 'return '..data)
 end
 
 return ProjectManager
