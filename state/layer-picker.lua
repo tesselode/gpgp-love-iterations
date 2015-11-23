@@ -76,7 +76,7 @@ function LayerPicker:resize()
 end
 
 function LayerPicker:keypressed(key)
-  if key == 'f5' then
+  if key == 'f5' or key == 'escape' then
     require('lib.gamestate').pop()
   end
 end

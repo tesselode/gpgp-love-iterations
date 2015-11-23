@@ -143,7 +143,7 @@ function EntityPalette:generateMenu()
 end
 
 function EntityPalette:keypressed(key)
-  if key == ' ' then
+  if key == ' ' or key == 'escape' then
     require('lib.gamestate').pop()
   end
 end
