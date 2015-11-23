@@ -30,10 +30,10 @@ end
 
 function Grid:getCursorWithinMap()
   local c = self.cursor
-  return c.x >= 0
-     and c.x < self.width
-     and c.y >= 0
-     and c.y < self.height
+  return c.x > 0
+     and c.x <= self.width
+     and c.y > 0
+     and c.y <= self.height
 end
 
 function Grid:update(dt)
