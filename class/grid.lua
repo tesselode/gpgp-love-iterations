@@ -31,6 +31,7 @@ function Grid:new(width, height)
   self.cursor       = Vector()
   self.selectionA   = false
   self.selectionB   = false
+  self.selectMode   = false
 end
 
 function Grid:getRelativeMousePos()
@@ -88,7 +89,9 @@ function Grid:update(dt)
   local relativeMousePos = self:getRelativeMousePos()
   self.cursor.x          = math.floor(relativeMousePos.x) + 1
   self.cursor.y          = math.floor(relativeMousePos.y) + 1
-  if self.selectionA and love.mouse.isDown('l') then
+  local c1 = love.mouse.isDown('l') and self.selectMode == 1
+  local c2 = love.mouse.isDown('r') and self.selectMode == 2
+  if self.selectionA and (c1 or c2) then
     self.selectionB = Vector(self.cursor.x, self.cursor.y)
     self.selectionB.x = clamp(self.selectionB.x, self.selectionA.x, self.width)
     self.selectionB.y = clamp(self.selectionB.y, self.selectionA.y, self.height)
@@ -96,7 +99,13 @@ function Grid:update(dt)
 end
 
 function Grid:mousepressed(x, y, button)
-  if button == 'l' and self:getCursorWithinMap() then
+  if button == 'l' or button == 'r' and self:getCursorWithinMap() then
+    if button == 'l' then
+      self.selectMode = 1
+    end
+    if button == 'r' then
+      self.selectMode = 2
+    end
     self.selectionA = Vector(self.cursor.x, self.cursor.y)
   end
 
@@ -109,16 +118,26 @@ function Grid:mousepressed(x, y, button)
 end
 
 function Grid:mousereleased(x, y, button)
-  if button == 'l' then
+  local c1 = button == 'l' and self.selectMode == 1
+  local c2 = button == 'r' and self.selectMode == 2
+  if (c1 or c2) then
     if self.selectionA and self.selectionB then
-      self:trigger(self.selectionA, self.selectionB)
+      if c1 then
+        self:place(self.selectionA, self.selectionB)
+      end
+      if c2 then
+        self:remove(self.selectionA, self.selectionB)
+      end
     end
     self.selectionA = false
     self.selectionB = false
+    self.selectMode = false
   end
 end
 
-function Grid:trigger(a, b) end
+function Grid:place(a, b) end
+
+function Grid:remove(a, b) end
 
 function Grid:drawBorder()
   love.graphics.setColor(Color.AlmostWhite)
@@ -142,7 +161,11 @@ end
 
 function Grid:drawCursor(i, w, h)
   if self.selectionA and self.selectionB then
-    lg.setColor(255, 255, 255, 100)
+    if self.selectMode == 2 then
+      lg.setColor(255, 0, 0, 100)
+    else
+      lg.setColor(255, 255, 255, 100)
+    end
     local pos  = self.selectionA - Vector(1, 1)
     local size = self.selectionB - self.selectionA + Vector(1, 1)
     lg.rectangle('fill', pos.x, pos.y, size.x, size.y)
