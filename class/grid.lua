@@ -47,6 +47,24 @@ function Grid:update(dt)
     self.pan        = self.pan + mouseDelta
     self.displayPan = self.pan
   end
+  if love.keyboard.isDown('a') or love.keyboard.isDown('left') then
+    self.pan.x = self.pan.x + 800 * dt
+  end
+  if love.keyboard.isDown('d') or love.keyboard.isDown('right') then
+    self.pan.x = self.pan.x - 800 * dt
+  end
+  if love.keyboard.isDown('w') or love.keyboard.isDown('up') then
+    self.pan.y = self.pan.y + 800 * dt
+  end
+  if love.keyboard.isDown('s') or love.keyboard.isDown('down') then
+    self.pan.y = self.pan.y - 800 * dt
+  end
+  if love.keyboard.isDown('e') then
+    self.scale = lerp(self.scale, self.scale * 1.1, 1 - (10^-5) ^ dt)
+  end
+  if love.keyboard.isDown('q') then
+    self.scale = lerp(self.scale, self.scale / 1.1, 1 - (10^-5) ^ dt)
+  end
 
   self.displayPan.x = lerp(self.displayPan.x, self.pan.x, 1 - (10^-5) ^ dt)
   self.displayPan.y = lerp(self.displayPan.y, self.pan.y, 1 - (10^-5) ^ dt)
