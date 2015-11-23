@@ -14,10 +14,10 @@ function TileLayer:place(a, b)
       tileX = self.selectedA.x + i - a.x
       tileY = self.selectedA.y + j - a.y
       while tileX > self.selectedB.x do
-        tileX = tileX - (self.selectedB.x - self.selectedA.x)
+        tileX = tileX - (self.selectedB.x - self.selectedA.x) - 1
       end
       while tileY > self.selectedB.y do
-        tileY = tileY - (self.selectedB.y - self.selectedA.y)
+        tileY = tileY - (self.selectedB.y - self.selectedA.y) - 1
       end
       table.insert(self.tiles, {
         posX  = i,
