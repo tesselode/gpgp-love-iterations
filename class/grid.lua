@@ -99,7 +99,7 @@ function Grid:update(dt)
 end
 
 function Grid:mousepressed(x, y, button)
-  if button == 'l' or button == 'r' and self:getCursorWithinMap() then
+  if (button == 'l' or button == 'r') and self:getCursorWithinMap() then
     if button == 'l' then
       self.selectMode = 1
     end
