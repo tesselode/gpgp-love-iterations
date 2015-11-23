@@ -14,15 +14,23 @@ function EntityLayer:getAt(x, y)
   end
 end
 
-function EntityLayer:place(x, y)
-  self:remove(x, y)
-  table.insert(self.entities, {x = x, y = y, entity = self.selected})
+function EntityLayer:place(a, b)
+  self:remove(a, b)
+  for i = a.x, b.x do
+    for j = a.y, b.y do
+      table.insert(self.entities, {x = i, y = j, entity = self.selected})
+    end
+  end
 end
 
-function EntityLayer:remove(x, y)
-  for n, entity in pairs(self.entities) do
-    if entity.x == x and entity.y == y then
-      table.remove(self.entities, n)
+function EntityLayer:remove(a, b)
+  for i = a.x, b.x do
+    for j = a.y, b.y do
+      for n, entity in pairs(self.entities) do
+        if entity.x == i and entity.y == j then
+          table.remove(self.entities, n)
+        end
+      end
     end
   end
 end

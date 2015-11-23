@@ -1,6 +1,6 @@
 F1 - toggle help
-Left click - place things
-Right click - remove things
+Left click + drag - place things
+Right click + drag - remove things
 Middle button + drag - pan
 WASD/arrow keys - pan
 Mouse wheel up/down - zoom

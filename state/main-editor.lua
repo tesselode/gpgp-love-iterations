@@ -6,7 +6,15 @@ local Grid = require 'class.grid'
 local MainEditor = {}
 
 function MainEditor:enter()
-  self.grid          = Grid(Project.width, Project.height)
+  self.grid = Grid(Project.width, Project.height)
+  function self.grid.place(grid, a, b)
+    self.selectedLayer:place(a, b)
+  end
+  function self.grid.remove(grid, a, b)
+    self.selectedLayer:remove(a, b)
+  end
+
+
   self.selectedLayer = Project.groups[1].layers[1]
 
   self.visibleMode   = 1
@@ -21,16 +29,6 @@ end
 function MainEditor:update(dt)
   self.tween:update(dt)
   self.grid:update(dt)
-
-  --place objects
-  if self.grid:getCursorWithinMap() then
-    if love.mouse.isDown('l') then
-      self.selectedLayer:place(self.grid.cursor.x, self.grid.cursor.y)
-    end
-    if love.mouse.isDown('r') then
-      self.selectedLayer:remove(self.grid.cursor.x, self.grid.cursor.y)
-    end
-  end
 end
 
 function MainEditor:keypressed(key)

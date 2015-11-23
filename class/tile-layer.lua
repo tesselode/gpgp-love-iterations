@@ -6,20 +6,28 @@ function TileLayer:new(data)
   self:load(data)
 end
 
-function TileLayer:place(x, y)
-  self:remove(x, y)
-  table.insert(self.tiles, {
-    posX  = x,
-    posY  = y,
-    tileX = self.selected.x,
-    tileY = self.selected.y,
-  })
+function TileLayer:place(a, b)
+  self:remove(a, b)
+  for i = a.x, b.x do
+    for j = a.y, b.y do
+      table.insert(self.tiles, {
+        posX  = i,
+        posY  = j,
+        tileX = self.selected.x,
+        tileY = self.selected.y,
+      })
+    end
+  end
 end
 
-function TileLayer:remove(x, y)
-  for n, tile in pairs(self.tiles) do
-    if tile.posX == x and tile.posY == y then
-      table.remove(self.tiles, n)
+function TileLayer:remove(a, b)
+  for i = a.x, b.x do
+    for j = a.y, b.y do
+      for n, tile in pairs(self.tiles) do
+        if tile.posX == i and tile.posY == j then
+          table.remove(self.tiles, n)
+        end
+      end
     end
   end
 end

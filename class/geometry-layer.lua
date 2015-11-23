@@ -5,15 +5,23 @@ function GeometryLayer:new(data)
   self:load(data)
 end
 
-function GeometryLayer:place(x, y)
-  self:remove(x, y)
-  table.insert(self.blocks, {x = x, y = y})
+function GeometryLayer:place(a, b)
+  self:remove(a, b)
+  for i = a.x, b.x do
+    for j = a.y, b.y do
+      table.insert(self.blocks, {x = i, y = j})
+    end
+  end
 end
 
-function GeometryLayer:remove(x, y)
-  for n, block in pairs(self.blocks) do
-    if block.x == x and block.y == y then
-      table.remove(self.blocks, n)
+function GeometryLayer:remove(a, b)
+  for i = a.x, b.x do
+    for j = a.y, b.y do
+      for n, block in pairs(self.blocks) do
+        if block.x == i and block.y == j then
+          table.remove(self.blocks, n)
+        end
+      end
     end
   end
 end
