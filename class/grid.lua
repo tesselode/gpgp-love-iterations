@@ -5,6 +5,16 @@ local function lerp(a, b, x)
   return a + (b - a) * x
 end
 
+local function clamp(x, a, b)
+  if x < a then
+    return a
+  elseif x > b then
+    return b
+  else
+    return x
+  end
+end
+
 local Grid = Class:extend()
 
 function Grid:new(width, height)
@@ -19,6 +29,8 @@ function Grid:new(width, height)
   self.displayPan   = self.pan
   self.displayScale = self.scale
   self.cursor       = Vector()
+  self.selectionA   = false
+  self.selectionB   = false
 end
 
 function Grid:getRelativeMousePos()
@@ -76,9 +88,18 @@ function Grid:update(dt)
   local relativeMousePos = self:getRelativeMousePos()
   self.cursor.x          = math.floor(relativeMousePos.x) + 1
   self.cursor.y          = math.floor(relativeMousePos.y) + 1
+  if self.selectionA and love.mouse.isDown('l') then
+    self.selectionB = Vector(self.cursor.x, self.cursor.y)
+    self.selectionB.x = clamp(self.selectionB.x, self.selectionA.x, self.width)
+    self.selectionB.y = clamp(self.selectionB.y, self.selectionA.y, self.height)
+  end
 end
 
 function Grid:mousepressed(x, y, button)
+  if button == 'l' and self:getCursorWithinMap() then
+    self.selectionA = Vector(self.cursor.x, self.cursor.y)
+  end
+
   if button == 'wu' then
     self.scale = self.scale * 1.1
   end
@@ -86,6 +107,18 @@ function Grid:mousepressed(x, y, button)
     self.scale = self.scale / 1.1
   end
 end
+
+function Grid:mousereleased(x, y, button)
+  if button == 'l' then
+    if self.selectionA and self.selectionB then
+      self:trigger(self.selectionA, self.selectionB)
+    end
+    self.selectionA = false
+    self.selectionB = false
+  end
+end
+
+function Grid:trigger(a, b) end
 
 function Grid:drawBorder()
   love.graphics.setColor(Color.AlmostWhite)
@@ -108,7 +141,12 @@ function Grid:drawGrid()
 end
 
 function Grid:drawCursor(i, w, h)
-  if self:getCursorWithinMap() then
+  if self.selectionA and self.selectionB then
+    lg.setColor(255, 255, 255, 100)
+    local pos  = self.selectionA - Vector(1, 1)
+    local size = self.selectionB - self.selectionA + Vector(1, 1)
+    lg.rectangle('fill', pos.x, pos.y, size.x, size.y)
+  elseif self:getCursorWithinMap() then
     lg.setColor(255, 255, 255, 100)
     lg.rectangle('fill', self.cursor.x - 1, self.cursor.y - 1, 1, 1)
   end

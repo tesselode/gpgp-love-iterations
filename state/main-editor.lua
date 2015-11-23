@@ -99,6 +99,10 @@ function MainEditor:mousepressed(x, y, button)
   self.grid:mousepressed(x, y, button)
 end
 
+function MainEditor:mousereleased(x, y, button)
+  self.grid:mousereleased(x, y, button)
+end
+
 function MainEditor:draw()
   self.grid:drawTransformed(function()
     self.grid:drawBorder()
