@@ -67,12 +67,16 @@ function EntityLayer:openPalette()
   require('lib.gamestate').push(require('state.entity-palette'), self)
 end
 
-function EntityLayer:drawCursorImage(x, y)
+function EntityLayer:drawCursorImage(a, b)
   if self.selected.image then
-    local i  = self.selected.image
-    local sx = (self.selected.width or 1) / i:getWidth()
-    local sy = (self.selected.height or 1) / i:getHeight()
-    love.graphics.draw(i, x - 1, y - 1, 0, sx, sy)
+    for i = a.x, b.x do
+      for j = a.y, b.y do
+        local img  = self.selected.image
+        local sx = (self.selected.width or 1) / i:getWidth()
+        local sy = (self.selected.height or 1) / i:getHeight()
+        love.graphics.draw(img, i - 1, j - 1, 0, sx, sy)
+      end
+    end
   end
 end
 

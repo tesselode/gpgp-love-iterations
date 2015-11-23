@@ -9,22 +9,41 @@ end
 
 function TileLayer:place(a, b)
   self:remove(a, b)
-  for i = a.x, b.x do
-    for j = a.y, b.y do
-      tileX = self.selectedA.x + i - a.x
-      tileY = self.selectedA.y + j - a.y
+  self:withPlacementResult(a, b, function(posX, posY, tileX, tileY)
+    table.insert(self.tiles, {
+      posX  = posX,
+      posY  = posY,
+      tileX = tileX,
+      tileY = tileY,
+    })
+  end)
+end
+
+--gets each position and tile coordinate that would result from a selection
+function TileLayer:withPlacementResult(va, vb, f, min)
+  local a = va:clone()
+  local b = vb:clone()
+
+  if min then
+    if b.x < a.x + (self.selectedB.x - self.selectedA.x) then
+      b.x = a.x + self.selectedB.x - self.selectedA.x
+    end
+    if b.y < a.y + (self.selectedB.y - self.selectedA.y) then
+      b.y = a.y + self.selectedB.y - self.selectedA.y
+    end
+  end
+
+  for posX = a.x, b.x do
+    for posY = a.y, b.y do
+      tileX = self.selectedA.x + posX - a.x
+      tileY = self.selectedA.y + posY - a.y
       while tileX > self.selectedB.x do
         tileX = tileX - (self.selectedB.x - self.selectedA.x) - 1
       end
       while tileY > self.selectedB.y do
         tileY = tileY - (self.selectedB.y - self.selectedA.y) - 1
       end
-      table.insert(self.tiles, {
-        posX  = i,
-        posY  = j,
-        tileX = tileX,
-        tileY = tileY,
-      })
+      f(posX, posY, tileX, tileY)
     end
   end
 end
@@ -67,15 +86,10 @@ function TileLayer:openPalette()
   require('lib.gamestate').push(require('state.tile-palette'), self)
 end
 
-function TileLayer:drawCursorImage(x, y)
-  love.graphics.setColor(255, 255, 255, 100)
-  for i = self.selectedA.x, self.selectedB.x do
-    for j = self.selectedA.y, self.selectedB.y do
-      local posX = x + i - self.selectedA.x
-      local posY = y + j - self.selectedA.y
-      self.tileset:drawTile(posX, posY, i, j)
-    end
-  end
+function TileLayer:drawCursorImage(a, b)
+  self:withPlacementResult(a, b, function(posX, posY, tileX, tileY)
+    self.tileset:drawTile(posX, posY, tileX, tileY)
+  end, true)
 end
 
 function TileLayer:draw(alpha)

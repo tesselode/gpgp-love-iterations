@@ -45,7 +45,7 @@ end
 
 function GeometryLayer:openPalette() end
 
-function GeometryLayer:drawCursorImage(x, y) end
+function GeometryLayer:drawCursorImage(a, b) end
 
 function GeometryLayer:draw(alpha)
   for _, block in pairs(self.blocks) do
