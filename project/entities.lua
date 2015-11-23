@@ -1,14 +1,20 @@
 return {
   {
-    name = 'Player',
-    image = 'player.png',
+    name = 'Character 1',
+    image = 'character1.png',
+    width = 2,
+    height = 2,
   },
   {
-    name = 'Spikes',
-    image = 'spikes.png',
+    name = 'Character 2',
+    image = 'character2.png',
+    width = 2,
+    height = 2,
   },
   {
-    name = 'Orb',
-    image = 'orb.png',
+    name = 'Character 3',
+    image = 'character3.png',
+    width = 2,
+    height = 2,
   },
 }
