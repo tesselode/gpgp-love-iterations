@@ -105,8 +105,8 @@ function MainEditor:draw()
     self.grid:drawGrid()
 
     --draw layers
-    for i = 1, #Project.groups do
-      for j = 1, #Project.groups[i].layers do
+    for i = #Project.groups, 1, -1 do
+      for j = #Project.groups[i].layers, 1, -1 do
         local layer = Project.groups[i].layers[j]
         local visible = (self.visibleMode == 1)
           or (self.visibleMode == 2 and layer.group == self.selectedLayer.group)
