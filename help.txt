@@ -1,0 +1,11 @@
+F1 - toggle help
+Left click - place things
+Right click - remove things
+Middle button + drag - pan
+WASD/arrow keys - pan
+Mouse wheel up/down - zoom
+Q/E - zoom
+Space - show entity/tile palette
+F5 - show layer picker
+Ctrl+S - save
+Ctrl+O - open

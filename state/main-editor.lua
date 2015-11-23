@@ -6,14 +6,20 @@ local Grid = require 'class.grid'
 local MainEditor = {}
 
 function MainEditor:enter()
-  self.grid           = Grid(Project.width, Project.height)
-  self.selectedLayer  = Project.groups[1].layers[1]
+  self.grid          = Grid(Project.width, Project.height)
+  self.selectedLayer = Project.groups[1].layers[1]
 
-  self.visibleMode = 1
-  self.ghostLayers = false
+  self.visibleMode   = 1
+  self.ghostLayers   = false
+
+  self.help = {show = true, x = 0, text = love.filesystem.read('help.txt')}
+
+  --cosmetic
+  self.tween = require('lib.flux').group()
 end
 
 function MainEditor:update(dt)
+  self.tween:update(dt)
   self.grid:update(dt)
 
   --place objects
@@ -28,6 +34,16 @@ function MainEditor:update(dt)
 end
 
 function MainEditor:keypressed(key)
+  --toggle help
+  if key == 'f1' then
+    self.help.show = not self.help.show
+    if self.help.show then
+      self.tween:to(self.help, .25, {x = 0}):ease('backout')
+    else
+      self.tween:to(self.help, .25, {x = -500}):ease('backin')
+    end
+  end
+
   --open palette
   if key == ' ' then
     self.selectedLayer:openPalette()
@@ -124,6 +140,13 @@ function MainEditor:draw()
       lg.printf(string, mx + 15, my + 15, 100)
     end
   end
+
+  --draw help
+  local c = Color.Dark
+  lg.setColor(c[1], c[2], c[3], 100)
+  lg.rectangle('fill', self.help.x, 0, 500, 315)
+  lg.setColor(Color.AlmostWhite)
+  lg.print(self.help.text, self.help.x, 0)
 end
 
 return MainEditor
