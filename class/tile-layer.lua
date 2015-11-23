@@ -2,7 +2,8 @@ local TileLayer = Class:extend()
 
 function TileLayer:new(data)
   self.tiles = {}
-  self.selected = Vector(1, 1)
+  self.selectedA = Vector(1, 1)
+  self.selectedB = Vector(1, 1)
   self:load(data)
 end
 
@@ -10,11 +11,19 @@ function TileLayer:place(a, b)
   self:remove(a, b)
   for i = a.x, b.x do
     for j = a.y, b.y do
+      tileX = self.selectedA.x + i - a.x
+      tileY = self.selectedA.y + j - a.y
+      while tileX > self.selectedB.x do
+        tileX = tileX - (self.selectedB.x - self.selectedA.x)
+      end
+      while tileY > self.selectedB.y do
+        tileY = tileY - (self.selectedB.y - self.selectedA.y)
+      end
       table.insert(self.tiles, {
         posX  = i,
         posY  = j,
-        tileX = self.selected.x,
-        tileY = self.selected.y,
+        tileX = tileX,
+        tileY = tileY,
       })
     end
   end
@@ -60,7 +69,13 @@ end
 
 function TileLayer:drawCursorImage(x, y)
   love.graphics.setColor(255, 255, 255, 100)
-  self.tileset:drawTile(x, y, self.selected.x, self.selected.y)
+  for i = self.selectedA.x, self.selectedB.x do
+    for j = self.selectedA.y, self.selectedB.y do
+      local posX = x + i - self.selectedA.x
+      local posY = y + j - self.selectedA.y
+      self.tileset:drawTile(posX, posY, i, j)
+    end
+  end
 end
 
 function TileLayer:draw(alpha)

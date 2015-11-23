@@ -9,7 +9,13 @@ function TilePalette:enter(previous, layer)
   local tileset      = layer.tileset
   local w            = tileset.image:getWidth() / tileset.tileSize
   local h            = tileset.image:getHeight() / tileset.tileSize
-  self.grid          = Grid(w, h)
+
+  self.grid = Grid(w, h)
+  function self.grid.place(grid, a, b)
+    self.layer.selectedA, self.layer.selectedB = a, b
+    require('lib.gamestate').pop()
+  end
+
   self.layer         = layer
   self.layer.tileset = tileset
 end
@@ -29,10 +35,7 @@ function TilePalette:mousepressed(x, y, button)
 end
 
 function TilePalette:mousereleased(x, y, button)
-  if self.grid:getCursorWithinMap() and button == 'l' then
-    self.layer.selected = self.grid.cursor
-    require('lib.gamestate').pop()
-  end
+  self.grid:mousereleased(x, y, button)
 end
 
 function TilePalette:draw()
