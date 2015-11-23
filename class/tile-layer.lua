@@ -37,6 +37,7 @@ function TileLayer:withPlacementResult(va, vb, f, min)
     for posY = a.y, b.y do
       tileX = self.selectedA.x + posX - a.x
       tileY = self.selectedA.y + posY - a.y
+      --wrap tiles
       while tileX > self.selectedB.x do
         tileX = tileX - (self.selectedB.x - self.selectedA.x) - 1
       end

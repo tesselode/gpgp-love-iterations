@@ -66,6 +66,9 @@ function LayerPicker:generateLayerMenu(group)
         'Switched to layer "'..menuOption.layer.name..'" in group "'..self.selectedGroup.name..'"')
     end)
     menuOption.layer = layer
+    if menuOption.layer == self.mainEditor.selectedLayer then
+      menuOption.textColor = Color.Accent
+    end
     self.layerMenu:add(menuOption)
     self.layerMenu:expand(menuOption.h)
   end
