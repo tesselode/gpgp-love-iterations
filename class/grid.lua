@@ -1,20 +1,6 @@
 local lg = love.graphics
 local lm = love.mouse
 
-local function lerp(a, b, x)
-  return a + (b - a) * x
-end
-
-local function clamp(x, a, b)
-  if x < a then
-    return a
-  elseif x > b then
-    return b
-  else
-    return x
-  end
-end
-
 local Grid = Class:extend()
 
 function Grid:new(width, height)
@@ -74,16 +60,16 @@ function Grid:update(dt)
       self.pan.y = self.pan.y - 800 * dt
     end
     if love.keyboard.isDown('e') then
-      self.scale = lerp(self.scale, self.scale * 1.1, 1 - (10^-5) ^ dt)
+      self.scale = math.lerp(self.scale, self.scale * 1.1, 1 - (10^-5) ^ dt)
     end
     if love.keyboard.isDown('q') then
-      self.scale = lerp(self.scale, self.scale / 1.1, 1 - (10^-5) ^ dt)
+      self.scale = math.lerp(self.scale, self.scale / 1.1, 1 - (10^-5) ^ dt)
     end
   end
 
-  self.displayPan.x = lerp(self.displayPan.x, self.pan.x, 1 - (10^-5) ^ dt)
-  self.displayPan.y = lerp(self.displayPan.y, self.pan.y, 1 - (10^-5) ^ dt)
-  self.displayScale = lerp(self.displayScale, self.scale, 1 - (10^-5) ^ dt)
+  self.displayPan.x = math.lerp(self.displayPan.x, self.pan.x, 1 - (10^-5) ^ dt)
+  self.displayPan.y = math.lerp(self.displayPan.y, self.pan.y, 1 - (10^-5) ^ dt)
+  self.displayScale = math.lerp(self.displayScale, self.scale, 1 - (10^-5) ^ dt)
 
   --cursor
   local relativeMousePos = self:getRelativeMousePos()
@@ -93,8 +79,8 @@ function Grid:update(dt)
   local c2 = love.mouse.isDown('r') and self.selectMode == 2
   if self.selectionA and (c1 or c2) then
     self.selectionB = Vector(self.cursor.x, self.cursor.y)
-    self.selectionB.x = clamp(self.selectionB.x, self.selectionA.x, self.width)
-    self.selectionB.y = clamp(self.selectionB.y, self.selectionA.y, self.height)
+    self.selectionB.x = math.clamp(self.selectionB.x, 1, self.width)
+    self.selectionB.y = math.clamp(self.selectionB.y, 1, self.height)
   end
 end
 
@@ -167,7 +153,9 @@ function Grid:drawCursor(i, w, h)
       lg.setColor(255, 255, 255, 100)
     end
     local pos  = self.selectionA - Vector(1, 1)
-    local size = self.selectionB - self.selectionA + Vector(1, 1)
+    local ox   = math.weirdsign(self.selectionB.x - self.selectionA.x)
+    local oy   = math.weirdsign(self.selectionB.y - self.selectionA.y)
+    local size = self.selectionB - self.selectionA + Vector(ox, oy)
     lg.rectangle('fill', pos.x, pos.y, size.x, size.y)
   elseif self:getCursorWithinMap() then
     lg.setColor(255, 255, 255, 100)
