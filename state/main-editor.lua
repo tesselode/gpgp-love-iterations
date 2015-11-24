@@ -123,11 +123,13 @@ function MainEditor:draw()
 
     if self.grid:getCursorWithinMap() then
       self.grid:drawCursor()
-      if self.grid.selectionA then
-        local g = self.grid
-        self.selectedLayer:drawCursorImage(g.selectionA, g.selectionB)
-      else
-        self.selectedLayer:drawCursorImage(self.grid.cursor, self.grid.cursor)
+      if self.grid.selectMode ~= 2 then
+        if self.grid.selectionA then
+          local g = self.grid
+          self.selectedLayer:drawCursorImage(g.selectionA, g.selectionB)
+        else
+          self.selectedLayer:drawCursorImage(self.grid.cursor, self.grid.cursor)
+        end
       end
     end
   end)
