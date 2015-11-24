@@ -24,19 +24,22 @@ function TileLayer:withPlacementResult(va, vb, f, min)
   local a = va:clone()
   local b = vb:clone()
 
+  local smallerX, biggerX = math.smaller(a.x, b.x)
+  local smallerY, biggerY = math.smaller(a.y, b.y)
+
   if min then
-    if b.x < a.x + (self.selectedB.x - self.selectedA.x) then
-      b.x = a.x + self.selectedB.x - self.selectedA.x
+    if biggerX < smallerX + (self.selectedB.x - self.selectedA.x) then
+      biggerX = smallerX + self.selectedB.x - self.selectedA.x
     end
-    if b.y < a.y + (self.selectedB.y - self.selectedA.y) then
-      b.y = a.y + self.selectedB.y - self.selectedA.y
+    if biggerY < smallerY + (self.selectedB.y - self.selectedA.y) then
+      biggerY = smallerY + self.selectedB.y - self.selectedA.y
     end
   end
 
-  for posX = a.x, b.x do
-    for posY = a.y, b.y do
-      tileX = self.selectedA.x + posX - a.x
-      tileY = self.selectedA.y + posY - a.y
+  for posX = smallerX, biggerX do
+    for posY = smallerY, biggerY do
+      tileX = self.selectedA.x + posX - smallerX
+      tileY = self.selectedA.y + posY - smallerY
       --wrap tiles
       while tileX > self.selectedB.x do
         tileX = tileX - (self.selectedB.x - self.selectedA.x) - 1
@@ -50,8 +53,10 @@ function TileLayer:withPlacementResult(va, vb, f, min)
 end
 
 function TileLayer:remove(a, b)
-  for i = a.x, b.x do
-    for j = a.y, b.y do
+  local smallerX, biggerX = math.smaller(a.x, b.x)
+  local smallerY, biggerY = math.smaller(a.y, b.y)
+  for i = smallerX, biggerX do
+    for j = smallerY, biggerY do
       for n, tile in pairs(self.tiles) do
         if tile.posX == i and tile.posY == j then
           table.remove(self.tiles, n)

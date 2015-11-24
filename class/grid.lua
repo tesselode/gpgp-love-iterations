@@ -152,10 +152,11 @@ function Grid:drawCursor(i, w, h)
     else
       lg.setColor(255, 255, 255, 100)
     end
-    local pos  = self.selectionA - Vector(1, 1)
-    local ox   = math.weirdsign(self.selectionB.x - self.selectionA.x)
-    local oy   = math.weirdsign(self.selectionB.y - self.selectionA.y)
-    local size = self.selectionB - self.selectionA + Vector(ox, oy)
+    local smallerX, biggerX = math.smaller(self.selectionA.x, self.selectionB.x)
+    local smallerY, biggerY = math.smaller(self.selectionA.y, self.selectionB.y)
+    local smaller, bigger = Vector(smallerX, smallerY), Vector(biggerX, biggerY)
+    local pos  = smaller - Vector(1, 1)
+    local size = bigger - smaller + Vector(1, 1)
     lg.rectangle('fill', pos.x, pos.y, size.x, size.y)
   elseif self:getCursorWithinMap() then
     lg.setColor(255, 255, 255, 100)
