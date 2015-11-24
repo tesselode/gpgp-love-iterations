@@ -155,6 +155,7 @@ function MainEditor:draw()
   lg.setColor(c[1], c[2], c[3], 100)
   lg.rectangle('fill', self.help.x, 0, 500, 315)
   lg.setColor(Color.AlmostWhite)
+  lg.setFont(Font.Medium)
   lg.print(self.help.text, self.help.x, 0)
 end
 
