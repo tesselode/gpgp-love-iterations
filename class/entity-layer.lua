@@ -16,16 +16,16 @@ end
 
 function EntityLayer:place(a, b)
   self:remove(a, b)
-  for i = a.x, b.x do
-    for j = a.y, b.y do
+  for i = a.x, b.x, math.sign(b.x - a.x) do
+    for j = a.y, b.y, math.sign(b.y - a.y) do
       table.insert(self.entities, {x = i, y = j, entity = self.selected})
     end
   end
 end
 
 function EntityLayer:remove(a, b)
-  for i = a.x, b.x do
-    for j = a.y, b.y do
+  for i = a.x, b.x, math.sign(b.x - a.x) do
+    for j = a.y, b.y, math.sign(b.y - a.y) do
       for n, entity in pairs(self.entities) do
         if entity.x == i and entity.y == j then
           table.remove(self.entities, n)

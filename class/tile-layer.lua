@@ -53,10 +53,8 @@ function TileLayer:withPlacementResult(va, vb, f, min)
 end
 
 function TileLayer:remove(a, b)
-  local smallerX, biggerX = math.smaller(a.x, b.x)
-  local smallerY, biggerY = math.smaller(a.y, b.y)
-  for i = smallerX, biggerX do
-    for j = smallerY, biggerY do
+  for i = a.x, b.x, math.sign(b.x - a.x) do
+    for j = a.y, b.y, math.sign(b.y - a.y) do
       for n, tile in pairs(self.tiles) do
         if tile.posX == i and tile.posY == j then
           table.remove(self.tiles, n)
