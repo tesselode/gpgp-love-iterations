@@ -24,22 +24,19 @@ function TileLayer:withPlacementResult(va, vb, f, min)
   local a = va:clone()
   local b = vb:clone()
 
-  local smallerX, biggerX = math.smaller(a.x, b.x)
-  local smallerY, biggerY = math.smaller(a.y, b.y)
-
   if min then
-    if biggerX < smallerX + (self.selectedB.x - self.selectedA.x) then
-      biggerX = smallerX + self.selectedB.x - self.selectedA.x
+    if b.x < a.x + (self.selectedB.x - self.selectedA.x) then
+      b.x = a.x + self.selectedB.x - self.selectedA.x
     end
-    if biggerY < smallerY + (self.selectedB.y - self.selectedA.y) then
-      biggerY = smallerY + self.selectedB.y - self.selectedA.y
+    if b.y < a.y + (self.selectedB.y - self.selectedA.y) then
+      b.y = a.y + self.selectedB.y - self.selectedA.y
     end
   end
 
-  for posX = smallerX, biggerX do
-    for posY = smallerY, biggerY do
-      tileX = self.selectedA.x + posX - smallerX
-      tileY = self.selectedA.y + posY - smallerY
+  for posX = a.x, b.x do
+    for posY = a.y, b.y do
+      tileX = self.selectedA.x + posX - a.x
+      tileY = self.selectedA.y + posY - a.y
       --wrap tiles
       while tileX > self.selectedB.x do
         tileX = tileX - (self.selectedB.x - self.selectedA.x) - 1

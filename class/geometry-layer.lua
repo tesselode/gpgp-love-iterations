@@ -7,8 +7,8 @@ end
 
 function GeometryLayer:place(a, b)
   self:remove(a, b)
-  for i = a.x, b.x, math.sign(b.x - a.x) do
-    for j = a.y, b.y, math.sign(b.y - a.y) do
+  for i = a.x, b.x do
+    for j = a.y, b.y do
       table.insert(self.blocks, {x = i, y = j})
     end
   end

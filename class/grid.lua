@@ -109,11 +109,12 @@ function Grid:mousereleased(x, y, button)
   local c2 = button == 'r' and self.selectMode == 2
   if (c1 or c2) then
     if self.selectionA and self.selectionB then
+      local smaller, bigger = math.smaller(self.selectionA, self.selectionB)
       if c1 then
-        self:place(self.selectionA, self.selectionB)
+        self:place(smaller, bigger)
       end
       if c2 then
-        self:remove(self.selectionA, self.selectionB)
+        self:remove(smaller, bigger)
       end
     end
     self.selectionA = false
