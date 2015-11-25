@@ -10,7 +10,7 @@ function Grid:new(width, height)
   self.width        = width
   self.height       = height
 
-  self.pan          = Vector(lg.getWidth() / 2, lg.getHeight() / 2)
+  self.pan          = Vector()
   self.scale        = 25
   self.snap         = 1
   self.displayPan   = self.pan
@@ -22,9 +22,11 @@ function Grid:new(width, height)
 end
 
 function Grid:getRelativeMousePos()
-  local pos   = Vector()
-  pos.x = (lm.getX() - self.displayPan.x) / self.scale + self.width / 2
-  pos.y = (lm.getY() - self.displayPan.y) / self.scale + self.height / 2
+  local pos = Vector(lm.getX(), lm.getY())
+  pos = pos - Vector(lg.getWidth() / 2, lg.getHeight() / 2)
+  pos = pos / self.scale
+  pos = pos + Vector(self.width / 2, self.height / 2)
+  pos = pos + self.displayPan
   return pos
 end
 
@@ -44,21 +46,21 @@ function Grid:update(dt)
 
   --panning
   if love.mouse.isDown 'm' then
-    self.pan        = self.pan + mouseDelta
+    self.pan        = self.pan - mouseDelta / self.displayScale
     self.displayPan = self.pan
   end
   if not love.keyboard.isDown('lctrl') then
     if love.keyboard.isDown('a') or love.keyboard.isDown('left') then
-      self.pan.x = self.pan.x + 800 * dt
+      self.pan.x = self.pan.x - 20 * dt
     end
     if love.keyboard.isDown('d') or love.keyboard.isDown('right') then
-      self.pan.x = self.pan.x - 800 * dt
+      self.pan.x = self.pan.x + 20 * dt
     end
     if love.keyboard.isDown('w') or love.keyboard.isDown('up') then
-      self.pan.y = self.pan.y + 800 * dt
+      self.pan.y = self.pan.y - 20 * dt
     end
     if love.keyboard.isDown('s') or love.keyboard.isDown('down') then
-      self.pan.y = self.pan.y - 800 * dt
+      self.pan.y = self.pan.y + 20 * dt
     end
     if love.keyboard.isDown('e') then
       self.scale = math.lerp(self.scale, self.scale * 1.1, 1 - (10^-5) ^ dt)
@@ -183,9 +185,10 @@ end
 
 function Grid:drawTransformed(f)
   lg.push()
-  lg.translate(self.displayPan.x, self.displayPan.y)
+  lg.translate(lg.getWidth() / 2, lg.getHeight() / 2)
   lg.scale(self.displayScale)
   lg.translate(-self.width / 2, -self.height / 2)
+  lg.translate(-self.displayPan.x, -self.displayPan.y)
   f()
   lg.pop()
 end
