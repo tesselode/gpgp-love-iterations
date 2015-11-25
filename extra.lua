@@ -41,3 +41,7 @@ function math.floor(x, i)
   i = i or 1
   return floor(x / i) * i
 end
+
+function math.between(x, a, b)
+  return x >= a and x <= b
+end

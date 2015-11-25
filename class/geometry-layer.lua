@@ -15,13 +15,9 @@ function GeometryLayer:place(a, b)
 end
 
 function GeometryLayer:remove(a, b)
-  for i = a.x, b.x, math.sign(b.x - a.x) do
-    for j = a.y, b.y, math.sign(b.y - a.y) do
-      for n, block in pairs(self.blocks) do
-        if block.x == i and block.y == j then
-          table.remove(self.blocks, n)
-        end
-      end
+  for n, block in pairs(self.blocks) do
+    if math.between(block.x, a.x, b.x) and math.between(block.y, a.y, b.y) then
+      table.remove(self.blocks, n)
     end
   end
 end
