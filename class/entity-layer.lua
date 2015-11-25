@@ -24,8 +24,9 @@ function EntityLayer:place(a, b)
 end
 
 function EntityLayer:remove(a, b)
-  for n, ent in pairs(self.entities) do
-    if math.between(ent.x, a.x, b.x) and math.between(ent.y, a.y, b.y) then
+  for n, entity in pairs(self.entities) do
+    if math.between(entity.x, a.x, b.x + 1)
+      and math.between(entity.y, a.y, b.y + 1) then
       table.remove(self.entities, n)
     end
   end

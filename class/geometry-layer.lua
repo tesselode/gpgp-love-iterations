@@ -16,7 +16,8 @@ end
 
 function GeometryLayer:remove(a, b)
   for n, block in pairs(self.blocks) do
-    if math.between(block.x, a.x, b.x) and math.between(block.y, a.y, b.y) then
+    if math.between(block.x, a.x, b.x + 1)
+      and math.between(block.y, a.y, b.y + 1) then
       table.remove(self.blocks, n)
     end
   end
