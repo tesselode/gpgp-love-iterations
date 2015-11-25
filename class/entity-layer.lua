@@ -1,4 +1,5 @@
-local Class = require 'lib.classic'
+local Class     = require 'lib.classic'
+local Gamestate = require 'lib.gamestate'
 
 local EntityLayer = Class:extend()
 
@@ -64,7 +65,7 @@ function EntityLayer:save()
 end
 
 function EntityLayer:openPalette()
-  require('lib.gamestate').push(require('state.entity-palette'), self)
+  Gamestate.push(require('state.entity-palette'), self)
 end
 
 function EntityLayer:drawCursorImage(a, b)

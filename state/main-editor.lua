@@ -1,6 +1,8 @@
 local Font  = require 'fonts'
 local Color = require 'colors'
 
+local Gamestate = require 'lib.gamestate'
+
 local lg = love.graphics
 local lm = love.mouse
 
@@ -52,7 +54,7 @@ function MainEditor:keypressed(key)
 
   --layer picker
   if key == 'f5' then
-    require('lib.gamestate').push(require('state.layer-picker'))
+    Gamestate.push(require('state.layer-picker'))
   end
 
   --change layer visibility
@@ -86,7 +88,7 @@ function MainEditor:keypressed(key)
     end
     --open
     if key == 'o' then
-      require('lib.gamestate').push(require('state.level-picker'))
+      Gamestate.push(require('state.level-picker'))
     end
   end
 end

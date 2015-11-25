@@ -1,5 +1,6 @@
-local Class  = require 'lib.classic'
-local vector = require 'lib.vector'
+local Class     = require 'lib.classic'
+local Gamestate = require 'lib.gamestate'
+local vector    = require 'lib.vector'
 
 local TileLayer = Class:extend()
 
@@ -85,7 +86,7 @@ function TileLayer:save()
 end
 
 function TileLayer:openPalette()
-  require('lib.gamestate').push(require('state.tile-palette'), self)
+  Gamestate.push(require('state.tile-palette'), self)
 end
 
 function TileLayer:drawCursorImage(a, b)

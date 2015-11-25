@@ -1,6 +1,8 @@
 local lg = love.graphics
 local lm = love.mouse
 
+local Gamestate = require 'lib.gamestate'
+
 local Grid = require 'class.grid'
 
 local TilePalette = {}
@@ -13,7 +15,7 @@ function TilePalette:enter(previous, layer)
   self.grid = Grid(w, h)
   function self.grid.place(grid, a, b)
     self.layer.selectedA, self.layer.selectedB = a, b
-    require('lib.gamestate').pop()
+    Gamestate.pop()
   end
 
   self.layer         = layer
@@ -26,7 +28,7 @@ end
 
 function TilePalette:keypressed(key)
   if key == ' ' or key == 'escape' then
-    require('lib.gamestate').pop()
+    Gamestate.pop()
   end
 end
 

@@ -1,6 +1,8 @@
 local Font  = require 'fonts'
 local Color = require 'colors'
 
+local Gamestate = require 'lib.gamestate'
+
 local lg = love.graphics
 
 local ScrollArea = require 'class.scroll-area'
@@ -64,7 +66,7 @@ function LayerPicker:generateLayerMenu(group)
     local menuOption = MenuOption(0, y, w, layer.name, function(menuOption)
       self.mainEditor.selectedGroup = self.selectedGroup
       self.mainEditor.selectedLayer = menuOption.layer
-      require('lib.gamestate').pop()
+      Gamestate.pop()
       local layerName = menuOption.layer.name
       local groupName = self.selectedGroup.name
       conversation:say('selectedLayer', layerName, groupName)
@@ -84,7 +86,7 @@ end
 
 function LayerPicker:keypressed(key)
   if key == 'f5' or key == 'escape' then
-    require('lib.gamestate').pop()
+    Gamestate.pop()
   end
 end
 

@@ -1,6 +1,8 @@
 local Font  = require 'fonts'
 local Color = require 'colors'
 
+local Gamestate = require 'lib.gamestate'
+
 local lg = love.graphics
 
 local ScrollArea = require 'class.scroll-area'
@@ -30,7 +32,7 @@ function LevelPicker:generateMenu()
       local name = file:match '(.*)%.lua'
       local menuOption = MenuOption(0, y, w, name, function(menuOption)
         require('project-manager').load(name)
-        require('lib.gamestate').switch(require('state.main-editor'))
+        Gamestate.switch(require('state.main-editor'))
         conversation:say('loadedLevel', name)
       end)
       menuOption.group = group
@@ -65,7 +67,7 @@ end
 
 function LevelPicker:keypressed(key)
   if key == 'escape' and Project and self.previous then
-    require('lib.gamestate').pop()
+    Gamestate.pop()
   end
 end
 

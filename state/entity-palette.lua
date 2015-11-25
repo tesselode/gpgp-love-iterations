@@ -1,6 +1,8 @@
 local Font  = require 'fonts'
 local Color = require 'colors'
 
+local Gamestate = require 'lib.gamestate'
+
 local lg = love.graphics
 
 local bSize  = 100
@@ -45,7 +47,7 @@ end
 
 function EntityButton:onPressed()
   self.layer.selected = self.entity
-  require('lib.gamestate').pop()
+  Gamestate.pop()
   conversation:say('selectedEntity', self.entity.name)
 end
 
@@ -147,7 +149,7 @@ end
 
 function EntityPalette:keypressed(key)
   if key == ' ' or key == 'escape' then
-    require('lib.gamestate').pop()
+    Gamestate.pop()
   end
 end
 
