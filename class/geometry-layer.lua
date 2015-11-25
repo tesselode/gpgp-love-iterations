@@ -15,10 +15,11 @@ function GeometryLayer:place(a, b)
 end
 
 function GeometryLayer:remove(a, b)
-  for n, block in pairs(self.blocks) do
+  for i = #self.blocks, 1, -1 do
+    local block = self.blocks[i]
     if math.between(block.x, a.x, b.x + 1)
       and math.between(block.y, a.y, b.y + 1) then
-      table.remove(self.blocks, n)
+      table.remove(self.blocks, i)
     end
   end
 end

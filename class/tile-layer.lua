@@ -50,10 +50,11 @@ function TileLayer:withPlacementResult(va, vb, f, min)
 end
 
 function TileLayer:remove(a, b)
-  for n, tile in pairs(self.tiles) do
+  for i = #self.tiles, 1, -1 do
+    local tile = self.tiles[i]
     if math.between(tile.posX, a.x, b.x + 1)
       and math.between(tile.posY, a.y, b.y + 1) then
-      table.remove(self.tiles, n)
+      table.remove(self.tiles, i)
     end
   end
 end
