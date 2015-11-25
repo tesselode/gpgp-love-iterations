@@ -1,3 +1,6 @@
+local Font  = require 'fonts'
+local Color = require 'colors'
+
 local lg = love.graphics
 
 local ScrollArea = require 'class.scroll-area'

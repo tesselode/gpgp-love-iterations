@@ -1,3 +1,5 @@
+local Class = require 'lib.classic'
+
 local GeometryLayer = Class:extend()
 
 function GeometryLayer:new(data)

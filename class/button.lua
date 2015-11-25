@@ -1,3 +1,7 @@
+local Color = require 'colors'
+
+local Class = require 'lib.classic'
+
 local Button = Class:extend()
 
 function Button:new(x, y, w, h)

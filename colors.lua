@@ -1,4 +1,4 @@
-Color = {
+return {
   Black                  = {0, 0, 0},
   White                  = {255, 255, 255},
   AlmostBlack            = {25, 27, 28},

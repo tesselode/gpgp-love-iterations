@@ -1,3 +1,5 @@
+local Class = require 'lib.classic'
+
 local Scrollbar = require 'class.scrollbar'
 
 local ScrollArea = Class:extend()

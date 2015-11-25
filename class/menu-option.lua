@@ -1,3 +1,6 @@
+local Font  = require 'fonts'
+local Color = require 'colors'
+
 local Button = require 'class.button'
 
 local MenuOption = Button:extend()

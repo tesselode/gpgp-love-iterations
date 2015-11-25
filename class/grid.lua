@@ -1,31 +1,36 @@
+local Color = require 'colors'
+
+local Class  = require 'lib.classic'
+local vector = require 'lib.vector'
+
 local lg = love.graphics
 local lm = love.mouse
 
 local Grid = Class:extend()
 
 function Grid:new(width, height)
-  self.mousePos     = Vector()
-  self.mousePrev    = Vector()
+  self.mousePos     = vector()
+  self.mousePrev    = vector()
 
   self.width        = width
   self.height       = height
 
-  self.pan          = Vector()
+  self.pan          = vector()
   self.scale        = 25
   self.snap         = 1
   self.displayPan   = self.pan
   self.displayScale = self.scale
-  self.cursor       = Vector()
+  self.cursor       = vector()
   self.selectionA   = false
   self.selectionB   = false
   self.selectMode   = false
 end
 
 function Grid:getRelativeMousePos()
-  local pos = Vector(lm.getX(), lm.getY())
-  pos = pos - Vector(lg.getWidth() / 2, lg.getHeight() / 2)
+  local pos = vector(lm.getX(), lm.getY())
+  pos = pos - vector(lg.getWidth() / 2, lg.getHeight() / 2)
   pos = pos / self.scale
-  pos = pos + Vector(self.width / 2, self.height / 2)
+  pos = pos + vector(self.width / 2, self.height / 2)
   pos = pos + self.displayPan
   return pos
 end
@@ -41,7 +46,7 @@ end
 function Grid:update(dt)
   --track mouse movement
   self.mousePrev = self.mousePos
-  self.mousePos  = Vector(love.mouse.getX(), love.mouse.getY())
+  self.mousePos  = vector(love.mouse.getX(), love.mouse.getY())
   local mouseDelta = self.mousePos - self.mousePrev
 
   --panning
@@ -81,7 +86,7 @@ function Grid:update(dt)
   local c1 = love.mouse.isDown('l') and self.selectMode == 1
   local c2 = love.mouse.isDown('r') and self.selectMode == 2
   if self.selectionA and (c1 or c2) then
-    self.selectionB = Vector(self.cursor.x, self.cursor.y)
+    self.selectionB = vector(self.cursor.x, self.cursor.y)
     self.selectionB.x = math.clamp(self.selectionB.x, 1, self.width)
     self.selectionB.y = math.clamp(self.selectionB.y, 1, self.height)
   end
@@ -95,7 +100,7 @@ function Grid:mousepressed(x, y, button)
     if button == 'r' then
       self.selectMode = 2
     end
-    self.selectionA = Vector(self.cursor.x, self.cursor.y)
+    self.selectionA = vector(self.cursor.x, self.cursor.y)
   end
 
   if button == 'wu' then
@@ -173,9 +178,9 @@ function Grid:drawCursor(i, w, h)
     end
     local smallerX, biggerX = math.smaller(self.selectionA.x, self.selectionB.x)
     local smallerY, biggerY = math.smaller(self.selectionA.y, self.selectionB.y)
-    local smaller, bigger = Vector(smallerX, smallerY), Vector(biggerX, biggerY)
-    local pos  = smaller - Vector(1, 1)
-    local size = bigger - smaller + Vector(1, 1)
+    local smaller, bigger = vector(smallerX, smallerY), vector(biggerX, biggerY)
+    local pos  = smaller - vector(1, 1)
+    local size = bigger - smaller + vector(1, 1)
     lg.rectangle('fill', pos.x, pos.y, size.x, size.y)
   elseif self:getCursorWithinMap() then
     lg.setColor(255, 255, 255, 100)

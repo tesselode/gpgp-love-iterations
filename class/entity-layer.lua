@@ -1,3 +1,5 @@
+local Class = require 'lib.classic'
+
 local EntityLayer = Class:extend()
 
 function EntityLayer:new(data)

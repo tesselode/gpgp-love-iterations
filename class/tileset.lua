@@ -1,3 +1,5 @@
+local Class = require 'lib.classic'
+
 local Tileset = Class:extend()
 
 function Tileset:new(data)

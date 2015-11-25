@@ -1,9 +1,7 @@
-Class        = require 'lib.classic'
-Vector       = require 'lib.vector'
-conversation = require('lib.talkback').new()
+local Color = require 'colors'
 require 'extra'
-require 'colors'
-require 'fonts'
+
+conversation = require('lib.talkback').new()
 
 function love.load()
   love.graphics.setDefaultFilter('nearest', 'nearest')

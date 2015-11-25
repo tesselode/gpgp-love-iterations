@@ -1,3 +1,6 @@
+local Font  = require 'fonts'
+local Color = require 'colors'
+
 text  = ''
 time  = 0
 alpha = 0

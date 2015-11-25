@@ -1,3 +1,5 @@
+local Class = require 'lib.classic'
+
 local Group = Class:extend()
 
 function Group:new(data)

@@ -1,9 +1,12 @@
+local Class  = require 'lib.classic'
+local vector = require 'lib.vector'
+
 local TileLayer = Class:extend()
 
 function TileLayer:new(data)
   self.tiles = {}
-  self.selectedA = Vector(1, 1)
-  self.selectedB = Vector(1, 1)
+  self.selectedA = vector(1, 1)
+  self.selectedB = vector(1, 1)
   self:load(data)
 end
 
