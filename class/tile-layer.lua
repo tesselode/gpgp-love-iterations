@@ -52,8 +52,8 @@ end
 function TileLayer:remove(a, b)
   for i = #self.tiles, 1, -1 do
     local tile = self.tiles[i]
-    if math.between(tile.posX, a.x, b.x + 1)
-      and math.between(tile.posY, a.y, b.y + 1) then
+    if tile.posX >= a.x and tile.posX < b.x + 1
+      and tile.posY >= a.y and tile.posY < b.y + 1 then
       table.remove(self.tiles, i)
     end
   end

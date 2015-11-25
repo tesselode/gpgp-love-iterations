@@ -26,8 +26,8 @@ end
 function EntityLayer:remove(a, b)
   for i = #self.entities, 1, -1 do
     local entity = self.entities[i]
-    if math.between(entity.x, a.x, b.x + 1)
-      and math.between(entity.y, a.y, b.y + 1) then
+    if entity.x >= a.x and entity.x < b.x + 1
+      and entity.y >= a.y and entity.y < b.y + 1 then
       table.remove(self.entities, i)
     end
   end

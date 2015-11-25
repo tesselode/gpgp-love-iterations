@@ -17,8 +17,8 @@ end
 function GeometryLayer:remove(a, b)
   for i = #self.blocks, 1, -1 do
     local block = self.blocks[i]
-    if math.between(block.x, a.x, b.x + 1)
-      and math.between(block.y, a.y, b.y + 1) then
+    if block.x >= a.x and block.x < b.x + 1
+      and block.y >= a.y and block.y < b.y + 1 then
       table.remove(self.blocks, i)
     end
   end
