@@ -137,12 +137,27 @@ function Grid:drawBorder()
 end
 
 function Grid:drawGrid()
-  lg.setColor(Color.AlmostWhiteTransparent)
   love.graphics.setLineWidth(1 / self.displayScale)
-  for i = 1, self.width - 1 do
+  for i = 1, self.width - 1, self.snap do
+    local a
+    if math.floor(i) == i then
+      a = 100
+    else
+      a = 50
+    end
+    local c = Color.AlmostWhite
+    lg.setColor(c[1], c[2], c[3], a)
     lg.line(i, 0, i, self.height)
   end
-  for i = 1, self.height - 1 do
+  for i = 1, self.height - 1, self.snap do
+    local a
+    if math.floor(i) == i then
+      a = 100
+    else
+      a = 50
+    end
+    local c = Color.AlmostWhite
+    lg.setColor(c[1], c[2], c[3], a)
     lg.line(0, i, self.width, i)
   end
 end
