@@ -35,3 +35,9 @@ function math.smaller(a, b)
     return b, a
   end
 end
+
+local floor = math.floor
+function math.floor(x, i)
+  i = i or 1
+  return floor(x / i) * i
+end

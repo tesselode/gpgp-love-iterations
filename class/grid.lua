@@ -12,6 +12,7 @@ function Grid:new(width, height)
 
   self.pan          = Vector(lg.getWidth() / 2, lg.getHeight() / 2)
   self.scale        = 25
+  self.snap         = 1
   self.displayPan   = self.pan
   self.displayScale = self.scale
   self.cursor       = Vector()
@@ -73,8 +74,8 @@ function Grid:update(dt)
 
   --cursor
   local relativeMousePos = self:getRelativeMousePos()
-  self.cursor.x          = math.floor(relativeMousePos.x) + 1
-  self.cursor.y          = math.floor(relativeMousePos.y) + 1
+  self.cursor.x          = math.floor(relativeMousePos.x, self.snap) + 1
+  self.cursor.y          = math.floor(relativeMousePos.y, self.snap) + 1
   local c1 = love.mouse.isDown('l') and self.selectMode == 1
   local c2 = love.mouse.isDown('r') and self.selectMode == 2
   if self.selectionA and (c1 or c2) then

@@ -70,6 +70,14 @@ function MainEditor:keypressed(key)
     end
   end
 
+  --change snap
+  if key == '[' then
+    self.grid.snap = self.grid.snap / 2
+  end
+  if key == ']' then
+    self.grid.snap = self.grid.snap * 2
+  end
+
   --toggle ghost layers
   if key == 'b' then
     self.ghostLayers = not self.ghostLayers
