@@ -28,7 +28,7 @@ function LevelPicker:generateMenu()
       local menuOption = MenuOption(0, y, w, name, function(menuOption)
         require('project-manager').load(name)
         require('lib.gamestate').switch(require('state.main-editor'))
-        conversation:say('displayMessage', 'Loaded level "'..name..'"')
+        conversation:say('loadedLevel', name)
       end)
       menuOption.group = group
       self.menu:add(menuOption)

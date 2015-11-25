@@ -62,8 +62,9 @@ function LayerPicker:generateLayerMenu(group)
       self.mainEditor.selectedGroup = self.selectedGroup
       self.mainEditor.selectedLayer = menuOption.layer
       require('lib.gamestate').pop()
-      conversation:say('displayMessage',
-        'Switched to layer "'..menuOption.layer.name..'" in group "'..self.selectedGroup.name..'"')
+      local layerName = menuOption.layer.name
+      local groupName = self.selectedGroup.name
+      conversation:say('selectedLayer', layerName, groupName)
     end)
     menuOption.layer = layer
     if menuOption.layer == self.mainEditor.selectedLayer then

@@ -55,19 +55,10 @@ function MainEditor:keypressed(key)
   --change layer visibility
   if key == 'v' then
     self.visibleMode = self.visibleMode + 1
-    if self.visibleMode == 2 then
-      conversation:say('displayMessage',
-        'Switched layer visibility: only show current group')
-    end
-    if self.visibleMode == 3 then
-      conversation:say('displayMessage',
-        'Switched layer visibility: only show current layer')
-    end
     if self.visibleMode == 4 then
       self.visibleMode = 1
-      conversation:say('displayMessage',
-        'Switched layer visibility: show all layers')
     end
+    conversation:say('setVisibleMode', self.visibleMode)
   end
 
   --change snap
@@ -81,18 +72,14 @@ function MainEditor:keypressed(key)
   --toggle ghost layers
   if key == 'b' then
     self.ghostLayers = not self.ghostLayers
-    if self.ghostLayers then
-      conversation:say('displayMessage', 'Turned on ghost layers')
-    else
-      conversation:say('displayMessage', 'Turned off ghost layers')
-    end
+    conversation:say('toggledGhostLayers', self.ghostLayers)
   end
 
   if love.keyboard.isDown('lctrl') then
     --save
     if key == 's' then
       require('project-manager').save()
-      conversation:say('displayMessage', 'Saved level "'..Project.levelName..'"')
+      conversation:say('savedGame', Project.levelName)
     end
     --open
     if key == 'o' then
