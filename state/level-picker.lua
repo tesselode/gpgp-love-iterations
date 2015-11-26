@@ -28,7 +28,7 @@ function LevelPicker:generateMenu()
   for _, file in pairs(love.filesystem.getDirectoryItems('project/levels')) do
     if file:find '.lua' then
       local y = self.menu.contentHeight
-      local w = self.menu.w
+      local w = self.menu.size.y
       local name = file:match '(.*)%.lua'
       local menuOption = MenuOption(0, y, w, name, function(menuOption)
         require('project-manager').load(name)
@@ -37,7 +37,7 @@ function LevelPicker:generateMenu()
       end)
       menuOption.group = group
       self.menu:add(menuOption)
-      self.menu:expand(menuOption.h)
+      self.menu:expand(menuOption.size.y)
     end
   end
 

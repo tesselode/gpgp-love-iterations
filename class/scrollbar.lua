@@ -11,31 +11,29 @@ function Scrollbar:new(x, w, h, top, bottom)
 end
 
 function Scrollbar:getValue()
-  return (self.y - self.top) / (self.bottom - self.h - self.top)
+  return (self.pos.y - self.top) / (self.bottom - self.size.y - self.top)
 end
 
 function Scrollbar:setValue(x)
   if x < 0 then x = 0 end
   if x > 1 then x = 1 end
-  self.y = self.top + (self.bottom - self.h - self.top) * x
+  self.pos.y = self.top + (self.bottom - self.size.y - self.top) * x
 end
 
 function Scrollbar:update(dt)
   Scrollbar.super.update(self, dt)
 
-  local _, deltaY = Mouse:getDelta()
-
   --dragging
   if self.pressed then
-    self.y = self.y + deltaY
+    self.pos.y = self.pos.y + Mouse:getDelta().y
   end
 
   --stay in bounds
-  if self.y < self.top then
-    self.y = self.top
+  if self.pos.y < self.top then
+    self.pos.y = self.top
   end
-  if self.y + self.h > self.bottom then
-    self.y = self.bottom - self.h
+  if self.pos.y + self.size.y > self.bottom then
+    self.pos.y = self.bottom - self.size.y
   end
 end
 

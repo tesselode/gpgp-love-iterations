@@ -17,7 +17,7 @@ function MenuOption:draw()
   MenuOption.super.draw(self)
   love.graphics.setColor(self.textColor)
   love.graphics.setFont(self.font)
-  love.graphics.print(self.text, self.x, self.y)
+  love.graphics.print(self.text, self.pos.x, self.pos.y)
 end
 
 return MenuOption

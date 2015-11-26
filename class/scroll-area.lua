@@ -1,18 +1,18 @@
 local Mouse = require 'mouse-manager'
 
 local Class = require 'lib.classic'
+local vector = require 'lib.vector'
 
 local Scrollbar = require 'class.scrollbar'
 
 local ScrollArea = Class:extend()
 
 function ScrollArea:new(x, y, w, h)
-  self.x, self.y, self.w, self.h = x, y, w, h
-
-  self.items         = {}
-  self.contentHeight = 0
-  self.scroll        = 0
-  self.scrollbar     = Scrollbar(x + w, 10, 100, y, y + h)
+  self.pos, self.size = vector(x, y), vector(w, h)
+  self.items          = {}
+  self.contentHeight  = 0
+  self.scroll         = 0
+  self.scrollbar      = Scrollbar(x + w, 10, 100, y, y + h)
 end
 
 function ScrollArea:add(item)
@@ -25,7 +25,7 @@ function ScrollArea:expand(amount)
 end
 
 function ScrollArea:getScrollDistance()
-  local distance = self.contentHeight - self.h
+  local distance = self.contentHeight - self.size.y
   if distance < 0 then
     return 0
   else
@@ -34,24 +34,24 @@ function ScrollArea:getScrollDistance()
 end
 
 function ScrollArea:getAreaOffset()
-  local x = self.x
-  local y = self.y - self:getScrollDistance() * self.scrollbar:getValue()
-  return math.floor(x), math.floor(y)
+  local offset = self.pos:clone()
+  offset.y = offset.y - self:getScrollDistance() * self.scrollbar:getValue()
+  offset.y = math.floor(offset.y)
+  return offset
 end
 
 function ScrollArea:update(dt)
   for _, item in pairs(self.items) do
-    local x, y = self:getAreaOffset()
-    item:update(dt, x, y)
+    item:update(dt, self:getAreaOffset())
   end
   if self:getScrollDistance() > 0 then
-    self.scrollbar.h = self.h * (self.h / self.contentHeight)
+    self.scrollbar.size.y = self.size.y * (self.size.y / self.contentHeight)
     self.scrollbar:update(dt)
   end
 end
 
 function ScrollArea:mousepressed(x, y, button)
-  if Mouse:within(self.x, self.y, self.w, self.h) then
+  if Mouse:within(self.pos, self.size) then
     if button == 'wd' then
       self.scrollbar:setValue(self.scrollbar:getValue() + .1)
     end
@@ -65,9 +65,9 @@ function ScrollArea:draw()
   local lg = love.graphics
 
   --draw contents
-  lg.setScissor(self.x, self.y, self.w, self.h)
+  lg.setScissor(self.pos.x, self.pos.y, self.size.x, self.size.y)
   lg.push()
-  lg.translate(self:getAreaOffset())
+  lg.translate(self:getAreaOffset():unpack())
   for _, item in pairs(self.items) do
     item:draw()
   end

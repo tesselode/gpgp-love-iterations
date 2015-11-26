@@ -1,12 +1,14 @@
 local Color = require 'colors'
 local Mouse = require 'mouse-manager'
 
-local Class = require 'lib.classic'
+local Class  = require 'lib.classic'
+local vector = require 'lib.vector'
 
 local Button = Class:extend()
 
 function Button:new(x, y, w, h)
-  self.x, self.y, self.w, self.h = math.floor(x), math.floor(y), w, h
+  self.pos = vector(math.floor(x), math.floor(y))
+  self.size = vector(w, h)
   self.pressed = false
   self.color = {
     normal  = Color.Dark,
@@ -16,14 +18,14 @@ function Button:new(x, y, w, h)
 end
 
 function Button:getCenter()
-  return self.x + self.w / 2, self.y + self.h / 2
+  return self.pos + self.size / 2
 end
 
-function Button:update(dt, ox, oy)
-  ox, oy = ox or 0, oy or 0
+function Button:update(dt, offset)
+  offset = offset or vector()
 
   --simple button behavior
-  self.mouseOver = Mouse:within(self.x + ox, self.y + oy, self.w, self.h)
+  self.mouseOver = Mouse:within(self.pos + offset, self.size)
   if self.mouseOver and Mouse:leftPressed() then
     self.pressed = true
   end
@@ -47,7 +49,8 @@ function Button:draw()
   else
     love.graphics.setColor(self.color.normal)
   end
-  love.graphics.rectangle('fill', self.x, self.y, self.w, self.h)
+  local x, y, w, h = self.pos.x, self.pos.y, self.size.x, self.size.y
+  love.graphics.rectangle('fill', x, y, w, h)
 end
 
 return Button

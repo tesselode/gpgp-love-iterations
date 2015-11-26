@@ -24,7 +24,7 @@ function Grid:new(width, height)
 end
 
 function Grid:getRelativeMousePos()
-  local pos = vector(Mouse:getPosition())
+  local pos = Mouse:getPosition()
   pos = pos - vector(lg.getWidth() / 2, lg.getHeight() / 2)
   pos = pos / self.scale
   pos = pos + vector(self.width / 2, self.height / 2)
