@@ -90,6 +90,11 @@ function LayerPicker:keypressed(key)
   end
 end
 
+function LayerPicker:mousepressed(x, y, button)
+  self.groupMenu:mousepressed(x, y, button)
+  self.layerMenu:mousepressed(x, y, button)
+end
+
 function LayerPicker:update(dt)
   self.tween:update(dt)
   self.groupMenu:update(dt)

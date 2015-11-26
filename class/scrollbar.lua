@@ -14,9 +14,13 @@ function Scrollbar:getValue()
   return (self.y - self.top) / (self.bottom - self.h - self.top)
 end
 
+function Scrollbar:setValue(x)
+  self.y = self.top + (self.bottom - self.h - self.top) * x
+end
+
 function Scrollbar:update(dt)
   Scrollbar.super.update(self, dt)
-  
+
   local _, deltaY = Mouse:getDelta()
 
   --dragging

@@ -1,3 +1,5 @@
+local Mouse = require 'mouse-manager'
+
 local Class = require 'lib.classic'
 
 local Scrollbar = require 'class.scrollbar'
@@ -45,6 +47,17 @@ function ScrollArea:update(dt)
   if self:getScrollDistance() > 0 then
     self.scrollbar.h = self.h * (self.h / self.contentHeight)
     self.scrollbar:update(dt)
+  end
+end
+
+function ScrollArea:mousepressed(x, y, button)
+  if Mouse:within(self.x, self.y, self.w, self.h) then
+    if button == 'wd' then
+      self.scrollbar:setValue(self.scrollbar:getValue() + .1)
+    end
+    if button == 'wu' then
+      self.scrollbar:setValue(self.scrollbar:getValue() - .1)
+    end
   end
 end
 

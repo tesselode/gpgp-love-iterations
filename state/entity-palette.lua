@@ -69,6 +69,10 @@ function EntityPalette:keypressed(key)
   end
 end
 
+function EntityPalette:mousepressed(x, y, button)
+  self.scrollArea:mousepressed(x, y, button)
+end
+
 function EntityPalette:resize()
   self:generateMenu()
 end

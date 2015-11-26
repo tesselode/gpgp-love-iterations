@@ -71,6 +71,10 @@ function LevelPicker:keypressed(key)
   end
 end
 
+function LevelPicker:mousepressed(x, y, button)
+  self.menu:mousepressed(x, y, button)
+end
+
 function LevelPicker:draw()
   if self.background then
     love.graphics.setColor(150, 150, 150)
