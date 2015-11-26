@@ -43,7 +43,7 @@ end
 function Grid:update(dt)
   --panning
   if love.mouse.isDown 'm' then
-    self.pan        = self.pan - vector(Mouse:getDelta()) / self.displayScale
+    self.pan        = self.pan - Mouse:getDelta() / self.displayScale
     self.displayPan = self.pan
   end
   if not love.keyboard.isDown('lctrl') then

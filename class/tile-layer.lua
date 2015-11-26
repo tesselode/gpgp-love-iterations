@@ -13,13 +13,8 @@ end
 
 function TileLayer:place(x1, y1, x2, y2)
   self:remove(x1, y1, x2, y2)
-  self:withPlacementResult(x1, y1, x2, y2, function(posX, posY, tileX, tileY)
-    table.insert(self.tiles, {
-      posX  = posX,
-      posY  = posY,
-      tileX = tileX,
-      tileY = tileY,
-    })
+  self:withPlacementResult(x1, y1, x2, y2, function(pos, tile)
+    table.insert(self.tiles, {pos = pos, tile = tile})
   end)
 end
 
@@ -45,7 +40,7 @@ function TileLayer:withPlacementResult(x1, y1, x2, y2, f, min)
       while tileY > self.selectedB.y do
         tileY = tileY - (self.selectedB.y - self.selectedA.y) - 1
       end
-      f(posX, posY, tileX, tileY)
+      f(vector(posX, posY), vector(tileX, tileY))
     end
   end
 end
@@ -53,8 +48,8 @@ end
 function TileLayer:remove(x1, y1, x2, y2)
   for i = #self.tiles, 1, -1 do
     local tile = self.tiles[i]
-    if tile.posX >= x1 and tile.posX < x2 + 1
-      and tile.posY >= y1 and tile.posY < y2 + 1 then
+    if tile.pos.x >= x1 and tile.pos.x < x2 + 1
+      and tile.pos.y >= y1 and tile.pos.y < y2 + 1 then
       table.remove(self.tiles, i)
     end
   end
@@ -69,16 +64,31 @@ function TileLayer:load(data)
       break
     end
   end
-  --SEE GEOMETRY-LAYER.LUA FOR A POTENTIAL PROBLEM WITH THIS
-  self.tiles = self.data.tiles or {}
+
+  for _, tile in pairs(self.data.tiles or {}) do
+    table.insert(self.tiles, {
+      pos  = vector(tile.posX, tile.posY),
+      tile = vector(tile.tileX, tile.tileY),
+    })
+  end
 end
 
 function TileLayer:save()
+  local tiles = {}
+  for _, tile in pairs(self.tiles) do
+    table.insert(tiles, {
+      posX  = tile.pos.x,
+      posY  = tile.pos.y,
+      tileX = tile.tile.x,
+      tileY = tile.tile.y,
+    })
+  end
+
   return {
     name    = self.name,
     type    = 'tile',
     tileset = self.tileset.name,
-    tiles   = self.tiles,
+    tiles   = tiles
   }
 end
 
@@ -89,15 +99,15 @@ end
 function TileLayer:drawCursorImage(a, b)
   local x1, x2 = math.smaller(a.x, b.x)
   local y1, y2 = math.smaller(a.y, b.y)
-  self:withPlacementResult(x1, y1, x2, y2, function(posX, posY, tileX, tileY)
-    self.tileset:drawTile(posX, posY, tileX, tileY)
+  self:withPlacementResult(x1, y1, x2, y2, function(pos, tile)
+    self.tileset:drawTile(pos, tile)
   end, true)
 end
 
 function TileLayer:draw(alpha)
   love.graphics.setColor(255, 255, 255, alpha)
   for _, tile in pairs(self.tiles) do
-    self.tileset:drawTile(tile.posX, tile.posY, tile.tileX, tile.tileY)
+    self.tileset:drawTile(tile.pos, tile.tile)
   end
 end
 
