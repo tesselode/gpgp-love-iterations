@@ -40,7 +40,7 @@ end
 function ScrollArea:update(dt)
   for _, item in pairs(self.items) do
     local x, y = self:getAreaOffset()
-    item:update(dt, -x, -y)
+    item:update(dt, x, y)
   end
   if self:getScrollDistance() > 0 then
     self.scrollbar.h = self.h * (self.h / self.contentHeight)

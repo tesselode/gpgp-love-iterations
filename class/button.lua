@@ -1,19 +1,13 @@
 local Color = require 'colors'
+local Mouse = require 'mouse-manager'
 
 local Class = require 'lib.classic'
 
 local Button = Class:extend()
 
 function Button:new(x, y, w, h)
-  x = math.floor(x)
-  y = math.floor(y)
-  self.x, self.y, self.w, self.h = x, y, w, h
-
-  self.mouseOver     = false
-  self.mouseDown     = false
-  self.mouseDownPrev = false
-  self.pressed       = false
-
+  self.x, self.y, self.w, self.h = math.floor(x), math.floor(y), w, h
+  self.pressed = false
   self.color = {
     normal  = Color.Dark,
     hover   = Color.Medium,
@@ -26,21 +20,15 @@ function Button:getCenter()
 end
 
 function Button:update(dt, ox, oy)
-  ox, oy           = ox or 0, oy or 0
-  local mx, my     = love.mouse.getX() + ox, love.mouse.getY() + oy
-  local x, y, w, h = self.x, self.y, self.w, self.h
-
-  --detect mouse presses/releases
-  self.mouseDownPrev = self.mouseDown
-  self.mouseDown     = love.mouse.isDown('l')
+  ox, oy = ox or 0, oy or 0
 
   --simple button behavior
-  self.mouseOver = mx > x and mx < x + w and my > y and my < y + h
-  if self.mouseOver and self.mouseDown and not self.mouseDownPrev then
+  self.mouseOver = Mouse:within(self.x + ox, self.y + oy, self.w, self.h)
+  if self.mouseOver and Mouse:leftPressed() then
     self.pressed = true
   end
   if self.pressed then
-    if self.mouseDownPrev and not self.mouseDown then
+    if Mouse:leftReleased() then
       if self.mouseOver then
         self:onPressed()
       end
