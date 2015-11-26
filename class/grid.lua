@@ -1,17 +1,14 @@
+local Mouse = require 'mouse-manager'
 local Color = require 'colors'
 
 local Class  = require 'lib.classic'
 local vector = require 'lib.vector'
 
 local lg = love.graphics
-local lm = love.mouse
 
 local Grid = Class:extend()
 
 function Grid:new(width, height)
-  self.mousePos     = vector()
-  self.mousePrev    = vector()
-
   self.width        = width
   self.height       = height
 
@@ -27,7 +24,7 @@ function Grid:new(width, height)
 end
 
 function Grid:getRelativeMousePos()
-  local pos = vector(lm.getX(), lm.getY())
+  local pos = vector(Mouse:getPosition())
   pos = pos - vector(lg.getWidth() / 2, lg.getHeight() / 2)
   pos = pos / self.scale
   pos = pos + vector(self.width / 2, self.height / 2)
@@ -44,14 +41,9 @@ function Grid:getCursorWithinMap()
 end
 
 function Grid:update(dt)
-  --track mouse movement
-  self.mousePrev = self.mousePos
-  self.mousePos  = vector(love.mouse.getX(), love.mouse.getY())
-  local mouseDelta = self.mousePos - self.mousePrev
-
   --panning
   if love.mouse.isDown 'm' then
-    self.pan        = self.pan - mouseDelta / self.displayScale
+    self.pan        = self.pan - vector(Mouse:getDelta()) / self.displayScale
     self.displayPan = self.pan
   end
   if not love.keyboard.isDown('lctrl') then

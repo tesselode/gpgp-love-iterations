@@ -1,3 +1,5 @@
+local Mouse = require 'mouse-manager'
+
 local Button = require 'class.button'
 
 local Scrollbar = Button:extend()
@@ -6,9 +8,6 @@ function Scrollbar:new(x, w, h, top, bottom)
   Scrollbar.super.new(self, x, top, w, h)
   self.top    = top
   self.bottom = bottom
-
-  self.mouseY     = 0
-  self.mouseYPrev = 0
 end
 
 function Scrollbar:getValue()
@@ -17,11 +16,8 @@ end
 
 function Scrollbar:update(dt)
   Scrollbar.super.update(self, dt)
-
-  --track mouse movement
-  self.mouseYPrev = self.mouseY
-  self.mouseY     = love.mouse.getY()
-  deltaY          = self.mouseY - self.mouseYPrev
+  
+  local _, deltaY = Mouse:getDelta()
 
   --dragging
   if self.pressed then

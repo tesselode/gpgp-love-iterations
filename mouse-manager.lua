@@ -18,6 +18,7 @@ function Mouse:leftReleased() return leftPrev and (not left) end
 function Mouse:rightPressed() return right and (not rightPrev) end
 function Mouse:rightReleased() return rightPrev and (not right) end
 
+function Mouse:getPosition() return x, y end
 function Mouse:getDelta() return x - xPrev, y - yPrev end
 
 function Mouse:within(tx, ty, tw, th)

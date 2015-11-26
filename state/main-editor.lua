@@ -4,7 +4,6 @@ local Color = require 'colors'
 local Gamestate = require 'lib.gamestate'
 
 local lg = love.graphics
-local lm = love.mouse
 
 local Grid = require 'class.grid'
 
