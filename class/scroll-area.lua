@@ -36,7 +36,7 @@ end
 function ScrollArea:getAreaOffset()
   local x = self.x
   local y = self.y - self:getScrollDistance() * self.scrollbar:getValue()
-  return x, y
+  return math.floor(x), math.floor(y)
 end
 
 function ScrollArea:update(dt)

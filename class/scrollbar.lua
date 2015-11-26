@@ -15,6 +15,8 @@ function Scrollbar:getValue()
 end
 
 function Scrollbar:setValue(x)
+  if x < 0 then x = 0 end
+  if x > 1 then x = 1 end
   self.y = self.top + (self.bottom - self.h - self.top) * x
 end
 
