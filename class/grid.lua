@@ -108,12 +108,13 @@ function Grid:mousereleased(x, y, button)
   local c2 = button == 'r' and self.selectMode == 2
   if (c1 or c2) then
     if self.selectionA and self.selectionB then
-      local smaller, bigger = math.smaller(self.selectionA, self.selectionB)
+      local x1, x2 = math.smaller(self.selectionA.x, self.selectionB.x)
+      local y1, y2 = math.smaller(self.selectionA.y, self.selectionB.y)
       if c1 then
-        self:place(smaller, bigger)
+        self:place(x1, y1, x2, y2)
       end
       if c2 then
-        self:remove(smaller, bigger)
+        self:remove(x1, y1, x2, y2)
       end
     end
     self.selectionA = false
@@ -122,9 +123,9 @@ function Grid:mousereleased(x, y, button)
   end
 end
 
-function Grid:place(a, b) end
+function Grid:place(x1, y1, x2, y2) end
 
-function Grid:remove(a, b) end
+function Grid:remove(x1, y1, x2, y2) end
 
 function Grid:drawBorder()
   love.graphics.setColor(Color.AlmostWhite)

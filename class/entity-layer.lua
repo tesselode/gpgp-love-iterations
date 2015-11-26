@@ -18,21 +18,21 @@ function EntityLayer:getAt(pos)
   end
 end
 
-function EntityLayer:place(a, b)
-  self:remove(a, b)
-  for i = a.x, b.x do
-    for j = a.y, b.y do
+function EntityLayer:place(x1, y1, x2, y2)
+  self:remove(x1, y1, x2, y2)
+  for i = x1, x2 do
+    for j = y1, y2 do
       table.insert(self.entities, {pos = vector(i, j), entity = self.selected})
     end
   end
 end
 
-function EntityLayer:remove(a, b)
+function EntityLayer:remove(x1, y1, x2, y2)
   for i = #self.entities, 1, -1 do
     local entity = self.entities[i]
     --don't use math.between for this.
-    if entity.pos.x >= a.x and entity.pos.x < b.x + 1
-      and entity.pos.y >= a.y and entity.pos.y < b.y + 1 then
+    if entity.pos.x >= x1 and entity.pos.x < x2 + 1
+      and entity.pos.y >= y1 and entity.pos.y < y2 + 1 then
       table.remove(self.entities, i)
     end
   end

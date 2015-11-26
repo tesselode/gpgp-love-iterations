@@ -11,9 +11,9 @@ function TileLayer:new(data)
   self:load(data)
 end
 
-function TileLayer:place(a, b)
-  self:remove(a, b)
-  self:withPlacementResult(a, b, function(posX, posY, tileX, tileY)
+function TileLayer:place(x1, y1, x2, y2)
+  self:remove(x1, y1, x2, y2)
+  self:withPlacementResult(x1, y1, x2, y2, function(posX, posY, tileX, tileY)
     table.insert(self.tiles, {
       posX  = posX,
       posY  = posY,
@@ -24,23 +24,20 @@ function TileLayer:place(a, b)
 end
 
 --gets each position and tile coordinate that would result from a selection
-function TileLayer:withPlacementResult(va, vb, f, min)
-  local a = va:clone()
-  local b = vb:clone()
-
+function TileLayer:withPlacementResult(x1, y1, x2, y2, f, min)
   if min then
-    if b.x < a.x + (self.selectedB.x - self.selectedA.x) then
-      b.x = a.x + self.selectedB.x - self.selectedA.x
+    if x2 < x1 + (self.selectedB.x - self.selectedA.x) then
+      x2 = x1 + self.selectedB.x - self.selectedA.x
     end
-    if b.y < a.y + (self.selectedB.y - self.selectedA.y) then
-      b.y = a.y + self.selectedB.y - self.selectedA.y
+    if y2 < y1 + (self.selectedB.y - self.selectedA.y) then
+      y2 = y1 + self.selectedB.y - self.selectedA.y
     end
   end
 
-  for posX = a.x, b.x do
-    for posY = a.y, b.y do
-      tileX = self.selectedA.x + posX - a.x
-      tileY = self.selectedA.y + posY - a.y
+  for posX = x1, x2 do
+    for posY = y1, y2 do
+      local tileX = self.selectedA.x + posX - x1
+      local tileY = self.selectedA.y + posY - y1
       --wrap tiles
       while tileX > self.selectedB.x do
         tileX = tileX - (self.selectedB.x - self.selectedA.x) - 1
@@ -53,11 +50,11 @@ function TileLayer:withPlacementResult(va, vb, f, min)
   end
 end
 
-function TileLayer:remove(a, b)
+function TileLayer:remove(x1, y1, x2, y2)
   for i = #self.tiles, 1, -1 do
     local tile = self.tiles[i]
-    if tile.posX >= a.x and tile.posX < b.x + 1
-      and tile.posY >= a.y and tile.posY < b.y + 1 then
+    if tile.posX >= x1 and tile.posX < x2 + 1
+      and tile.posY >= y1 and tile.posY < y2 + 1 then
       table.remove(self.tiles, i)
     end
   end
@@ -90,7 +87,9 @@ function TileLayer:openPalette()
 end
 
 function TileLayer:drawCursorImage(a, b)
-  self:withPlacementResult(a, b, function(posX, posY, tileX, tileY)
+  local x1, x2 = math.smaller(a.x, b.x)
+  local y1, y2 = math.smaller(a.y, b.y)
+  self:withPlacementResult(x1, y1, x2, y2, function(posX, posY, tileX, tileY)
     self.tileset:drawTile(posX, posY, tileX, tileY)
   end, true)
 end
