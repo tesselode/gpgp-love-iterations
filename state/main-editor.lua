@@ -135,14 +135,15 @@ function MainEditor:draw()
 
   --draw entity tooltips
   if self.selectedLayer.data.type == 'entity' then
-    local x, y = self.grid.cursor.x, self.grid.cursor.y
-    local entity = self.selectedLayer:getAt(x, y)
+    local entity = self.selectedLayer:getAt(self.grid.cursor)
     if entity then
-      local mx, my = lm.getX(), lm.getY()
+      local mx, my = love.mouse.getX(), love.mouse.getY()
       lg.setColor(Color.Dark)
       local h = Font.Small:getHeight('test') * 3 + 10
       lg.rectangle('fill', mx + 10, my + 10, 100, h)
-      local string = entity.entity.name..'\nx: '..entity.x..'\ny: '..entity.y
+      local string = entity.entity.name ..
+        '\nx: '..entity.pos.x..
+        '\ny: '..entity.pos.y
       lg.setColor(Color.AlmostWhite)
       lg.setFont(Font.Small)
       lg.printf(string, mx + 15, my + 15, 100)
