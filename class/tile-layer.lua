@@ -11,28 +11,31 @@ function TileLayer:new(data)
   self:load(data)
 end
 
-function TileLayer:place(x1, y1, x2, y2)
-  self:remove(x1, y1, x2, y2)
-  self:withPlacementResult(x1, y1, x2, y2, function(pos, tile)
+function TileLayer:place(a, b)
+  self:remove(a, b)
+  self:withPlacementResult(a, b, function(pos, tile)
     table.insert(self.tiles, {pos = pos, tile = tile})
   end)
 end
 
 --gets each position and tile coordinate that would result from a selection
-function TileLayer:withPlacementResult(x1, y1, x2, y2, f, min)
+function TileLayer:withPlacementResult(va, vb, f, min)
+  local a = va:clone()
+  local b = vb:clone()
+
   if min then
-    if x2 < x1 + (self.selectedB.x - self.selectedA.x) then
-      x2 = x1 + self.selectedB.x - self.selectedA.x
+    if b.x < a.x + (self.selectedB.x - self.selectedA.x) then
+      b.x = a.x + self.selectedB.x - self.selectedA.x
     end
-    if y2 < y1 + (self.selectedB.y - self.selectedA.y) then
-      y2 = y1 + self.selectedB.y - self.selectedA.y
+    if b.y < a.y + (self.selectedB.y - self.selectedA.y) then
+      b.y = a.y + self.selectedB.y - self.selectedA.y
     end
   end
 
-  for posX = x1, x2 do
-    for posY = y1, y2 do
-      local tileX = self.selectedA.x + posX - x1
-      local tileY = self.selectedA.y + posY - y1
+  for posX = a.x, b.x do
+    for posY = a.y, b.y do
+      local tileX = self.selectedA.x + posX - a.x
+      local tileY = self.selectedA.y + posY - a.y
       --wrap tiles
       while tileX > self.selectedB.x do
         tileX = tileX - (self.selectedB.x - self.selectedA.x) - 1
@@ -45,11 +48,11 @@ function TileLayer:withPlacementResult(x1, y1, x2, y2, f, min)
   end
 end
 
-function TileLayer:remove(x1, y1, x2, y2)
+function TileLayer:remove(a, b)
   for i = #self.tiles, 1, -1 do
     local tile = self.tiles[i]
-    if tile.pos.x >= x1 and tile.pos.x < x2 + 1
-      and tile.pos.y >= y1 and tile.pos.y < y2 + 1 then
+    if tile.pos.x >= a.x and tile.pos.x < b.x + 1
+      and tile.pos.y >= a.y and tile.pos.y < b.y + 1 then
       table.remove(self.tiles, i)
     end
   end
@@ -99,7 +102,7 @@ end
 function TileLayer:drawCursorImage(a, b)
   local x1, x2 = math.smaller(a.x, b.x)
   local y1, y2 = math.smaller(a.y, b.y)
-  self:withPlacementResult(x1, y1, x2, y2, function(pos, tile)
+  self:withPlacementResult(a, b, function(pos, tile)
     self.tileset:drawTile(pos, tile)
   end, true)
 end

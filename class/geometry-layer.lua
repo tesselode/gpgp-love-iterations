@@ -8,20 +8,20 @@ function GeometryLayer:new(data)
   self:load(data)
 end
 
-function GeometryLayer:place(x1, y1, x2, y2)
-  self:remove(x1, y1, x2, y2)
-  for i = x1, x2 do
-    for j = y1, y2 do
+function GeometryLayer:place(a, b)
+  self:remove(a, b)
+  for i = a.x, b.x do
+    for j = a.y, b.y do
       table.insert(self.blocks, {pos = vector(i, j)})
     end
   end
 end
 
-function GeometryLayer:remove(x1, y1, x2, y2)
+function GeometryLayer:remove(a, b)
   for i = #self.blocks, 1, -1 do
     local block = self.blocks[i]
-    if block.pos.x >= x1 and block.pos.x < x2 + 1
-      and block.pos.y >= y1 and block.pos.y < y2 + 1 then
+    if block.pos.x >= a.x and block.pos.x < b.x + 1
+      and block.pos.y >= a.y and block.pos.y < b.y + 1 then
       table.remove(self.blocks, i)
     end
   end

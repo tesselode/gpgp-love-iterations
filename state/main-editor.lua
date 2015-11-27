@@ -11,11 +11,11 @@ local MainEditor = {}
 
 function MainEditor:enter()
   self.grid = Grid(Project.width, Project.height)
-  function self.grid.place(grid, x1, y1, x2, y2)
-    self.selectedLayer:place(x1, y1, x2, y2)
+  function self.grid.place(grid, a, b)
+    self.selectedLayer:place(a, b)
   end
-  function self.grid.remove(grid, x1, y1, x2, y2)
-    self.selectedLayer:remove(x1, y1, x2, y2)
+  function self.grid.remove(grid, a, b)
+    self.selectedLayer:remove(a, b)
   end
 
 
