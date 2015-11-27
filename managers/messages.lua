@@ -1,9 +1,9 @@
 local Font  = require 'resources.fonts'
 local Color = require 'resources.colors'
 
-text  = ''
-time  = 0
-alpha = 0
+local text  = ''
+local time  = 0
+local alpha = 0
 
 local function say(toDisplay)
   text  = toDisplay
@@ -35,6 +35,9 @@ conversation:listen('toggledGhostLayers', function(ghost)
   else
     say('Turned off ghost layers')
   end
+end)
+conversation:listen('changedSnap', function(snap)
+  say('Set snap to '..snap..'x')
 end)
 conversation:listen('savedGame', function(name)
   say('Saved level "'..name..'"')

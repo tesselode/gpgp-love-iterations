@@ -70,9 +70,11 @@ function MainEditor:keypressed(key)
   --change snap
   if key == '[' then
     self.grid.snap = self.grid.snap / 2
+    conversation:say('changedSnap', self.grid.snap)
   end
   if key == ']' then
     self.grid.snap = self.grid.snap * 2
+    conversation:say('changedSnap', self.grid.snap)
   end
 
   --toggle ghost layers
