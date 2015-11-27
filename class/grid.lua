@@ -8,9 +8,8 @@ local lg = love.graphics
 
 local Grid = Class:extend()
 
-function Grid:new(width, height)
-  self.size = vector(width, height)
-
+function Grid:new(width, height, sx, sy, sw, sh)
+  self.size         = vector(width, height)
   self.pan          = vector()
   self.scale        = 25
   self.snap         = 1
@@ -19,6 +18,14 @@ function Grid:new(width, height)
   self.selectionA   = false
   self.selectionB   = false
   self.selectMode   = false
+  self:setScissor(sx, sy, sw, sh)
+end
+
+function Grid:setScissor(x, y, w, h)
+  x, y = x or 0, y or 0
+  w = w or (lg.getWidth() - x)
+  h = h or (lg.getHeight() - y)
+  self.scissor = {pos = vector(x, y), size = vector(w, h)}
 end
 
 function Grid:getRelativeMousePos()
@@ -39,8 +46,10 @@ function Grid:getCursorWithinMap()
 end
 
 function Grid:update(dt)
+  local hasMouseFocus = Mouse:within(self.scissor.pos, self.scissor.size)
+
   --panning with mouse
-  if love.mouse.isDown 'm' then
+  if hasMouseFocus and love.mouse.isDown 'm' then
     self.pan = self.pan - Mouse:getDelta() / self.displayScale
   end
 
@@ -69,34 +78,38 @@ function Grid:update(dt)
   self.displayScale = math.lerp(self.displayScale, self.scale, 1 - (10^-5) ^ dt)
 
   --cursor
-  local relativeMousePos = self:getRelativeMousePos()
-  self.cursor.x          = math.floor(relativeMousePos.x, self.snap) + 1
-  self.cursor.y          = math.floor(relativeMousePos.y, self.snap) + 1
-  local c1 = love.mouse.isDown('l') and self.selectMode == 1
-  local c2 = love.mouse.isDown('r') and self.selectMode == 2
-  if self.selectionA and (c1 or c2) then
-    self.selectionB   = self.cursor:clone()
-    self.selectionB.x = math.clamp(self.selectionB.x, 1, self.size.x)
-    self.selectionB.y = math.clamp(self.selectionB.y, 1, self.size.y)
+  if hasMouseFocus then
+    local relativeMousePos = self:getRelativeMousePos()
+    self.cursor.x          = math.floor(relativeMousePos.x, self.snap) + 1
+    self.cursor.y          = math.floor(relativeMousePos.y, self.snap) + 1
+    local c1 = love.mouse.isDown('l') and self.selectMode == 1
+    local c2 = love.mouse.isDown('r') and self.selectMode == 2
+    if self.selectionA and (c1 or c2) then
+      self.selectionB   = self.cursor:clone()
+      self.selectionB.x = math.clamp(self.selectionB.x, 1, self.size.x)
+      self.selectionB.y = math.clamp(self.selectionB.y, 1, self.size.y)
+    end
   end
 end
 
 function Grid:mousepressed(x, y, button)
-  if (button == 'l' or button == 'r') and self:getCursorWithinMap() then
-    if button == 'l' then
-      self.selectMode = 1
+  if Mouse:within(self.scissor.pos, self.scissor.size) then
+    if (button == 'l' or button == 'r') and self:getCursorWithinMap() then
+      if button == 'l' then
+        self.selectMode = 1
+      end
+      if button == 'r' then
+        self.selectMode = 2
+      end
+      self.selectionA = self.cursor:clone()
     end
-    if button == 'r' then
-      self.selectMode = 2
-    end
-    self.selectionA = self.cursor:clone()
-  end
 
-  if button == 'wu' then
-    self.scale = self.scale * 1.1
-  end
-  if button == 'wd' then
-    self.scale = self.scale / 1.1
+    if button == 'wu' then
+      self.scale = self.scale * 1.1
+    end
+    if button == 'wd' then
+      self.scale = self.scale / 1.1
+    end
   end
 end
 
@@ -176,6 +189,9 @@ function Grid:drawCursor(i, w, h)
 end
 
 function Grid:drawTransformed(f)
+  local x, y = self.scissor.pos:unpack()
+  local w, h = self.scissor.size:unpack()
+  lg.setScissor(x, y, w, h)
   lg.push()
   lg.translate(lg.getWidth() / 2, lg.getHeight() / 2)
   lg.scale(self.displayScale)
@@ -183,6 +199,7 @@ function Grid:drawTransformed(f)
   lg.translate(-self.pan.x, -self.pan.y)
   f()
   lg.pop()
+  lg.setScissor()
 end
 
 return Grid

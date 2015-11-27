@@ -1,16 +1,16 @@
-local Font  = require 'resources.fonts'
-local Color = require 'resources.colors'
-
+local Font      = require 'resources.fonts'
+local Color     = require 'resources.colors'
+local Grid      = require 'class.grid'
 local Gamestate = require 'lib.gamestate'
 
 local lg = love.graphics
 
-local Grid = require 'class.grid'
+local menuHeight = 50
 
 local MainEditor = {}
 
 function MainEditor:enter()
-  self.grid = Grid(Project.width, Project.height)
+  self.grid = Grid(Project.width, Project.height, 0, menuHeight)
   function self.grid.place(grid, a, b)
     self.selectedLayer:place(a, b)
   end
@@ -19,7 +19,6 @@ function MainEditor:enter()
   end
 
   self.selectedLayer = Project.groups[1].layers[1]
-
   self.visibleMode   = 1
   self.ghostLayers   = false
 
@@ -103,6 +102,10 @@ function MainEditor:mousereleased(x, y, button)
   self.grid:mousereleased(x, y, button)
 end
 
+function MainEditor:resize()
+  self.grid:setScissor(0, menuHeight)
+end
+
 function MainEditor:draw()
   self.grid:drawTransformed(function()
     self.grid:drawBorder()
@@ -156,10 +159,10 @@ function MainEditor:draw()
   --draw help
   local c = Color.Dark
   lg.setColor(c[1], c[2], c[3], 100)
-  lg.rectangle('fill', self.help.x, 0, 500, 340)
+  lg.rectangle('fill', self.help.x, menuHeight, 500, 340)
   lg.setColor(Color.AlmostWhite)
   lg.setFont(Font.Medium)
-  lg.print(self.help.text, self.help.x, 0)
+  lg.print(self.help.text, self.help.x, menuHeight)
 end
 
 return MainEditor
