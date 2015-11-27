@@ -5,7 +5,7 @@ local Gamestate = require 'lib.gamestate'
 
 local lg = love.graphics
 
-local menuHeight = 50
+local menuHeight = 0
 
 local MainEditor = {}
 
