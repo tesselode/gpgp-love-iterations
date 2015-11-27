@@ -18,7 +18,6 @@ function MainEditor:enter()
     self.selectedLayer:remove(a, b)
   end
 
-
   self.selectedLayer = Project.groups[1].layers[1]
 
   self.visibleMode   = 1

@@ -1,12 +1,14 @@
-local Font  = require 'resources.fonts'
-local Color = require 'resources.colors'
+local Font           = require 'resources.fonts'
+local Color          = require 'resources.colors'
+local ProjectManager = require 'managers.project-manager'
+local MainEditor     = require 'state.main-editor'
 
 local Gamestate = require 'lib.gamestate'
 
 local lg = love.graphics
 
 local ScrollArea = require 'class.scroll-area'
-local MenuOption = require 'class.menu-option'
+local Menu       = require 'class.menu'
 
 local LevelPicker = {}
 
@@ -24,19 +26,15 @@ end
 function LevelPicker:generateMenu()
   local center = lg.getWidth() / 2
 
-  self.menu = ScrollArea(10, 80, center - 40, lg.getHeight() - 80)
+  self.menu = Menu(10, 80, center - 40, lg.getHeight() - 80)
   for _, file in pairs(love.filesystem.getDirectoryItems('project/levels')) do
     if file:find '.lua' then
-      local y = self.menu.contentHeight
-      local w = self.menu.size.x
       local name = file:match '(.*)%.lua'
-      local menuOption = MenuOption(0, y, w, name, function(menuOption)
-        require('managers.project-manager').load(name)
-        Gamestate.switch(require('state.main-editor'))
+      self.menu:add(name, function(menuOption)
+        ProjectManager.load(name)
+        Gamestate.switch(MainEditor)
         conversation:say('loadedLevel', name)
       end)
-      self.menu:add(menuOption)
-      self.menu:expand(menuOption.size.y)
     end
   end
 

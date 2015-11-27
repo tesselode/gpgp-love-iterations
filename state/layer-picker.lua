@@ -5,8 +5,7 @@ local Gamestate = require 'lib.gamestate'
 
 local lg = love.graphics
 
-local ScrollArea = require 'class.scroll-area'
-local MenuOption = require 'class.menu-option'
+local Menu = require 'class.menu'
 
 local LayerPicker = {}
 
@@ -25,20 +24,16 @@ end
 function LayerPicker:generateMenu()
   local center = lg.getWidth() / 2
 
-  self.groupMenu = ScrollArea(10, 80, center - 40, lg.getHeight() - 80)
+  self.groupMenu = Menu(10, 80, center - 40, lg.getHeight() - 80)
   for n, group in pairs(Project.groups) do
-    local y = self.groupMenu.contentHeight
-    local w = self.groupMenu.size.x
-    local menuOption = MenuOption(0, y, w, group.name, function(menuOption)
+    local menuOption = self.groupMenu:add(group.name, function(menuOption)
       self.selectedGroup = menuOption.group
       self:generateMenu()
     end)
     menuOption.group = group
     if menuOption.group == self.selectedGroup then
-      menuOption.textColor = Color.Accent
+      menuOption.text.color = Color.Accent
     end
-    self.groupMenu:add(menuOption)
-    self.groupMenu:expand(menuOption.size.y)
   end
 
   self:generateLayerMenu()
@@ -59,12 +54,9 @@ end
 function LayerPicker:generateLayerMenu(group)
   local center = lg.getWidth() / 2
 
-  self.layerMenu = ScrollArea(center + 10, 80, center - 40, lg.getHeight() - 80)
+  self.layerMenu = Menu(center + 10, 80, center - 40, lg.getHeight() - 80)
   for n, layer in pairs(self.selectedGroup.layers) do
-    local y = self.layerMenu.contentHeight
-    local w = self.layerMenu.size.x
-    local menuOption = MenuOption(0, y, w, layer.name, function(menuOption)
-      self.mainEditor.selectedGroup = self.selectedGroup
+    local menuOption = self.layerMenu:add(layer.name, function(menuOption)
       self.mainEditor.selectedLayer = menuOption.layer
       Gamestate.pop()
       local layerName = menuOption.layer.name
@@ -73,10 +65,8 @@ function LayerPicker:generateLayerMenu(group)
     end)
     menuOption.layer = layer
     if menuOption.layer == self.mainEditor.selectedLayer then
-      menuOption.textColor = Color.Accent
+      menuOption.text.color = Color.Accent
     end
-    self.layerMenu:add(menuOption)
-    self.layerMenu:expand(menuOption.size.y)
   end
 end
 

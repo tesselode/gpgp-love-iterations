@@ -7,7 +7,7 @@ local vector = require 'lib.vector'
 
 local Button = Class:extend()
 
-function Button:new(x, y, w, h, text, align, offset, font)
+function Button:new(x, y, w, h, text, align, offset, font, color)
   self.pos     = vector(math.floor(x), math.floor(y))
   self.size    = vector(w, h)
   self.pressed = false
@@ -20,7 +20,8 @@ function Button:new(x, y, w, h, text, align, offset, font)
     text       = text or '',
     align      = align or 'left',
     offset     = offset or vector(),
-    font       = font or Font.Small
+    font       = font or Font.Small,
+    color      = color or Color.AlmostWhite,
   }
 end
 
@@ -52,7 +53,7 @@ function Button:drawText()
   local x, y = (self.pos + self.text.offset):unpack()
   local w, h = self.size:unpack()
   love.graphics.setFont(self.text.font)
-  love.graphics.setColor(Color.AlmostWhite)
+  love.graphics.setColor(self.text.color)
   love.graphics.printf(self.text.text, x, y, self.size.x, self.text.align)
 end
 
