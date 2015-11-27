@@ -9,13 +9,11 @@ local lg = love.graphics
 local Grid = Class:extend()
 
 function Grid:new(width, height)
-  self.width        = width
-  self.height       = height
+  self.size = vector(width, height)
 
   self.pan          = vector()
   self.scale        = 25
   self.snap         = 1
-  self.displayPan   = self.pan
   self.displayScale = self.scale
   self.cursor       = vector()
   self.selectionA   = false
@@ -24,28 +22,29 @@ function Grid:new(width, height)
 end
 
 function Grid:getRelativeMousePos()
-  local pos = vector(Mouse:getPosition())
+  local pos = Mouse:getPosition()
   pos = pos - vector(lg.getWidth() / 2, lg.getHeight() / 2)
   pos = pos / self.scale
-  pos = pos + vector(self.width / 2, self.height / 2)
-  pos = pos + self.displayPan
+  pos = pos + self.size / 2
+  pos = pos + self.pan
   return pos
 end
 
 function Grid:getCursorWithinMap()
   local c = self.cursor
   return c.x > 0
-     and c.x <= self.width
+     and c.x <= self.size.x
      and c.y > 0
-     and c.y <= self.height
+     and c.y <= self.size.y
 end
 
 function Grid:update(dt)
-  --panning
+  --panning with mouse
   if love.mouse.isDown 'm' then
-    self.pan        = self.pan - vector(Mouse:getDelta()) / self.displayScale
-    self.displayPan = self.pan
+    self.pan = self.pan - Mouse:getDelta() / self.displayScale
   end
+
+  --keyboard controls
   if not love.keyboard.isDown('lctrl') then
     if love.keyboard.isDown('a') or love.keyboard.isDown('left') then
       self.pan.x = self.pan.x - 20 * dt
@@ -67,8 +66,6 @@ function Grid:update(dt)
     end
   end
 
-  self.displayPan.x = math.lerp(self.displayPan.x, self.pan.x, 1 - (10^-5) ^ dt)
-  self.displayPan.y = math.lerp(self.displayPan.y, self.pan.y, 1 - (10^-5) ^ dt)
   self.displayScale = math.lerp(self.displayScale, self.scale, 1 - (10^-5) ^ dt)
 
   --cursor
@@ -78,9 +75,9 @@ function Grid:update(dt)
   local c1 = love.mouse.isDown('l') and self.selectMode == 1
   local c2 = love.mouse.isDown('r') and self.selectMode == 2
   if self.selectionA and (c1 or c2) then
-    self.selectionB = vector(self.cursor.x, self.cursor.y)
-    self.selectionB.x = math.clamp(self.selectionB.x, 1, self.width)
-    self.selectionB.y = math.clamp(self.selectionB.y, 1, self.height)
+    self.selectionB   = self.cursor:clone()
+    self.selectionB.x = math.clamp(self.selectionB.x, 1, self.size.x)
+    self.selectionB.y = math.clamp(self.selectionB.y, 1, self.size.y)
   end
 end
 
@@ -92,7 +89,7 @@ function Grid:mousepressed(x, y, button)
     if button == 'r' then
       self.selectMode = 2
     end
-    self.selectionA = vector(self.cursor.x, self.cursor.y)
+    self.selectionA = self.cursor:clone()
   end
 
   if button == 'wu' then
@@ -108,13 +105,11 @@ function Grid:mousereleased(x, y, button)
   local c2 = button == 'r' and self.selectMode == 2
   if (c1 or c2) then
     if self.selectionA and self.selectionB then
-      local smaller, bigger = math.smaller(self.selectionA, self.selectionB)
-      if c1 then
-        self:place(smaller, bigger)
-      end
-      if c2 then
-        self:remove(smaller, bigger)
-      end
+      local x1, x2 = math.smaller(self.selectionA.x, self.selectionB.x)
+      local y1, y2 = math.smaller(self.selectionA.y, self.selectionB.y)
+      local a, b   = vector(x1, y1), vector(x2, y2)
+      if c1 then self:place(a, b) end
+      if c2 then self:remove(a, b) end
     end
     self.selectionA = false
     self.selectionB = false
@@ -129,15 +124,15 @@ function Grid:remove(a, b) end
 function Grid:drawBorder()
   love.graphics.setColor(Color.AlmostWhite)
   love.graphics.setLineWidth(1 / self.displayScale)
-  lg.line(0, 0, self.width, 0)
-  lg.line(0, self.height, self.width, self.height)
-  lg.line(0, 0, 0, self.height)
-  lg.line(self.width, 0, self.width, self.height)
+  lg.line(0, 0, self.size.x, 0)
+  lg.line(0, self.size.y, self.size.x, self.size.y)
+  lg.line(0, 0, 0, self.size.y)
+  lg.line(self.size.x, 0, self.size.x, self.size.y)
 end
 
 function Grid:drawGrid()
   love.graphics.setLineWidth(1 / self.displayScale)
-  for i = 1, self.width - 1, self.snap do
+  for i = 1, self.size.x - 1, self.snap do
     local a
     if math.floor(i) == i then
       a = 100
@@ -146,9 +141,9 @@ function Grid:drawGrid()
     end
     local c = Color.AlmostWhite
     lg.setColor(c[1], c[2], c[3], a)
-    lg.line(i, 0, i, self.height)
+    lg.line(i, 0, i, self.size.y)
   end
-  for i = 1, self.height - 1, self.snap do
+  for i = 1, self.size.y - 1, self.snap do
     local a
     if math.floor(i) == i then
       a = 100
@@ -157,7 +152,7 @@ function Grid:drawGrid()
     end
     local c = Color.AlmostWhite
     lg.setColor(c[1], c[2], c[3], a)
-    lg.line(0, i, self.width, i)
+    lg.line(0, i, self.size.x, i)
   end
 end
 
@@ -184,8 +179,8 @@ function Grid:drawTransformed(f)
   lg.push()
   lg.translate(lg.getWidth() / 2, lg.getHeight() / 2)
   lg.scale(self.displayScale)
-  lg.translate(-self.width / 2, -self.height / 2)
-  lg.translate(-self.displayPan.x, -self.displayPan.y)
+  lg.translate(-self.size.x / 2, -self.size.y / 2)
+  lg.translate(-self.pan.x, -self.pan.y)
   f()
   lg.pop()
 end

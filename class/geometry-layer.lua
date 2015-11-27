@@ -1,4 +1,5 @@
-local Class = require 'lib.classic'
+local Class  = require 'lib.classic'
+local vector = require 'lib.vector'
 
 local GeometryLayer = Class:extend()
 
@@ -11,7 +12,7 @@ function GeometryLayer:place(a, b)
   self:remove(a, b)
   for i = a.x, b.x do
     for j = a.y, b.y do
-      table.insert(self.blocks, {x = i, y = j})
+      table.insert(self.blocks, {pos = vector(i, j)})
     end
   end
 end
@@ -19,27 +20,33 @@ end
 function GeometryLayer:remove(a, b)
   for i = #self.blocks, 1, -1 do
     local block = self.blocks[i]
-    if block.x >= a.x and block.x < b.x + 1
-      and block.y >= a.y and block.y < b.y + 1 then
+    if block.pos.x >= a.x and block.pos.x < b.x + 1
+      and block.pos.y >= a.y and block.pos.y < b.y + 1 then
       table.remove(self.blocks, i)
     end
   end
 end
 
 function GeometryLayer:load(data)
-  self.data   = data
-  self.name   = data.name
-  --[[NOTE TO SELF: IS THIS WRONG? SINCE SELF.BLOCKS IS A REFERENCE TO
-  SELF.DATA.BLOCKS, CHANGING SELF.BLOCKS MIGHT CHANGE SELF.DATA.BLOCKS,
-  WHICH MIGHT BE UNWANTED BEHAVIOR]]
-  self.blocks = self.data.blocks or {}
+  self.data = data
+  self.name = data.name
+  for _, block in pairs(self.data.blocks or {}) do
+    table.insert(self.blocks, {
+      pos = vector(block.x, block.y)
+    })
+  end
 end
 
 function GeometryLayer:save()
+  local blocks = {}
+  for _, block in pairs(self.blocks) do
+    table.insert(blocks, {x = block.pos.x, y = block.pos.y})
+  end
+
   return {
     name   = self.name,
     type   = 'geometry',
-    blocks = self.blocks,
+    blocks = blocks,
   }
 end
 
@@ -50,7 +57,7 @@ function GeometryLayer:drawCursorImage(a, b) end
 function GeometryLayer:draw(alpha)
   for _, block in pairs(self.blocks) do
     love.graphics.setColor(129, 187, 209, (alpha or 255) * .5)
-    love.graphics.rectangle('fill', block.x - 1, block.y - 1, 1, 1)
+    love.graphics.rectangle('fill', block.pos.x - 1, block.pos.y - 1, 1, 1)
   end
 end
 

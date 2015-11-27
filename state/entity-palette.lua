@@ -28,11 +28,11 @@ function EntityPalette:generateMenu()
 
   self.scrollArea = ScrollArea(0, 130, lg.getWidth() - 10, lg.getHeight() - 130)
 
-  local gridWidth          = math.floor(self.scrollArea.w / (bSize * bSpace))
+  local gridWidth          = math.floor(self.scrollArea.size.x / (bSize * bSpace))
   local buttonTotalWidth   = gridWidth * bSize
   local buttonSpacingWidth = (gridWidth - 1) * bSize * (bSpace - 1)
   local totalWidth         = buttonTotalWidth + buttonSpacingWidth
-  local offsetX            = (self.scrollArea.w - totalWidth) / 2
+  local offsetX            = (self.scrollArea.size.x - totalWidth) / 2
   local offsetY            = 0
 
   self.scrollArea:expand(offsetY + bSize * bSpace)
