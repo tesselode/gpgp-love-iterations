@@ -28,7 +28,7 @@ function LayerPicker:generateMenu()
   self.groupMenu = ScrollArea(10, 80, center - 40, lg.getHeight() - 80)
   for n, group in pairs(Project.groups) do
     local y = self.groupMenu.contentHeight
-    local w = self.groupMenu.size.y
+    local w = self.groupMenu.size.x
     local menuOption = MenuOption(0, y, w, group.name, function(menuOption)
       self.selectedGroup = menuOption.group
       self:generateMenu()
@@ -62,7 +62,7 @@ function LayerPicker:generateLayerMenu(group)
   self.layerMenu = ScrollArea(center + 10, 80, center - 40, lg.getHeight() - 80)
   for n, layer in pairs(self.selectedGroup.layers) do
     local y = self.layerMenu.contentHeight
-    local w = self.layerMenu.size.y
+    local w = self.layerMenu.size.x
     local menuOption = MenuOption(0, y, w, layer.name, function(menuOption)
       self.mainEditor.selectedGroup = self.selectedGroup
       self.mainEditor.selectedLayer = menuOption.layer
