@@ -1,19 +1,26 @@
 local Color = require 'resources.colors'
 local Mouse = require 'managers.mouse-manager'
+local Font  = require 'resources.fonts'
 
 local Class  = require 'lib.classic'
 local vector = require 'lib.vector'
 
 local Button = Class:extend()
 
-function Button:new(x, y, w, h)
-  self.pos = vector(math.floor(x), math.floor(y))
-  self.size = vector(w, h)
+function Button:new(x, y, w, h, text, align, offset, font)
+  self.pos     = vector(math.floor(x), math.floor(y))
+  self.size    = vector(w, h)
   self.pressed = false
-  self.color = {
-    normal  = Color.Dark,
-    hover   = Color.Medium,
-    pressed = Color.Darkish,
+  self.color   = {
+    normal     = Color.Dark,
+    hover      = Color.Medium,
+    pressed    = Color.Darkish,
+  }
+  self.text    = {
+    text       = text or '',
+    align      = align or 'left',
+    offset     = offset or vector(),
+    font       = font or Font.Small
   }
 end
 
@@ -41,6 +48,14 @@ end
 
 function Button:onPressed() end
 
+function Button:drawText()
+  local x, y = (self.pos + self.text.offset):unpack()
+  local w, h = self.size:unpack()
+  love.graphics.setFont(self.text.font)
+  love.graphics.setColor(Color.AlmostWhite)
+  love.graphics.printf(self.text.text, x, y, self.size.x, self.text.align)
+end
+
 function Button:draw()
   if self.pressed then
     love.graphics.setColor(self.color.pressed)
@@ -51,6 +66,7 @@ function Button:draw()
   end
   local x, y, w, h = self.pos.x, self.pos.y, self.size.x, self.size.y
   love.graphics.rectangle('fill', x, y, w, h)
+  self:drawText()
 end
 
 return Button
