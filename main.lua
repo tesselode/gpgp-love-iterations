@@ -1,9 +1,9 @@
 conversation = require('lib.talkback').new()
 require 'extra'
 
-local Color   = require 'colors'
-local message = require 'messages'
-local Mouse   = require 'mouse-manager'
+local Color   = require 'resources.colors'
+local message = require 'managers.messages'
+local Mouse   = require 'managers.mouse-manager'
 
 function love.load()
   love.graphics.setDefaultFilter('nearest', 'nearest')

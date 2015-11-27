@@ -1,5 +1,5 @@
-local Color = require 'colors'
-local Mouse = require 'mouse-manager'
+local Color = require 'resources.colors'
+local Mouse = require 'managers.mouse-manager'
 
 local Class  = require 'lib.classic'
 local vector = require 'lib.vector'

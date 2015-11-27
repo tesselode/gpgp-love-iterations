@@ -1,5 +1,5 @@
-local Font  = require 'fonts'
-local Color = require 'colors'
+local Font  = require 'resources.fonts'
+local Color = require 'resources.colors'
 
 local Gamestate = require 'lib.gamestate'
 
@@ -82,7 +82,7 @@ function MainEditor:keypressed(key)
   if love.keyboard.isDown('lctrl') then
     --save
     if key == 's' then
-      require('project-manager').save()
+      require('managers.project-manager').save()
       conversation:say('savedGame', Project.levelName)
     end
     --open

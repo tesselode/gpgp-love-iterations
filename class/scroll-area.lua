@@ -1,4 +1,4 @@
-local Mouse = require 'mouse-manager'
+local Mouse = require 'managers.mouse-manager'
 
 local Class = require 'lib.classic'
 local vector = require 'lib.vector'

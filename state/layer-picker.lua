@@ -1,5 +1,5 @@
-local Font  = require 'fonts'
-local Color = require 'colors'
+local Font  = require 'resources.fonts'
+local Color = require 'resources.colors'
 
 local Gamestate = require 'lib.gamestate'
 

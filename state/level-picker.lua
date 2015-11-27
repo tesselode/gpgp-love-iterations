@@ -1,5 +1,5 @@
-local Font  = require 'fonts'
-local Color = require 'colors'
+local Font  = require 'resources.fonts'
+local Color = require 'resources.colors'
 
 local Gamestate = require 'lib.gamestate'
 
@@ -31,7 +31,7 @@ function LevelPicker:generateMenu()
       local w = self.menu.size.y
       local name = file:match '(.*)%.lua'
       local menuOption = MenuOption(0, y, w, name, function(menuOption)
-        require('project-manager').load(name)
+        require('managers.project-manager').load(name)
         Gamestate.switch(require('state.main-editor'))
         conversation:say('loadedLevel', name)
       end)

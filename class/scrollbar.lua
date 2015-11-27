@@ -1,4 +1,4 @@
-local Mouse = require 'mouse-manager'
+local Mouse = require 'managers.mouse-manager'
 
 local Button = require 'class.button'
 
