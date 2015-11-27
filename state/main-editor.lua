@@ -23,7 +23,11 @@ function MainEditor:enter()
   self.visibleMode   = 1
   self.ghostLayers   = false
 
-  self.help = {show = true, x = 0, text = love.filesystem.read('help.txt')}
+  self.help = {
+    show = true,
+    x    = 0,
+    text = love.filesystem.read('resources/help.txt')
+  }
 
   --cosmetic
   self.tween = require('lib.flux').group()
@@ -152,7 +156,7 @@ function MainEditor:draw()
   --draw help
   local c = Color.Dark
   lg.setColor(c[1], c[2], c[3], 100)
-  lg.rectangle('fill', self.help.x, 0, 500, 315)
+  lg.rectangle('fill', self.help.x, 0, 500, 340)
   lg.setColor(Color.AlmostWhite)
   lg.setFont(Font.Medium)
   lg.print(self.help.text, self.help.x, 0)

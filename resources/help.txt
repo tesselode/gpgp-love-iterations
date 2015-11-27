@@ -5,6 +5,7 @@ Middle button + drag - pan
 WASD/arrow keys - pan
 Mouse wheel up/down - zoom
 Q/E - zoom
+[ and ] - adjust snap
 Space - show entity/tile palette
 F5 - show layer picker
 Ctrl+S - save
