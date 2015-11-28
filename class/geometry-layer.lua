@@ -30,11 +30,6 @@ end
 function GeometryLayer:load(data)
   self.data = data
   self.name = data.name
-  --[[for _, block in pairs(self.data.blocks or {}) do
-    table.insert(self.blocks, {
-      pos = vector(block.x, block.y)
-    })
-  end]]
   for _, rect in pairs(self.data.rectangles) do
     for i = rect.x, rect.x + rect.w - 1 do
       for j = rect.y, rect.y + rect.h - 1 do
@@ -62,6 +57,8 @@ function GeometryLayer:convertToRectangles()
   local blocks     = table.clone(self.blocks)
   local rectangles = {}
 
+  --see if a rectangle is completely filled with blocks, and if so,
+  --return those blocks
   local function getBlocks(a, b)
     local collectedBlocks = {}
     for i = a.x, b.x do
@@ -83,8 +80,25 @@ function GeometryLayer:convertToRectangles()
   end
 
   while blocks[1] do
-    local a = blocks[1].pos:clone()
-    local b = blocks[1].pos:clone()
+    local a, b
+
+    --find the first block (left->right, top->bottom)
+    local foundBlock = false
+    for i = 1, Project.width do
+      if foundBlock then break end
+      for j = 1, Project.height do
+        if foundBlock then break end
+        for _, block in pairs(blocks) do
+          if block.pos.x == i and block.pos.y == j then
+            a = block.pos:clone()
+            b = block.pos:clone()
+            foundBlock = true
+          end
+        end
+      end
+    end
+
+    --make the biggest rectangle with no empty spaces
     while getBlocks(a, b) do
       b.x = b.x + 1
     end
@@ -93,10 +107,14 @@ function GeometryLayer:convertToRectangles()
       b.y = b.y + 1
     end
     b.y = b.y - 1
+
+    --remove those blocks from future checks
     local collectedBlocks = getBlocks(a, b)
     for _, collectedBlock in pairs(collectedBlocks) do
       table.removeValue(blocks, collectedBlock)
     end
+
+    --export a rectangle
     table.insert(rectangles, {
       x = a.x,
       y = a.y,
