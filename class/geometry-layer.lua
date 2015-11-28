@@ -36,8 +36,8 @@ function GeometryLayer:load(data)
     })
   end]]
   for _, rect in pairs(self.data.rectangles) do
-    for i = rect.x, rect.x + rect.w do
-      for j = rect.y, rect.y + rect.h do
+    for i = rect.x, rect.x + rect.w - 1 do
+      for j = rect.y, rect.y + rect.h - 1 do
         table.insert(self.blocks, {pos = vector(i, j)})
       end
     end
@@ -100,8 +100,8 @@ function GeometryLayer:convertToRectangles()
     table.insert(rectangles, {
       x = a.x,
       y = a.y,
-      w = b.x - a.x,
-      h = b.y - a.y,
+      w = b.x - a.x + 1,
+      h = b.y - a.y + 1,
     })
   end
 
