@@ -1,12 +1,14 @@
-local Gamestate = require 'lib.gamestate'
-local flux      = require 'lib.flux'
-local shine     = require 'lib.shine'
+local currentFolder = (...):gsub('%.[^%.]+$', '')
 
-local Font           = require 'resources.fonts'
-local Color          = require 'resources.colors'
-local Grid           = require 'class.grid'
-local LayerPicker    = require 'state.layer-picker'
-local ProjectManager = require 'managers.project-manager'
+local Gamestate = require currentFolder..'.lib.gamestate'
+local flux      = require currentFolder..'.lib.flux'
+local shine     = require currentFolder..'.lib.shine'
+
+local Font           = require currentFolder..'.resources.fonts'
+local Color          = require currentFolder..'.resources.colors'
+local Grid           = require currentFolder..'.class.grid'
+local LayerPicker    = require currentFolder..'.state.layer-picker'
+local ProjectManager = require currentFolder..'.managers.project-manager'
 
 local lg = love.graphics
 

@@ -1,10 +1,12 @@
-local Font  = require 'resources.fonts'
-local Color = require 'resources.colors'
+local currentFolder = (...):gsub('%.[^%.]+$', '')
 
-local Gamestate = require 'lib.gamestate'
-local vector    = require 'lib.vector'
+local Font  = require currentFolder..'.resources.fonts'
+local Color = require currentFolder..'.resources.colors'
 
-local Button = require 'class.button'
+local Gamestate = require currentFolder..'.lib.gamestate'
+local vector    = require currentFolder..'.lib.vector'
+
+local Button = require currentFolder..'.class.button'
 
 local EntityButton = Button:extend()
 

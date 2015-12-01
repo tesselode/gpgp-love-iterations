@@ -1,4 +1,6 @@
-local vector = require 'lib.vector'
+local currentFolder = (...):gsub('%.[^%.]+$', '')
+
+local vector = require currentFolder..'.lib.vector'
 
 local pos              = vector(love.mouse.getX(), love.mouse.getY())
 local posPrev          = pos

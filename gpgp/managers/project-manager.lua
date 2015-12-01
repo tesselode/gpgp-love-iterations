@@ -1,7 +1,9 @@
-local serpent = require 'lib.serpent'
+local currentFolder = (...):gsub('%.[^%.]+$', '')
 
-local Tileset = require 'class.tileset'
-local Group = require 'class.group'
+local serpent = require currentFolder..'.lib.serpent'
+
+local Tileset = require currentFolder..'.class.tileset'
+local Group = require currentFolder..'.class.group'
 
 local ProjectManager = {}
 

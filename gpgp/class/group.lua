@@ -1,8 +1,10 @@
-local Class = require 'lib.classic'
+local currentFolder = (...):gsub('%.[^%.]+$', '')
 
-local EntityLayer   = require 'class.entity-layer'
-local TileLayer     = require 'class.tile-layer'
-local GeometryLayer = require 'class.geometry-layer'
+local Class = require currentFolder..'.lib.classic'
+
+local EntityLayer   = require currentFolder..'.class.entity-layer'
+local TileLayer     = require currentFolder..'.class.tile-layer'
+local GeometryLayer = require currentFolder..'.class.geometry-layer'
 
 local Group = Class:extend()
 

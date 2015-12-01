@@ -1,5 +1,7 @@
-local Font  = require 'resources.fonts'
-local Color = require 'resources.colors'
+local currentFolder = (...):gsub('%.[^%.]+$', '')
+
+local Font  = require currentFolder..'.resources.fonts'
+local Color = require currentFolder..'.resources.colors'
 
 local text  = ''
 local time  = 0

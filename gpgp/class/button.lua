@@ -1,9 +1,11 @@
-local Color = require 'resources.colors'
-local Mouse = require 'managers.mouse-manager'
-local Font  = require 'resources.fonts'
+local currentFolder = (...):gsub('%.[^%.]+$', '')
 
-local Class  = require 'lib.classic'
-local vector = require 'lib.vector'
+local Color = require currentFolder..'.resources.colors'
+local Mouse = require currentFolder..'.managers.mouse-manager'
+local Font  = require currentFolder..'.resources.fonts'
+
+local Class  = require currentFolder..'.lib.classic'
+local vector = require currentFolder..'.lib.vector'
 
 local Button = Class:extend()
 

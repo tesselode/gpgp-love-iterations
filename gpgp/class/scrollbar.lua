@@ -1,6 +1,8 @@
-local Mouse = require 'managers.mouse-manager'
+local currentFolder = (...):gsub('%.[^%.]+$', '')
 
-local Button = require 'class.button'
+local Mouse = require currentFolder..'.managers.mouse-manager'
+
+local Button = require currentFolder..'.class.button'
 
 local Scrollbar = Button:extend()
 

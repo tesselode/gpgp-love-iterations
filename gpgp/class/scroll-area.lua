@@ -1,9 +1,11 @@
-local Mouse = require 'managers.mouse-manager'
+local currentFolder = (...):gsub('%.[^%.]+$', '')
 
-local Class = require 'lib.classic'
-local vector = require 'lib.vector'
+local Mouse = require currentFolder..'.managers.mouse-manager'
 
-local Scrollbar = require 'class.scrollbar'
+local Class = require currentFolder..'.lib.classic'
+local vector = require currentFolder..'.lib.vector'
+
+local Scrollbar = require currentFolder..'.class.scrollbar'
 
 local ScrollArea = Class:extend()
 

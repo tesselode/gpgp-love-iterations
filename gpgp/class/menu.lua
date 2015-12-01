@@ -1,9 +1,11 @@
-local vector = require 'lib.vector'
+local currentFolder = (...):gsub('%.[^%.]+$', '')
 
-local Font = require 'resources.fonts'
+local vector = require currentFolder..'.lib.vector'
 
-local Button     = require 'class.button'
-local ScrollArea = require 'class.scroll-area'
+local Font = require currentFolder..'.resources.fonts'
+
+local Button     = require currentFolder..'.class.button'
+local ScrollArea = require currentFolder..'.class.scroll-area'
 
 local Menu = ScrollArea:extend()
 

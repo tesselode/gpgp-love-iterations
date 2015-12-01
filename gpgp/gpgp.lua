@@ -1,13 +1,15 @@
-local talkback = require 'lib.talkback'
+local currentFolder = (...):gsub('%.[^%.]+$', '')
+
+local talkback = require currentFolder..'.lib.talkback'
 conversation = talkback.new()
-require 'extra'
+require currentFolder..'.extra'
 
-local Color       = require 'resources.colors'
-local message     = require 'managers.messages'
-local Mouse       = require 'managers.mouse-manager'
-local LevelPicker = require 'state.level-picker'
+local Color       = require currentFolder..'.resources.colors'
+local message     = require currentFolder..'.managers.messages'
+local Mouse       = require currentFolder..'.managers.mouse-manager'
+local LevelPicker = require currentFolder..'.state.level-picker'
 
-local Gamestate = require 'lib.gamestate'
+local Gamestate = require currentFolder..'.lib.gamestate'
 
 local gpgp = {}
 

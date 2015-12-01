@@ -1,4 +1,6 @@
-local Class = require 'lib.classic'
+local currentFolder = (...):gsub('%.[^%.]+$', '')
+
+local Class = require currentFolder..'.lib.classic'
 
 local Tileset = Class:extend()
 

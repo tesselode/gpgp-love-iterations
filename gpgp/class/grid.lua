@@ -1,8 +1,10 @@
-local Mouse = require 'managers.mouse-manager'
-local Color = require 'resources.colors'
+local currentFolder = (...):gsub('%.[^%.]+$', '')
 
-local Class  = require 'lib.classic'
-local vector = require 'lib.vector'
+local Mouse = require currentFolder..'.managers.mouse-manager'
+local Color = require currentFolder..'.resources.colors'
+
+local Class  = require currentFolder..'.lib.classic'
+local vector = require currentFolder..'.lib.vector'
 
 local lg = love.graphics
 

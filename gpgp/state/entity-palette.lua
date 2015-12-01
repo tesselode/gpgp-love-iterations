@@ -1,14 +1,16 @@
-local Font  = require 'resources.fonts'
-local Color = require 'resources.colors'
+local currentFolder = (...):gsub('%.[^%.]+$', '')
 
-local Gamestate = require 'lib.gamestate'
-local flux = require 'lib.flux'
-local shine = require 'lib.shine'
+local Font  = require currentFolder..'.resources.fonts'
+local Color = require currentFolder..'.resources.colors'
+
+local Gamestate = require currentFolder..'.lib.gamestate'
+local flux = require currentFolder..'.lib.flux'
+local shine = require currentFolder..'.lib.shine'
 
 local lg = love.graphics
 
-local ScrollArea   = require 'class.scroll-area'
-local EntityButton = require 'class.entity-button'
+local ScrollArea   = require currentFolder..'.class.scroll-area'
+local EntityButton = require currentFolder..'.class.entity-button'
 
 local EntityPalette = {}
 
