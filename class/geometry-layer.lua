@@ -30,7 +30,7 @@ end
 function GeometryLayer:load(data)
   self.data = data
   self.name = data.name
-  for _, rect in pairs(self.data.rectangles) do
+  for _, rect in pairs(self.data.rectangles or {}) do
     for i = rect.x, rect.x + rect.w - 1 do
       for j = rect.y, rect.y + rect.h - 1 do
         table.insert(self.blocks, {pos = vector(i, j)})
