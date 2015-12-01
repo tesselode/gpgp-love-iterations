@@ -1,9 +1,11 @@
-conversation = require('lib.talkback').new()
+local talkback = require 'lib.talkback'
+conversation = talkback.new()
 require 'extra'
 
-local Color   = require 'resources.colors'
-local message = require 'managers.messages'
-local Mouse   = require 'managers.mouse-manager'
+local Color       = require 'resources.colors'
+local message     = require 'managers.messages'
+local Mouse       = require 'managers.mouse-manager'
+local LevelPicker = require 'state.level-picker'
 
 local Gamestate = require 'lib.gamestate'
 
@@ -13,7 +15,7 @@ function gpgp.load()
   love.graphics.setDefaultFilter('nearest', 'nearest')
   love.graphics.setBackgroundColor(Color.AlmostBlack)
 
-  Gamestate.switch(require('state.level-picker'))
+  Gamestate.switch(LevelPicker)
 end
 
 function gpgp.update(dt)

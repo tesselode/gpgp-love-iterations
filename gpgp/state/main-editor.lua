@@ -1,7 +1,12 @@
-local Font      = require 'resources.fonts'
-local Color     = require 'resources.colors'
-local Grid      = require 'class.grid'
 local Gamestate = require 'lib.gamestate'
+local flux      = require 'lib.flux'
+local shine     = require 'lib.shine'
+
+local Font           = require 'resources.fonts'
+local Color          = require 'resources.colors'
+local Grid           = require 'class.grid'
+local LayerPicker    = require 'state.layer-picker'
+local ProjectManager = require 'managers.project-manager'
 
 local lg = love.graphics
 
@@ -29,7 +34,7 @@ function MainEditor:enter()
   }
 
   --cosmetic
-  self.tween = require('lib.flux').group()
+  self.tween = flux.group()
 end
 
 function MainEditor:update(dt)
@@ -55,7 +60,7 @@ function MainEditor:keypressed(key)
 
   --layer picker
   if key == 'f5' then
-    Gamestate.push(require('state.layer-picker'))
+    Gamestate.push(LayerPicker)
   end
 
   --change layer visibility
@@ -86,12 +91,12 @@ function MainEditor:keypressed(key)
   if love.keyboard.isDown('lctrl') then
     --save
     if key == 's' then
-      require('managers.project-manager').save()
+      ProjectManager.save()
       conversation:say('savedGame', Project.levelName)
     end
     --open
     if key == 'o' then
-      Gamestate.push(require('state.level-picker'))
+      Gamestate.push(LevelPicker)
     end
   end
 end

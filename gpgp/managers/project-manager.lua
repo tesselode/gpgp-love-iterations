@@ -1,3 +1,8 @@
+local serpent = require 'lib.serpent'
+
+local Tileset = require 'class.tileset'
+local Group = require 'class.group'
+
 local ProjectManager = {}
 
 function ProjectManager.load(name)
@@ -13,14 +18,14 @@ function ProjectManager.load(name)
 
   --load tilesets
   for _, tileset in pairs(love.filesystem.load('project/tilesets.lua')()) do
-    table.insert(Project.tilesets, require('class.tileset')(tileset))
+    table.insert(Project.tilesets, Tileset(tileset))
   end
 
   local levelData = love.filesystem.load('project/levels/'..name..'.lua')()
 
   --load groups and layers
   for _, group in pairs(levelData.groups) do
-    table.insert(Project.groups, require('class.group')(group))
+    table.insert(Project.groups, Group(group))
   end
 
   --level info
@@ -42,7 +47,7 @@ function ProjectManager.save()
     table.insert(toSave.groups, group:save())
   end
 
-  local data = require('lib.serpent').block(toSave, {comment = false})
+  local data = serpent.block(toSave, {comment = false})
   local path = 'project/levels/'..Project.levelName..'.lua'
   love.filesystem.createDirectory('project/levels')
   love.filesystem.write(path, 'return '..data)

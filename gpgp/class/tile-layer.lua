@@ -2,6 +2,8 @@ local Class     = require 'lib.classic'
 local Gamestate = require 'lib.gamestate'
 local vector    = require 'lib.vector'
 
+local TilePalette = require 'state.tile-palette'
+
 local TileLayer = Class:extend()
 
 function TileLayer:new(data)
@@ -96,7 +98,7 @@ function TileLayer:save()
 end
 
 function TileLayer:openPalette()
-  Gamestate.push(require('state.tile-palette'), self)
+  Gamestate.push(TilePalette, self)
 end
 
 function TileLayer:drawCursorImage(a, b)

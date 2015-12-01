@@ -1,5 +1,9 @@
 local Class = require 'lib.classic'
 
+local EntityLayer   = require 'class.entity-layer'
+local TileLayer     = require 'class.tile-layer'
+local GeometryLayer = require 'class.geometry-layer'
+
 local Group = Class:extend()
 
 function Group:new(data)
@@ -9,11 +13,11 @@ function Group:new(data)
   for i = 1, #self.data.layers do
     local layer = self.data.layers[i]
     if layer.type == 'entity' then
-      self:addLayer(require('class.entity-layer')(layer))
+      self:addLayer(EntityLayer(layer))
     elseif layer.type == 'tile' then
-      self:addLayer(require('class.tile-layer')(layer))
+      self:addLayer(TileLayer(layer))
     elseif layer.type == 'geometry' then
-      self:addLayer(require('class.geometry-layer')(layer))
+      self:addLayer(GeometryLayer(layer))
     end
   end
 end

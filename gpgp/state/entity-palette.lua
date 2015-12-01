@@ -2,6 +2,8 @@ local Font  = require 'resources.fonts'
 local Color = require 'resources.colors'
 
 local Gamestate = require 'lib.gamestate'
+local flux = require 'lib.flux'
+local shine = require 'lib.shine'
 
 local lg = love.graphics
 
@@ -18,7 +20,7 @@ function EntityPalette:enter(previous, layer)
   --cosmetic
   self.canvasAlpha = 0
   self.canvasY     = 100
-  self.tween       = require('lib.flux').group()
+  self.tween       = flux.group()
   self.tween:to(self, .5, {canvasY = 0, canvasAlpha = 255}):ease('quartout')
 end
 
@@ -55,7 +57,7 @@ function EntityPalette:generateMenu()
   self.background = lg.newCanvas()
   self.background:clear(Color.AlmostBlack)
   self.background:renderTo(function()
-    local gaussianblur      = require('lib.shine').gaussianblur()
+    local gaussianblur      = shine.gaussianblur()
     gaussianblur.parameters = {sigma = 5}
     gaussianblur:draw(function()
       self.previous:draw()
