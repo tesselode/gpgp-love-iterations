@@ -22,11 +22,11 @@ conversation:listen('loadedLevel', function(name)
 end)
 conversation:listen('setVisibleMode', function(mode)
   if mode == 1 then
-    say('Switched layer visibility: only show current group')
-  elseif mode == 2 then
-    say('Switched layer visibility: only show current layer')
-  else
     say('Switched layer visibility: show all layers')
+  elseif mode == 2 then
+    say('Switched layer visibility: only show current group')
+  else
+    say('Switched layer visibility: only show current layer')
   end
 end)
 conversation:listen('toggledGhostLayers', function(ghost)
