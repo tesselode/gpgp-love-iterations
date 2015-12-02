@@ -1,9 +1,9 @@
 local currentFolder = (...):gsub('%.[^%.]+$', '')
 
-local serpent = require currentFolder..'.lib.serpent'
+local serpent = require(currentFolder..'.lib.serpent')
 
-local Tileset = require currentFolder..'.class.tileset'
-local Group = require currentFolder..'.class.group'
+local Tileset = require(currentFolder..'.class.tileset')
+local Group = require(currentFolder..'.class.group')
 
 local ProjectManager = {}
 

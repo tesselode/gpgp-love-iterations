@@ -1,6 +1,6 @@
 local currentFolder = (...):gsub('%.[^%.]+$', '')
 
-local Class = require currentFolder..'.lib.classic'
+local Class = require(currentFolder..'.lib.classic')
 
 local Tileset = Class:extend()
 

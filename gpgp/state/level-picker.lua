@@ -1,18 +1,18 @@
 local currentFolder = (...):gsub('%.[^%.]+$', '')
 
-local Font           = require currentFolder..'.resources.fonts'
-local Color          = require currentFolder..'.resources.colors'
-local ProjectManager = require currentFolder..'.managers.project-manager'
-local MainEditor     = require currentFolder..'.state.main-editor'
+local Font           = require(currentFolder..'.resources.fonts')
+local Color          = require(currentFolder..'.resources.colors')
+local ProjectManager = require(currentFolder..'.managers.project-manager')
+local MainEditor     = require(currentFolder..'.state.main-editor')
 
-local Gamestate = require currentFolder..'.lib.gamestate'
-local flux = require currentFolder..'.lib.flux'
-local shine = require currentFolder..'.lib.shine'
+local Gamestate = require(currentFolder..'.lib.gamestate')
+local flux = require(currentFolder..'.lib.flux')
+local shine = require(currentFolder..'.lib.shine')
 
 local lg = love.graphics
 
-local ScrollArea = require currentFolder..'.class.scroll-area'
-local Menu       = require currentFolder..'.class.menu'
+local ScrollArea = require(currentFolder..'.class.scroll-area')
+local Menu       = require(currentFolder..'.class.menu')
 
 local LevelPicker = {}
 

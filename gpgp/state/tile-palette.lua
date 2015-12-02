@@ -3,9 +3,9 @@ local currentFolder = (...):gsub('%.[^%.]+$', '')
 local lg = love.graphics
 local lm = love.mouse
 
-local Gamestate = require currentFolder..'.lib.gamestate'
+local Gamestate = require(currentFolder..'.lib.gamestate')
 
-local Grid = require currentFolder..'.class.grid'
+local Grid = require(currentFolder..'.class.grid')
 
 local TilePalette = {}
 

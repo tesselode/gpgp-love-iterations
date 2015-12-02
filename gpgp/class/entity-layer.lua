@@ -1,10 +1,10 @@
 local currentFolder = (...):gsub('%.[^%.]+$', '')
 
-local Class     = require currentFolder..'.lib.classic'
-local Gamestate = require currentFolder..'.lib.gamestate'
-local vector    = require currentFolder..'.lib.vector'
+local Class     = require(currentFolder..'.lib.classic')
+local Gamestate = require(currentFolder..'.lib.gamestate')
+local vector    = require(currentFolder..'.lib.vector')
 
-local EntityPalette = require currentFolder..'.state.entity-palette'
+local EntityPalette = require(currentFolder..'.state.entity-palette')
 
 local EntityLayer = Class:extend()
 

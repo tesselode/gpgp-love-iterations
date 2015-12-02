@@ -1,7 +1,7 @@
 local currentFolder = (...):gsub('%.[^%.]+$', '')
 
-local Class  = require currentFolder..'.lib.classic'
-local vector = require currentFolder..'.lib.vector'
+local Class  = require(currentFolder..'.lib.classic')
+local vector = require(currentFolder..'.lib.vector')
 
 local GeometryLayer = Class:extend()
 

@@ -1,15 +1,15 @@
 local currentFolder = (...):gsub('%.[^%.]+$', '')
 
-local Font  = require currentFolder..'.resources.fonts'
-local Color = require currentFolder..'.resources.colors'
+local Font  = require(currentFolder..'.resources.fonts')
+local Color = require(currentFolder..'.resources.colors')
 
-local Gamestate = require currentFolder..'.lib.gamestate'
-local flux = require currentFolder..'.lib.flux'
-local shine = require currentFolder..'.lib.shine'
+local Gamestate = require(currentFolder..'.lib.gamestate')
+local flux = require(currentFolder..'.lib.flux')
+local shine = require(currentFolder..'.lib.shine')
 
 local lg = love.graphics
 
-local Menu = require currentFolder..'.class.menu'
+local Menu = require(currentFolder..'.class.menu')
 
 local LayerPicker = {}
 
