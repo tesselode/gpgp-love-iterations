@@ -11,19 +11,19 @@ function ProjectManager.load(name)
   Project = {levelName = name, entities = {}, tilesets = {}, groups = {}}
 
   --load entities
-  for _, entity in pairs(love.filesystem.load('project/entities.lua')()) do
+  for _, entity in pairs(love.filesystem.load(PROJECTDIR..'/entities.lua')()) do
     table.insert(Project.entities, {
       name  = entity.name,
-      image = love.graphics.newImage('project/images/'..entity.image),
+      image = love.graphics.newImage(PROJECTDIR..'/images/'..entity.image),
     })
   end
 
   --load tilesets
-  for _, tileset in pairs(love.filesystem.load('project/tilesets.lua')()) do
+  for _, tileset in pairs(love.filesystem.load(PROJECTDIR..'/tilesets.lua')()) do
     table.insert(Project.tilesets, Tileset(tileset))
   end
 
-  local levelData = love.filesystem.load('project/levels/'..name..'.lua')()
+  local levelData = love.filesystem.load(PROJECTDIR..'/levels/'..name..'.lua')()
 
   --load groups and layers
   for _, group in pairs(levelData.groups) do
@@ -50,8 +50,8 @@ function ProjectManager.save()
   end
 
   local data = serpent.block(toSave, {comment = false})
-  local path = 'project/levels/'..Project.levelName..'.lua'
-  love.filesystem.createDirectory('project/levels')
+  local path = PROJECTDIR..'/levels/'..Project.levelName..'.lua'
+  love.filesystem.createDirectory(PROJECTDIR..'/levels')
   love.filesystem.write(path, 'return '..data)
 end
 

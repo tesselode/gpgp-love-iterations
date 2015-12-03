@@ -31,7 +31,7 @@ function LevelPicker:generateMenu()
   local center = lg.getWidth() / 2
 
   self.menu = Menu(10, 80, center - 40, lg.getHeight() - 80)
-  for _, file in pairs(love.filesystem.getDirectoryItems('project/levels')) do
+  for _, file in pairs(love.filesystem.getDirectoryItems(PROJECTDIR..'/levels')) do
     if file:find '.lua' then
       local name = file:match '(.*)%.lua'
       self.menu:add(name, function(menuOption)
