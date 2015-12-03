@@ -1,4 +1,4 @@
-local currentFolder = (...):gsub('%.[^%.]+$', '')
+local currentFolder = (...):match '^(.-)%..*$'
 
 local lg = love.graphics
 local lm = love.mouse

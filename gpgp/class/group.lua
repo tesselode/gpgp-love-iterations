@@ -1,4 +1,4 @@
-local currentFolder = (...):gsub('%.[^%.]+$', '')
+local currentFolder = (...):match '^(.-)%..*$'
 
 local Class = require(currentFolder..'.lib.classic')
 

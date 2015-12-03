@@ -1,4 +1,4 @@
-local currentFolder = (...):gsub('%.[^%.]+$', '')
+local currentFolder = (...):match '^(.-)%..*$'
 
 local Gamestate = require(currentFolder..'.lib.gamestate')
 local flux      = require(currentFolder..'.lib.flux')

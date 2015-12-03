@@ -1,4 +1,4 @@
-local currentFolder = (...):gsub('%.[^%.]+$', '')
+local currentFolder = (...):match '^(.-)%..*$'
 
 local Font  = require(currentFolder..'.resources.fonts')
 local Color = require(currentFolder..'.resources.colors')

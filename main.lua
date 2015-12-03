@@ -1,9 +1,5 @@
 function love.load()
-  print 'hi'
-end
-
---[[function love.load()
-  gpgp.load()
+  gpgp = require('gpgp').init()
 end
 
 function love.update(dt)
@@ -29,4 +25,3 @@ end
 function love.draw()
   gpgp.draw()
 end
---]]

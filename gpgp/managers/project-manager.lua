@@ -1,4 +1,4 @@
-local currentFolder = (...):gsub('%.[^%.]+$', '')
+local currentFolder = (...):match '^(.-)%..*$'
 
 local serpent = require(currentFolder..'.lib.serpent')
 

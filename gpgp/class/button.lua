@@ -1,4 +1,4 @@
-local currentFolder = (...):gsub('%.[^%.]+$', '')
+local currentFolder = (...):match '^(.-)%..*$'
 
 local Color = require(currentFolder..'.resources.colors')
 local Mouse = require(currentFolder..'.managers.mouse-manager')

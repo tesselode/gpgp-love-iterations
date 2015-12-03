@@ -1,4 +1,5 @@
-local currentFolder = (...):gsub('%.[^%.]+$', '')
+local currentFolder = (...):match '^(.-)%..*$'
+print(currentFolder)
 
 local talkback = require(currentFolder..'.lib.talkback')
 conversation = talkback.new()
