@@ -8,13 +8,7 @@ function Group:new(data)
   self.layers = {}
   for i = 1, #self.data.layers do
     local layer = self.data.layers[i]
-    if layer.type == 'entity' then
-      self:addLayer(require('class.layer-types.entity-layer')(layer))
-    elseif layer.type == 'tile' then
-      self:addLayer(require('class.layer-types.tile-layer')(layer))
-    elseif layer.type == 'geometry' then
-      self:addLayer(require('class.layer-types.geometry-layer')(layer))
-    end
+    self:addLayer(require('class.layer-types.'..layer.type)(layer))
   end
 end
 
