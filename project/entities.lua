@@ -2,14 +2,14 @@ return {
   {
     name = 'Character 1',
     image = 'character1.png',
-    width = 2,
-    height = 2,
+    width = 1,
+    height = 1,
   },
   {
     name = 'Character 2',
     image = 'character2.png',
-    width = 2,
-    height = 2,
+    width = 1,
+    height = 1,
   },
   {
     name = 'Character 3',

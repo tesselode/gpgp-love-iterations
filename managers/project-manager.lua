@@ -6,8 +6,10 @@ function ProjectManager.load(name)
   --load entities
   for _, entity in pairs(love.filesystem.load('project/entities.lua')()) do
     table.insert(Project.entities, {
-      name  = entity.name,
-      image = love.graphics.newImage('project/images/'..entity.image),
+      name   = entity.name,
+      image  = love.graphics.newImage('project/images/'..entity.image),
+      width  = entity.width,
+      height = entity.height,
     })
   end
 
