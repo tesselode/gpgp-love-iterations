@@ -5,7 +5,7 @@ local Gamestate = require 'lib.gamestate'
 
 local lg = love.graphics
 
-local Menu = require 'class.menu'
+local Menu = require 'class.ui.menu'
 
 local LayerPicker = {}
 

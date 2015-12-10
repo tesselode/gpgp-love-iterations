@@ -74,7 +74,7 @@ function EntityLayer:save()
 end
 
 function EntityLayer:openPalette()
-  Gamestate.push(require('state.entity-palette'), self)
+  Gamestate.push(require('state.palettes.entity-palette'), self)
 end
 
 function EntityLayer:drawCursorImage(a, b)

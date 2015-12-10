@@ -4,7 +4,7 @@ local Color = require 'resources.colors'
 local Gamestate = require 'lib.gamestate'
 local vector    = require 'lib.vector'
 
-local Button = require 'class.button'
+local Button = require 'class.ui.button'
 
 local EntityButton = Button:extend()
 

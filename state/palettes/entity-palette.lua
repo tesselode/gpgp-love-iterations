@@ -5,8 +5,8 @@ local Gamestate = require 'lib.gamestate'
 
 local lg = love.graphics
 
-local ScrollArea   = require 'class.scroll-area'
-local EntityButton = require 'class.entity-button'
+local ScrollArea   = require 'class.ui.scroll-area'
+local EntityButton = require 'class.ui.entity-button'
 
 local EntityPalette = {}
 

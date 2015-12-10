@@ -2,8 +2,8 @@ local vector = require 'lib.vector'
 
 local Font = require 'resources.fonts'
 
-local Button     = require 'class.button'
-local ScrollArea = require 'class.scroll-area'
+local Button     = require 'class.ui.button'
+local ScrollArea = require 'class.ui.scroll-area'
 
 local Menu = ScrollArea:extend()
 

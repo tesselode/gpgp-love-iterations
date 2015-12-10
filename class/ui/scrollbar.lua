@@ -1,6 +1,6 @@
 local Mouse = require 'managers.mouse-manager'
 
-local Button = require 'class.button'
+local Button = require 'class.ui.button'
 
 local Scrollbar = Button:extend()
 

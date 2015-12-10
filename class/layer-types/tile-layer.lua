@@ -96,7 +96,7 @@ function TileLayer:save()
 end
 
 function TileLayer:openPalette()
-  Gamestate.push(require('state.tile-palette'), self)
+  Gamestate.push(require('state.palettes.tile-palette'), self)
 end
 
 function TileLayer:drawCursorImage(a, b)

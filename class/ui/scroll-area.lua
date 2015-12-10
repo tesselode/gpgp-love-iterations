@@ -3,7 +3,7 @@ local Mouse = require 'managers.mouse-manager'
 local Class = require 'lib.classic'
 local vector = require 'lib.vector'
 
-local Scrollbar = require 'class.scrollbar'
+local Scrollbar = require 'class.ui.scrollbar'
 
 local ScrollArea = Class:extend()
 

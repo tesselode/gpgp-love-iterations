@@ -7,8 +7,8 @@ local Gamestate = require 'lib.gamestate'
 
 local lg = love.graphics
 
-local ScrollArea = require 'class.scroll-area'
-local Menu       = require 'class.menu'
+local ScrollArea = require 'class.ui.scroll-area'
+local Menu       = require 'class.ui.menu'
 
 local LevelPicker = {}
 
