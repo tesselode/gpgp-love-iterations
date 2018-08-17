@@ -1,6 +1,7 @@
-local Project = require 'class.project'
+local gamestate = require 'lib.gamestate'
+local welcome = require 'state.welcome'
 
-function love.directorydropped(path)
-	love.filesystem.mount(path, 'project')
-	assert(love.filesystem.getInfo 'project/config.lua', 'not a project folder')
+function love.load()
+	gamestate.registerEvents()
+	gamestate.switch(welcome)
 end
