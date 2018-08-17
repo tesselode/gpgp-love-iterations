@@ -17,12 +17,20 @@ function Editor:initMouseTracking()
 	self.mouseX, self.mouseY = love.mouse.getPosition()
 end
 
+function Editor:getSelectedLayer()
+	return self.selectedLayer
+end
+
 function Editor:switchLayer(layer)
 	self.selectedLayer = layer
 	self.paletteSelection[layer] = self.paletteSelection[layer] or 1
 end
 
-function Editor:setSelected(selected)
+function Editor:getPaletteSelection()
+	return self.selectedLayer.palette[self.paletteSelection[self.selectedLayer]]
+end
+
+function Editor:setPaletteSelection(selected)
 	self.paletteSelection[self.selectedLayer] = selected
 end
 

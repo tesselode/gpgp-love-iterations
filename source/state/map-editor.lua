@@ -20,12 +20,9 @@ end
 
 function mapEditor:drawGui()
 	if imgui.BeginMainMenuBar() then
-		if imgui.BeginMenu('Layers [' .. self.editor.selectedLayer.name .. ']') then
+		if imgui.BeginMenu('Layers [' .. self.editor:getSelectedLayer().name .. ']') then
 			for _, layer in ipairs(self.map.layers) do
-				local layerNameString = ''
-				if self.editor.selectedLayer == layer then
-					layerNameString = layerNameString .. '* '
-				end
+				local layerNameString = self.editor:getSelectedLayer() == layer and '* ' or ''
 				layerNameString = layerNameString .. layer.name
 				if imgui.MenuItem(layerNameString) then
 					self.editor:switchLayer(layer)
@@ -33,14 +30,14 @@ function mapEditor:drawGui()
 			end
 			imgui.EndMenu()
 		end
-		if self.editor.selectedLayer:is(Layer.Entity) then
-			local selected = self.editor.paletteSelection[self.editor.selectedLayer]
-			if imgui.BeginMenu('Entities [' .. self.project.config.entities[selected].name .. ']') then
+		if self.editor:getSelectedLayer():is(Layer.Entity) then
+			local selectedEntity = self.editor:getPaletteSelection()
+			if imgui.BeginMenu('Entities [' .. selectedEntity.name .. ']') then
 				for i, entity in ipairs(self.project.config.entities) do
-					local entityNameString = i == selected and '* ' or ''
+					local entityNameString = entity == selectedEntity and '* ' or ''
 					entityNameString = entityNameString .. entity.name
 					if imgui.MenuItem(entityNameString) then
-						self.editor:setSelected(i)
+						self.editor:setPaletteSelection(i)
 					end
 				end
 				imgui.EndMenu()
