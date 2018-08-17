@@ -2,8 +2,7 @@ local Object = require 'lib.classic'
 
 local Editor = Object:extend()
 
-function Editor:new(map)
-	self.map = map
+function Editor:initCamera()
 	self.panX = love.graphics.getWidth() / 2
 	self.panY = love.graphics.getHeight() / 2
 	self.scale = 32
@@ -13,11 +12,53 @@ function Editor:new(map)
 		self.map.width / 2, self.map.height / 2)
 end
 
-function Editor:update(dt)
+function Editor:initMouseTracking()
+	self.mouseXPrevious, self.mouseYPrevious = love.mouse.getPosition()
+	self.mouseX, self.mouseY = love.mouse.getPosition()
+end
+
+function Editor:new(map)
+	self.map = map
+	self:initCamera()
+	self:initMouseTracking()
+end
+
+function Editor:trackMouse()
+	self.mouseXPrevious, self.mouseYPrevious = self.mouseX, self.mouseY
+	self.mouseX, self.mouseY = love.mouse.getPosition()
+end
+
+function Editor:panCamera()
+	if love.mouse.isDown(3) then
+		self.panX = self.panX + (self.mouseX - self.mouseXPrevious)
+		self.panY = self.panY + (self.mouseY - self.mouseYPrevious)
+	end
+end
+
+function Editor:updateCamera()
 	self.transform:setTransformation(self.panX, self.panY,
 		0,
 		self.scale, self.scale,
 		self.map.width / 2, self.map.height / 2)
+end
+
+function Editor:update(dt)
+	self:trackMouse()
+	self:panCamera()
+	self:updateCamera()
+end
+
+function Editor:zoomOut()
+	self.scale = self.scale / 1.1
+end
+
+function Editor:zoomIn()
+	self.scale = self.scale * 1.1
+end
+
+function Editor:wheelmoved(x, y)
+	if y < 0 then self:zoomOut() end
+	if y > 0 then self:zoomIn() end
 end
 
 function Editor:drawGrid()
