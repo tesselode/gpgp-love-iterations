@@ -17,11 +17,17 @@ function Editor:initMouseTracking()
 	self.mouseX, self.mouseY = love.mouse.getPosition()
 end
 
+function Editor:switchLayer(layer)
+	self.selectedLayer = layer
+	self.paletteSelection[layer] = self.paletteSelection[layer] or 1
+end
+
 function Editor:new(map)
 	self.map = map
-	self.selectedLayer = self.map.layers[1]
 	self:initCamera()
 	self:initMouseTracking()
+	self.paletteSelection = {}
+	self:switchLayer(self.map.layers[1])
 end
 
 function Editor:trackMouse()
@@ -64,9 +70,11 @@ function Editor:update(dt)
 
 	if self:isCursorInBounds() then
 		if love.mouse.isDown(1) then
-			self.selectedLayer:place(self:getCursorPosition())
+			local x, y = self:getCursorPosition()
+			self.selectedLayer:place(x, y, self.paletteSelection[self.selectedLayer])
 		elseif love.mouse.isDown(2) then
-			self.selectedLayer:remove(self:getCursorPosition())
+			local x, y = self:getCursorPosition()
+			self.selectedLayer:remove(x, y)
 		end
 	end
 end
@@ -80,8 +88,22 @@ function Editor:zoomIn()
 end
 
 function Editor:wheelmoved(x, y)
-	if y < 0 then self:zoomOut() end
-	if y > 0 then self:zoomIn() end
+	if love.keyboard.isDown 'lctrl' then
+		if y < 0 then self:zoomOut() end
+		if y > 0 then self:zoomIn() end
+	else
+		if y < 0 then
+			self.paletteSelection[self.selectedLayer] = self.paletteSelection[self.selectedLayer] - 1
+			if self.paletteSelection[self.selectedLayer] < 1 then
+				self.paletteSelection[self.selectedLayer] = #self.selectedLayer.palette
+			end
+		elseif y > 0 then
+			self.paletteSelection[self.selectedLayer] = self.paletteSelection[self.selectedLayer] + 1
+			if self.paletteSelection[self.selectedLayer] > #self.selectedLayer.palette then
+				self.paletteSelection[self.selectedLayer] = 1
+			end
+		end
+	end
 end
 
 function Editor:drawGrid()
@@ -97,7 +119,7 @@ end
 
 function Editor:drawCursor()
 	local x, y = self:getCursorPosition()
-	self.selectedLayer:drawCursor(x, y)
+	self.selectedLayer:drawCursor(x, y, self.paletteSelection[self.selectedLayer])
 end
 
 function Editor:draw()
