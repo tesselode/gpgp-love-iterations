@@ -1,11 +1,14 @@
+local Map = require 'class.map'
+
 local editor = {}
 
 function editor:enter(previous, project)
 	self.project = project
+	self.map = Map(self.project)
 end
 
 function editor:draw()
-	love.graphics.print(tostring(self.project))
+	self.map:draw()
 end
 
 return editor

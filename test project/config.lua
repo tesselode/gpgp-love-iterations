@@ -6,7 +6,7 @@ return {
 		layers = {
 			{
 				name = 'Terrain',
-				type = 'geometry',
+				type = 'Geometry',
 			},
 		},
 	},
