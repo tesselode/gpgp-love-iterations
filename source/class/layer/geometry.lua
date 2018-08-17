@@ -7,8 +7,14 @@ function GeometryLayer:new(...)
 	self.tiles = {}
 end
 
+function GeometryLayer:drawCursor(x, y)
+	love.graphics.push 'all'
+	love.graphics.setColor(1, 1, 1, 1/2)
+	love.graphics.rectangle('fill', x, y, 1, 1)
+	love.graphics.pop()
+end
+
 function GeometryLayer:draw()
-	love.graphics.print 'hi im a geometry layer'
 end
 
 return GeometryLayer

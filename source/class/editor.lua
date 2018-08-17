@@ -19,6 +19,7 @@ end
 
 function Editor:new(map)
 	self.map = map
+	self.selectedLayer = self.map.layers[1]
 	self:initCamera()
 	self:initMouseTracking()
 end
@@ -40,6 +41,20 @@ function Editor:updateCamera()
 		0,
 		self.scale, self.scale,
 		self.map.width / 2, self.map.height / 2)
+end
+
+function Editor:getCursorPosition()
+	local x, y = self.transform:inverseTransformPoint(self.mouseX, self.mouseY)
+	x, y = math.floor(x), math.floor(y)
+	return x, y
+end
+
+function Editor:isCursorInBounds()
+	local x, y = self:getCursorPosition()
+	return x >= 0
+	   and x < self.map.width
+	   and y >= 0
+	   and y < self.map.height
 end
 
 function Editor:update(dt)
@@ -72,10 +87,17 @@ function Editor:drawGrid()
 	end
 end
 
+function Editor:drawCursor()
+	local x, y = self:getCursorPosition()
+	self.selectedLayer:drawCursor(x, y)
+end
+
 function Editor:draw()
 	love.graphics.push()
 	love.graphics.applyTransform(self.transform)
 	self:drawGrid()
+	self.map:draw()
+	if self:isCursorInBounds() then self:drawCursor() end
 	love.graphics.pop()
 end
 
