@@ -61,6 +61,14 @@ function Editor:update(dt)
 	self:trackMouse()
 	self:panCamera()
 	self:updateCamera()
+
+	if self:isCursorInBounds() then
+		if love.mouse.isDown(1) then
+			self.selectedLayer:place(self:getCursorPosition())
+		elseif love.mouse.isDown(2) then
+			self.selectedLayer:remove(self:getCursorPosition())
+		end
+	end
 end
 
 function Editor:zoomOut()
@@ -77,7 +85,7 @@ function Editor:wheelmoved(x, y)
 end
 
 function Editor:drawGrid()
-	love.graphics.setLineWidth(1/16)
+	love.graphics.setLineWidth(1 / self.scale)
 	love.graphics.rectangle('line', 0, 0, self.map.width, self.map.height)
 	for x = 1, self.map.width - 1 do
 		love.graphics.line(x, 0, x, self.map.height)
