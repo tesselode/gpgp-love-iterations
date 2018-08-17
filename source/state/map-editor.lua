@@ -58,18 +58,26 @@ end
 function mapEditor:createLayersWindow()
 	if self.showLayersWindow then
 		self.showLayersWindow = imgui.Begin('Layers', true)
+		imgui.PushItemWidth(-1)
 		local layers = {}
 		local selectedLayer
 		for i, layer in ipairs(self.map.layers) do
-			table.insert(layers, layer.name)
+			table.insert(layers, layer.name .. ' (' .. layer.type .. ')')
 			if layer == self.editor:getSelectedLayer() then
 				selectedLayer = i
 			end
 		end
-		local newSelection = imgui.ListBox('', selectedLayer, layers, #layers)
+		local newSelection = imgui.ListBox('', selectedLayer, layers, #layers, 10)
 		if newSelection ~= selectedLayer then
 			self.editor:switchLayer(self.map.layers[newSelection])
 		end
+		imgui.Button('Move up', -1, 0)
+		imgui.Button('Move down', -1, 0)
+		imgui.Button('Rename layer', -1, 0)
+		imgui.Button('Add geometry layer', -1, 0)
+		imgui.Button('Add entity layer', -1, 0)
+		imgui.Button('Remove layer', -1, 0)
+		imgui.PopItemWidth()
 		imgui.End()
 	end
 end

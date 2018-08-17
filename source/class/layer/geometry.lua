@@ -2,6 +2,8 @@ local Layer = require 'class.layer.layer'
 
 local GeometryLayer = Layer:extend()
 
+GeometryLayer.type = 'Geometry'
+
 function GeometryLayer:initTiles()
 	self.tiles = {}
 	for x = 0, self.map.width - 1 do

@@ -2,6 +2,8 @@ local Layer = require 'class.layer.layer'
 
 local EntityLayer = Layer:extend()
 
+EntityLayer.type = 'Entity'
+
 function EntityLayer:new(...)
 	self.super.new(self, ...)
 	self.entities = {}
