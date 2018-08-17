@@ -71,8 +71,12 @@ function mapEditor:createLayersWindow()
 		if newSelection ~= selectedLayer then
 			self.editor:switchLayer(self.map.layers[newSelection])
 		end
-		imgui.Button('Move up', -1, 0)
-		imgui.Button('Move down', -1, 0)
+		if imgui.Button('Move up', -1, 0) then
+			self.map:moveLayerUp(self.editor:getSelectedLayer())
+		end
+		if imgui.Button('Move down', -1, 0) then
+			self.map:moveLayerDown(self.editor:getSelectedLayer())
+		end
 		imgui.Button('Rename layer', -1, 0)
 		imgui.Button('Add geometry layer', -1, 0)
 		imgui.Button('Add entity layer', -1, 0)

@@ -13,6 +13,30 @@ function Map:new(project)
 	end
 end
 
+function Map:moveLayerUp(layer)
+	if layer == self.layers[1] then return end
+	for i = 1, #self.layers - 1 do
+		if layer == self.layers[i + 1] then
+			local a = self.layers[i]
+			local b = self.layers[i + 1]
+			self.layers[i] = b
+			self.layers[i + 1] = a
+		end
+	end
+end
+
+function Map:moveLayerDown(layer)
+	if layer == self.layers[#self.layers] then return end
+	for i = #self.layers, 2, -1 do
+		if layer == self.layers[i - 1] then
+			local a = self.layers[i]
+			local b = self.layers[i - 1]
+			self.layers[i] = b
+			self.layers[i - 1] = a
+		end
+	end
+end
+
 function Map:draw()
 	for i = #self.layers, 1, -1 do
 		self.layers[i]:draw()
