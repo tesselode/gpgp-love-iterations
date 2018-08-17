@@ -14,8 +14,8 @@ function Map:new(project)
 end
 
 function Map:draw()
-	for _, layer in ipairs(self.layers) do
-		layer:draw()
+	for i = #self.layers, 1, -1 do
+		self.layers[i]:draw()
 	end
 end
 

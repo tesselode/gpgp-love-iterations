@@ -22,12 +22,16 @@ function Editor:switchLayer(layer)
 	self.paletteSelection[layer] = self.paletteSelection[layer] or 1
 end
 
+function Editor:setSelected(selected)
+	self.paletteSelection[self.selectedLayer] = selected
+end
+
 function Editor:new(map)
 	self.map = map
 	self:initCamera()
 	self:initMouseTracking()
 	self.paletteSelection = {}
-	self:switchLayer(self.map.layers[1])
+	self:switchLayer(self.map.layers[#self.map.layers])
 end
 
 function Editor:trackMouse()
