@@ -14,6 +14,7 @@ function mainEditor:enter(previous, project)
 	self.mapNameInput = {text = self.map.name}
 	self.mapWidthInput = {text = tostring(self.map.width)}
 	self.mapHeightInput = {text = tostring(self.map.height)}
+	self.scrollbar = {value = 0}
 end
 
 function mainEditor:createMapPropertiesGui()
@@ -36,11 +37,29 @@ function mainEditor:createMapPropertiesGui()
 	suit.layout:pop()
 end
 
+function mainEditor:createLayerListGui()
+	suit.Label('Layers', {align = 'left'}, suit.layout:row(300, 30))
+	for _, layer in ipairs(self.map.layers) do
+		local label = layer.name .. ' (' .. layer.type .. ')'
+		if suit.Button(label, {id = layer}, suit.layout:row(300, 30)).hit then
+			self.editor:setCurrentLayer(layer)
+		end
+	end
+end
+
+function mainEditor:createLayerPropertiesGui()
+	if suit.Button('Add geometry layer', suit.layout:row(300, 30)).hit then
+		self.map:addLayer(self.editor.currentLayer, 'Geometry')
+	end
+end
+
 function mainEditor:updateGui()
 	suit.layout:reset(10, 10)
 	suit.layout:padding(10, 10)
-	
+
 	self:createMapPropertiesGui()
+	self:createLayerListGui()
+	self:createLayerPropertiesGui()
 end
 
 function mainEditor:update(dt)

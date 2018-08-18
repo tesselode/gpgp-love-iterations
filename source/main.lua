@@ -1,8 +1,10 @@
+local font = require 'font'
 local gamestate = require 'lib.gamestate'
 local suit = require 'lib.suit'
 local welcome = require 'state.welcome'
 
 love.graphics.setDefaultFilter('nearest', 'nearest')
+love.graphics.setFont(font.small)
 
 function love.load()
 	gamestate.registerEvents()
