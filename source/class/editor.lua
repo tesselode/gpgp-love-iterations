@@ -1,4 +1,5 @@
 local Object = require 'lib.classic'
+local signal = require 'lib.signal'
 
 local Editor = Object:extend()
 
@@ -53,6 +54,15 @@ function Editor:new(map)
 	self:initMouseTracking()
 	self.currentItem = {}
 	self:setCurrentLayer(self.map.layers[#self.map.layers])
+
+	self.listeners = {
+		['moved layer up'] = signal.register('moved layer up', function()
+			self.currentLayer = self.currentLayer - 1
+		end),
+		['moved layer down'] = signal.register('moved layer down', function()
+			self.currentLayer = self.currentLayer + 1
+		end),
+	}
 end
 
 function Editor:trackMouse()
@@ -116,6 +126,12 @@ function Editor:wheelmoved(x, y)
 	if love.keyboard.isDown 'lctrl' then
 		if y < 0 then self:zoomOut() end
 		if y > 0 then self:zoomIn() end
+	end
+end
+
+function Editor:leave()
+	for s, f in ipairs(self.listeners) do
+		signal.remove(s, f)
 	end
 end
 

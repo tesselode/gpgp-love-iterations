@@ -20,6 +20,10 @@ function mapEditor:wheelmoved(...)
 	self.editor:wheelmoved(...)
 end
 
+function mapEditor:leave()
+	self.map:leave()
+end
+
 function mapEditor:createLayerMenu()
 	if imgui.BeginMenu('Layers [' .. self.editor:getCurrentLayer().name .. ']') then
 		for _, layer in ipairs(self.map.layers) do
