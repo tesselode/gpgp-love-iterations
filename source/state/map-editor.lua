@@ -8,7 +8,7 @@ function mapEditor:enter(previous, project)
 	self.project = project
 	self.map = Map(self.project)
 	self.editor = Editor(self.map)
-	self.showLayersWindow = false
+	self.showSidebar = false
 	self.layerRenameText = ''
 end
 
@@ -50,17 +50,23 @@ function mapEditor:createEntitiesMenu()
 	end
 end
 
-function mapEditor:createWindowsMenu()
-	if imgui.BeginMenu 'Windows' then
-		if imgui.MenuItem('Layers ' .. (self.showLayersWindow and '*' or '')) then
-			self.showLayersWindow = true
+function mapEditor:createViewMenu()
+	if imgui.BeginMenu 'View' then
+		if imgui.MenuItem('Sidebar ' .. (self.showSidebar and '*' or '')) then
+			self.showSidebar = not self.showSidebar
 		end
 		imgui.EndMenu()
 	end
 end
 
-function mapEditor:createLayersWindow()
-	self.showLayersWindow = imgui.Begin('Layers', true)
+function mapEditor:createSidebar()
+	imgui.SetNextWindowPos(0, 24)
+	imgui.SetNextWindowSize(300, 0)
+	self.showSidebar = imgui.Begin('Layers', true, {
+		'ImGuiWindowFlags_NoTitleBar',
+		'ImGuiWindowFlags_NoResize',
+		'ImGuiWindowFlags_NoMove',
+	})
 
 	-- layer select
 	local showEntitySelect = self.editor:getCurrentLayer():is(Layer.Entity)
@@ -130,11 +136,11 @@ function mapEditor:drawGui()
 		if self.editor:getCurrentLayer():is(Layer.Entity) then
 			self:createEntitiesMenu()
 		end
-		self:createWindowsMenu()
+		self:createViewMenu()
 		imgui.EndMainMenuBar()
 	end
-	if self.showLayersWindow then
-		self:createLayersWindow()
+	if self.showSidebar then
+		self:createSidebar()
 	end
 	imgui.Render()
 end
