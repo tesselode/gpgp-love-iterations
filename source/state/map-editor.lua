@@ -9,6 +9,7 @@ function mapEditor:enter(previous, project)
 	self.map = Map(self.project)
 	self.editor = Editor(self.map)
 	self.showLayersWindow = false
+	self.layerRenameText = ''
 end
 
 function mapEditor:update(dt)
@@ -58,6 +59,8 @@ end
 function mapEditor:createLayersWindow()
 	if self.showLayersWindow then
 		self.showLayersWindow = imgui.Begin('Layers', true)
+
+		-- layer select
 		imgui.PushItemWidth(-1)
 		local layers = {}
 		local selectedLayer
@@ -71,17 +74,26 @@ function mapEditor:createLayersWindow()
 		if newSelection ~= selectedLayer then
 			self.editor:switchLayer(self.map.layers[newSelection])
 		end
+		imgui.PopItemWidth()
+
+		-- buttons
 		if imgui.Button('Move up', -1, 0) then
 			self.map:moveLayerUp(self.editor:getSelectedLayer())
 		end
 		if imgui.Button('Move down', -1, 0) then
 			self.map:moveLayerDown(self.editor:getSelectedLayer())
 		end
-		imgui.Button('Rename layer', -1, 0)
+		imgui.PushItemWidth(-100)
+		self.layerRenameText = imgui.InputText('', self.layerRenameText, 100)
+		imgui.PopItemWidth()
+		imgui.SameLine()
+		if imgui.Button('Rename', 91, 0) then
+			self.map:renameLayer(self.editor:getSelectedLayer(), self.layerRenameText)
+			self.layerRenameText = ''
+		end
 		imgui.Button('Add geometry layer', -1, 0)
 		imgui.Button('Add entity layer', -1, 0)
 		imgui.Button('Remove layer', -1, 0)
-		imgui.PopItemWidth()
 		imgui.End()
 	end
 end

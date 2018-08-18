@@ -37,6 +37,10 @@ function Map:moveLayerDown(layer)
 	end
 end
 
+function Map:renameLayer(layer, name)
+	layer.name = name
+end
+
 function Map:draw()
 	for i = #self.layers, 1, -1 do
 		self.layers[i]:draw()
