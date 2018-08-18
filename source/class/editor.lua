@@ -107,7 +107,6 @@ function Editor:isCursorInBounds()
 	   and x < self.map.width
 	   and y >= 0
 	   and y < self.map.height
-	   and not imgui.GetWantCaptureMouse()
 end
 
 function Editor:update(dt)
