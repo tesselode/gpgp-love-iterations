@@ -28,6 +28,16 @@ function mainEditor:leave()
 	self.map:leave()
 end
 
+function mainEditor:drawMapProperties()
+	imgui.PushItemWidth(-1)
+	imgui.Text 'Map'
+	self.map.name = imgui.InputText('Map name', self.map.name, 100)
+	self.map.width, self.map.height = imgui.InputInt2('Map size', self.map.width, self.map.height)
+	self.map.width = math.max(1, self.map.width)
+	self.map.height = math.max(1, self.map.height)
+	imgui.PopItemWidth()
+end
+
 function mainEditor:drawLayerList()
 	imgui.PushItemWidth(-1)
 	imgui.Text 'Layers'
@@ -42,16 +52,15 @@ function mainEditor:drawLayerList()
 	imgui.PopItemWidth()
 end
 
-function mainEditor:drawLayerOptions()
+function mainEditor:drawLayerCommands()
 	imgui.Text 'Layer options'
 	imgui.PushItemWidth(-1)
-	self.editor:getCurrentLayer().name = imgui.InputText('', self.editor:getCurrentLayer().name, 100)
+	self.editor:getCurrentLayer().name = imgui.InputText('Layer name', self.editor:getCurrentLayer().name, 100)
 	imgui.PopItemWidth()
-	if imgui.Button('Move up', (imgui.GetWindowSize() - 25)/2, 0) then
+	if imgui.Button('Move up', -1, 0) then
 		self.map:moveLayerUp(self.editor:getCurrentLayer())
 	end
-	imgui.SameLine()
-	if imgui.Button('Move down', (imgui.GetWindowSize() - 25)/2, 0) then
+	if imgui.Button('Move down', -1, 0) then
 		self.map:moveLayerDown(self.editor:getCurrentLayer())
 	end
 	if imgui.Button('Add geometry layer', -1, 0) then
@@ -89,9 +98,13 @@ function mainEditor:createSidebar()
 		'ImGuiWindowFlags_NoMove',
 	})
 
+	self:drawMapProperties()
+	for _ = 1, 3 do imgui.Spacing() end
 	self:drawLayerList()
-	self:drawLayerOptions()
+	for _ = 1, 3 do imgui.Spacing() end
+	self:drawLayerCommands()
 	if self.editor:getCurrentLayer():is(Layer.Entity) then
+		for _ = 1, 3 do imgui.Spacing() end
 		self:drawEntityList()
 	end
 

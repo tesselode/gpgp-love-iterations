@@ -4,24 +4,23 @@ local GeometryLayer = Layer:extend()
 
 GeometryLayer.type = 'Geometry'
 
-function GeometryLayer:initTiles()
-	self.tiles = {}
-	for x = 0, self.map.width - 1 do
-		self.tiles[x] = {}
-	end
-end
-
 function GeometryLayer:new(...)
 	self.super.new(self, ...)
-	self:initTiles()
-end
-
-function GeometryLayer:place(x, y)
-	self.tiles[x][y] = true
+	self.tiles = {}
 end
 
 function GeometryLayer:remove(x, y)
-	self.tiles[x][y] = nil
+	for i = #self.tiles, 1, -1 do
+		local tile = self.tiles[i]
+		if tile.x == x and tile.y == y then
+			table.remove(self.tiles, i)
+		end
+	end
+end
+
+function GeometryLayer:place(x, y)
+	self:remove(x, y)
+	table.insert(self.tiles, {x = x, y = y})
 end
 
 function GeometryLayer:drawCursor(x, y)
@@ -34,12 +33,8 @@ end
 function GeometryLayer:draw()
 	love.graphics.push 'all'
 	love.graphics.setColor(1, 1, 1, 1/3)
-	for x = 0, self.map.width - 1 do
-		for y = 0, self.map.height - 1 do
-			if self.tiles[x][y] then
-				love.graphics.rectangle('fill', x, y, 1, 1)
-			end
-		end
+	for _, tile in ipairs(self.tiles) do
+		love.graphics.rectangle('fill', tile.x, tile.y, 1, 1)
 	end
 	love.graphics.pop()
 end

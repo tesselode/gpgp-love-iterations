@@ -6,6 +6,7 @@ local Map = Object:extend()
 
 function Map:new(project)
 	self.project = project
+	self.name = 'New map'
 	self.width = self.project.config.defaultSettings.width
 	self.height = self.project.config.defaultSettings.height
 	self.layers = {}
