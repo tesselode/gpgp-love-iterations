@@ -54,11 +54,11 @@ function EntityLayer:load(data)
 	for _, entity in ipairs(data) do
 		for _, item in ipairs(self.palette) do
 			if entity.name == item.name then
-				table.insert(self.entities, {
+				self.entities[{
 					x = entity.x,
 					y = entity.y,
 					entity = item,
-				})
+				}] = true
 			end
 		end
 	end

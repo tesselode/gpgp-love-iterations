@@ -1,4 +1,5 @@
 local Editor = require 'class.editor'
+local gamestate = require 'lib.gamestate'
 local Layer = require 'class.layer'
 local Map = require 'class.map'
 
@@ -24,8 +25,13 @@ function mainEditor:wheelmoved(...)
 	self.editor:wheelmoved(...)
 end
 
+function mainEditor:filedropped(file)
+	self.map = Map(self.project, file:read())
+	self.editor = Editor(self.map)
+end
+
 function mainEditor:leave()
-	self.map:leave()
+	self.editor:leave()
 end
 
 function mainEditor:drawMapProperties()

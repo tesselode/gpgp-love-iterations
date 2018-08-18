@@ -1,19 +1,38 @@
 local bitser = require 'lib.bitser'
-local inspect = require 'lib.inspect'
 local Layer = require 'class.layer'
 local Object = require 'lib.classic'
 local signal = require 'lib.signal'
 
 local Map = Object:extend()
 
-function Map:new(project)
-	self.project = project
+function Map:init()
 	self.name = 'New map'
 	self.width = self.project.config.defaultSettings.width
 	self.height = self.project.config.defaultSettings.height
-	self.layers = {}
 	for _, layer in ipairs(self.project.config.defaultSettings.layers) do
 		table.insert(self.layers, Layer[layer.type](self, layer.name))
+	end
+end
+
+function Map:load(data)
+	data = bitser.loads(data)
+	self.name = data.name
+	self.width = data.width
+	self.height = data.height
+	for _, layerData in ipairs(data.layers) do
+		local layer = Layer[layerData.type](self, layerData.name)
+		layer:load(layerData.data)
+		table.insert(self.layers, layer)
+	end
+end
+
+function Map:new(project, data)
+	self.project = project
+	self.layers = {}
+	if data then
+		self:load(data)
+	else
+		self:init()
 	end
 end
 

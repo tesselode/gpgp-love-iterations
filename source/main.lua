@@ -19,6 +19,10 @@ function love.resize(...)
     gamestate.resize(...)
 end
 
+function love.filedropped(...)
+    gamestate.filedropped(...)
+end
+
 function love.draw()
     love.graphics.clear(1/12, 1/12, 1/12)
 end
