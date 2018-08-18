@@ -23,6 +23,14 @@ function GeometryLayer:place(x, y)
 	table.insert(self.tiles, {x = x, y = y})
 end
 
+function GeometryLayer:save()
+	return self.tiles
+end
+
+function GeometryLayer:load(data)
+	self.tiles = data
+end
+
 function GeometryLayer:drawCursor(x, y)
 	love.graphics.push 'all'
 	love.graphics.setColor(1, 1, 1, 1/2)

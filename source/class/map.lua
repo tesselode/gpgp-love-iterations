@@ -1,3 +1,5 @@
+local bitser = require 'lib.bitser'
+local inspect = require 'lib.inspect'
 local Layer = require 'class.layer'
 local Object = require 'lib.classic'
 local signal = require 'lib.signal'
@@ -13,6 +15,25 @@ function Map:new(project)
 	for _, layer in ipairs(self.project.config.defaultSettings.layers) do
 		table.insert(self.layers, Layer[layer.type](self, layer.name))
 	end
+end
+
+function Map:save()
+	local data = {
+		name = self.name,
+		width = self.width,
+		height = self.height,
+		layers = {},
+	}
+	for _, layer in ipairs(self.layers) do
+		table.insert(data.layers, {
+			type = layer.type,
+			name = layer.name,
+			data = layer:save(),
+		})
+	end
+	local path = self.project.path .. '/maps/' .. self.name .. '.map'
+	local file = io.open(path, 'w')
+	file:write(bitser.dumps(data))
 end
 
 function Map:getLayerPosition(layer)

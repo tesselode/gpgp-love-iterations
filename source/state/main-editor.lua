@@ -35,6 +35,9 @@ function mainEditor:drawMapProperties()
 	self.map.width, self.map.height = imgui.InputInt2('Map size', self.map.width, self.map.height)
 	self.map.width = math.max(1, self.map.width)
 	self.map.height = math.max(1, self.map.height)
+	if imgui.Button('Save', -1, 0) then
+		self.map:save()
+	end
 	imgui.PopItemWidth()
 end
 

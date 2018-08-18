@@ -15,7 +15,7 @@ end
 function welcome:directorydropped(path)
 	love.filesystem.mount(path, 'project')
 	if not love.filesystem.getInfo 'project/config.lua' then return end
-	local project = Project 'project'
+	local project = Project(path, 'project')
 	gamestate.switch(mainEditor, project)
 end
 

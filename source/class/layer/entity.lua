@@ -38,6 +38,32 @@ function EntityLayer:place(x, y, item)
 	self.entities[entity] = true
 end
 
+function EntityLayer:save()
+	local data = {}
+	for entity, _ in pairs(self.entities) do
+		table.insert(data, {
+			name = entity.entity.name,
+			x = entity.x,
+			y = entity.y,
+		})
+	end
+	return data
+end
+
+function EntityLayer:load(data)
+	for _, entity in ipairs(data) do
+		for _, item in ipairs(self.palette) do
+			if entity.name == item.name then
+				table.insert(self.entities, {
+					x = entity.x,
+					y = entity.y,
+					entity = item,
+				})
+			end
+		end
+	end
+end
+
 function EntityLayer:_drawEntity(x, y, entity)
 	local tileSize = self.map.project.config.tileSize
 	love.graphics.draw(self.map.project.entityImages[entity], x, y, 0, 1 / tileSize, 1 / tileSize)

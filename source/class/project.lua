@@ -11,7 +11,8 @@ function Project:loadEntityImages()
 	end
 end
 
-function Project:new(mountPoint)
+function Project:new(path, mountPoint)
+	self.path = path
 	self.mountPoint = mountPoint
 	self.config = require(mountPoint .. '.config')
 	self.images = {}
