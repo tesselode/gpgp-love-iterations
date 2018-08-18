@@ -3,7 +3,6 @@ require 'imgui'
 local welcome = require 'state.welcome'
 
 love.graphics.setDefaultFilter('nearest', 'nearest')
-love.graphics.setFont(love.graphics.newFont('font/Roboto-Medium.ttf', 18))
 imgui.SetGlobalFontFromFileTTF('font/Roboto-Medium.ttf', 18, 0, 0, 4, 4)
 imgui.StyleColorsDark()
 
@@ -14,6 +13,10 @@ end
 
 function love.update(dt)
 	imgui.NewFrame()
+end
+
+function love.resize(...)
+    gamestate.resize(...)
 end
 
 function love.draw()

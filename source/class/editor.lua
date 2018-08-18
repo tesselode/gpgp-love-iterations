@@ -4,7 +4,7 @@ local signal = require 'lib.signal'
 local Editor = Object:extend()
 
 function Editor:initCamera()
-	self.panX = love.graphics.getWidth() / 2
+	self.panX = 250 + (love.graphics.getWidth() - 250) / 2
 	self.panY = love.graphics.getHeight() / 2
 	self.scale = 32
 	self.transform = love.math.newTransform(self.panX, self.panY,
