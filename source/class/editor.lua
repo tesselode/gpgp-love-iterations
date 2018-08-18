@@ -17,29 +17,42 @@ function Editor:initMouseTracking()
 	self.mouseX, self.mouseY = love.mouse.getPosition()
 end
 
-function Editor:getSelectedLayer()
-	return self.selectedLayer
+function Editor:getCurrentLayer()
+	return self.map.layers[self.currentLayer]
 end
 
-function Editor:switchLayer(layer)
-	self.selectedLayer = layer
-	self.paletteSelection[layer] = self.paletteSelection[layer] or 1
+function Editor:setCurrentLayer(layer)
+	self.currentItem[layer] = self.currentItem[layer] or 1
+	for i = 1, #self.map.layers do
+		if self.map.layers[i] == layer then
+			self.currentLayer = i
+			return
+		end
+	end
 end
 
-function Editor:getPaletteSelection()
-	return self.selectedLayer.palette[self.paletteSelection[self.selectedLayer]]
+function Editor:getCurrentItem()
+	if self:getCurrentLayer().palette then
+		return self:getCurrentLayer().palette[self.currentItem[self:getCurrentLayer()]]
+	end
+	return false
 end
 
-function Editor:setPaletteSelection(selected)
-	self.paletteSelection[self.selectedLayer] = selected
+function Editor:setCurrentItem(item)
+	for i = 1, #self:getCurrentLayer().palette do
+		if self:getCurrentLayer().palette[i] == item then
+			self.currentItem[self:getCurrentLayer()] = i
+			return
+		end
+	end
 end
 
 function Editor:new(map)
 	self.map = map
 	self:initCamera()
 	self:initMouseTracking()
-	self.paletteSelection = {}
-	self:switchLayer(self.map.layers[#self.map.layers])
+	self.currentItem = {}
+	self:setCurrentLayer(self.map.layers[#self.map.layers])
 end
 
 function Editor:trackMouse()
@@ -83,10 +96,10 @@ function Editor:update(dt)
 	if self:isCursorInBounds() then
 		if love.mouse.isDown(1) then
 			local x, y = self:getCursorPosition()
-			self.selectedLayer:place(x, y, self.paletteSelection[self.selectedLayer])
+			self:getCurrentLayer():place(x, y, self:getCurrentItem())
 		elseif love.mouse.isDown(2) then
 			local x, y = self:getCursorPosition()
-			self.selectedLayer:remove(x, y)
+			self:getCurrentLayer():remove(x, y)
 		end
 	end
 end
@@ -103,18 +116,6 @@ function Editor:wheelmoved(x, y)
 	if love.keyboard.isDown 'lctrl' then
 		if y < 0 then self:zoomOut() end
 		if y > 0 then self:zoomIn() end
-	elseif self.selectedLayer.palette then
-		if y < 0 then
-			self.paletteSelection[self.selectedLayer] = self.paletteSelection[self.selectedLayer] - 1
-			if self.paletteSelection[self.selectedLayer] < 1 then
-				self.paletteSelection[self.selectedLayer] = #self.selectedLayer.palette
-			end
-		elseif y > 0 then
-			self.paletteSelection[self.selectedLayer] = self.paletteSelection[self.selectedLayer] + 1
-			if self.paletteSelection[self.selectedLayer] > #self.selectedLayer.palette then
-				self.paletteSelection[self.selectedLayer] = 1
-			end
-		end
 	end
 end
 
@@ -131,7 +132,7 @@ end
 
 function Editor:drawCursor()
 	local x, y = self:getCursorPosition()
-	self.selectedLayer:drawCursor(x, y, self.paletteSelection[self.selectedLayer])
+	self:getCurrentLayer():drawCursor(x, y, self:getCurrentItem())
 end
 
 function Editor:draw()

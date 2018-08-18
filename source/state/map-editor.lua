@@ -21,12 +21,12 @@ function mapEditor:wheelmoved(...)
 end
 
 function mapEditor:createLayerMenu()
-	if imgui.BeginMenu('Layers [' .. self.editor:getSelectedLayer().name .. ']') then
+	if imgui.BeginMenu('Layers [' .. self.editor:getCurrentLayer().name .. ']') then
 		for _, layer in ipairs(self.map.layers) do
-			local layerNameString = self.editor:getSelectedLayer() == layer and '* ' or ''
+			local layerNameString = self.editor:getCurrentLayer() == layer and '* ' or ''
 			layerNameString = layerNameString .. layer.name
 			if imgui.MenuItem(layerNameString) then
-				self.editor:switchLayer(layer)
+				self.editor:setCurrentLayer(layer)
 			end
 		end
 		imgui.EndMenu()
@@ -34,13 +34,12 @@ function mapEditor:createLayerMenu()
 end
 
 function mapEditor:createEntitiesMenu()
-	local selectedEntity = self.editor:getPaletteSelection()
-	if imgui.BeginMenu('Entities [' .. selectedEntity.name .. ']') then
-		for i, entity in ipairs(self.project.config.entities) do
-			local entityNameString = entity == selectedEntity and '* ' or ''
+	if imgui.BeginMenu('Entities [' .. self.editor:getCurrentItem().name .. ']') then
+		for _, entity in ipairs(self.project.config.entities) do
+			local entityNameString = entity == self.editor:getCurrentItem() and '* ' or ''
 			entityNameString = entityNameString .. entity.name
 			if imgui.MenuItem(entityNameString) then
-				self.editor:setPaletteSelection(i)
+				self.editor:setCurrentItem(entity)
 			end
 		end
 		imgui.EndMenu()
@@ -63,39 +62,35 @@ function mapEditor:createLayersWindow()
 		-- layer select
 		imgui.PushItemWidth(-1)
 		local layers = {}
-		local selectedLayer
-		for i, layer in ipairs(self.map.layers) do
+		for _, layer in ipairs(self.map.layers) do
 			table.insert(layers, layer.name .. ' (' .. layer.type .. ')')
-			if layer == self.editor:getSelectedLayer() then
-				selectedLayer = i
-			end
 		end
-		local newSelection = imgui.ListBox('', selectedLayer, layers, #layers, 10)
-		if newSelection ~= selectedLayer then
-			self.editor:switchLayer(self.map.layers[newSelection])
+		local newSelection = imgui.ListBox('', self.editor.currentLayer, layers, #layers, 10)
+		if newSelection ~= self.editor.currentLayer then
+			self.editor:setCurrentLayer(self.map.layers[newSelection])
 		end
 		imgui.PopItemWidth()
 
 		-- buttons
 		if imgui.Button('Move up', -1, 0) then
-			self.map:moveLayerUp(self.editor:getSelectedLayer())
+			self.map:moveLayerUp(self.editor:getCurrentLayer())
 		end
 		if imgui.Button('Move down', -1, 0) then
-			self.map:moveLayerDown(self.editor:getSelectedLayer())
+			self.map:moveLayerDown(self.editor:getCurrentLayer())
 		end
 		imgui.PushItemWidth(-100)
 		self.layerRenameText = imgui.InputText('', self.layerRenameText, 100)
 		imgui.PopItemWidth()
 		imgui.SameLine()
 		if imgui.Button('Rename', 91, 0) then
-			self.map:renameLayer(self.editor:getSelectedLayer(), self.layerRenameText)
+			self.map:renameLayer(self.editor:getCurrentLayer(), self.layerRenameText)
 			self.layerRenameText = ''
 		end
 		if imgui.Button('Add geometry layer', -1, 0) then
-			self.map:addLayer(self.editor:getSelectedLayer(), 'Geometry')
+			self.map:addLayer(self.editor:getCurrentLayer(), 'Geometry')
 		end
 		if imgui.Button('Add entity layer', -1, 0) then
-			self.map:addLayer(self.editor:getSelectedLayer(), 'Entity')
+			self.map:addLayer(self.editor:getCurrentLayer(), 'Entity')
 		end
 		imgui.End()
 	end
@@ -104,7 +99,7 @@ end
 function mapEditor:drawGui()
 	if imgui.BeginMainMenuBar() then
 		self:createLayerMenu()
-		if self.editor:getSelectedLayer():is(Layer.Entity) then
+		if self.editor:getCurrentLayer():is(Layer.Entity) then
 			self:createEntitiesMenu()
 		end
 		self:createWindowsMenu()

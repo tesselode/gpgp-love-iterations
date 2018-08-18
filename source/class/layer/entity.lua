@@ -28,12 +28,12 @@ function EntityLayer:remove(x, y)
 	if entity then self:_removeEntity(entity) end
 end
 
-function EntityLayer:place(x, y, selected)
+function EntityLayer:place(x, y, item)
 	self:remove(x, y)
 	local entity = {
 		x = x,
 		y = y,
-		entity = self.palette[selected],
+		entity = item,
 	}
 	self.entities[entity] = true
 end
@@ -49,10 +49,10 @@ function EntityLayer:draw()
 	end
 end
 
-function EntityLayer:drawCursor(x, y, selected)
+function EntityLayer:drawCursor(x, y, item)
 	love.graphics.push 'all'
 	love.graphics.setColor(1, 1, 1, 2/3)
-	self:_drawEntity(x, y, self.palette[selected])
+	self:_drawEntity(x, y, item)
 	love.graphics.pop()
 end
 
