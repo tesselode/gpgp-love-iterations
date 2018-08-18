@@ -5,6 +5,7 @@ local welcome = require 'state.welcome'
 love.graphics.setDefaultFilter('nearest', 'nearest')
 love.graphics.setFont(love.graphics.newFont('font/Roboto-Medium.ttf', 18))
 imgui.SetGlobalFontFromFileTTF('font/Roboto-Medium.ttf', 18, 0, 0, 4, 4)
+imgui.StyleColorsDark()
 
 function love.load()
 	gamestate.registerEvents {'update', 'draw', 'directorydropped'}
@@ -13,6 +14,10 @@ end
 
 function love.update(dt)
 	imgui.NewFrame()
+end
+
+function love.draw()
+    love.graphics.clear(1/12, 1/12, 1/12)
 end
 
 function love.quit()
