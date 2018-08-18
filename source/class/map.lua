@@ -13,34 +13,38 @@ function Map:new(project)
 	end
 end
 
-function Map:moveLayerUp(layer)
-	if layer == self.layers[1] then return end
-	for i = 1, #self.layers - 1 do
-		if layer == self.layers[i + 1] then
-			local a = self.layers[i]
-			local b = self.layers[i + 1]
-			self.layers[i] = b
-			self.layers[i + 1] = a
+function Map:getLayerPosition(layer)
+	for i = 1, #self.layers do
+		if self.layers[i] == layer then
+			return i
 		end
 	end
 end
 
+function Map:moveLayerUp(layer)
+	local position = self:getLayerPosition(layer)
+	if position == 1 then return end
+	local above = self.layers[position - 1]
+	self.layers[position] = above
+	self.layers[position - 1] = layer
+end
+
 function Map:moveLayerDown(layer)
-	if layer == self.layers[#self.layers] then return end
-	for i = #self.layers, 2, -1 do
-		if layer == self.layers[i - 1] then
-			local a = self.layers[i]
-			local b = self.layers[i - 1]
-			self.layers[i] = b
-			self.layers[i - 1] = a
-		end
-	end
+	local position = self:getLayerPosition(layer)
+	if position == #self.layers then return end
+	local below = self.layers[position + 1]
+	self.layers[position] = below
+	self.layers[position + 1] = layer
 end
 
 function Map:renameLayer(layer, name)
 	layer.name = name
 end
 
+function Map:addLayer(selectedLayer, type)
+	local position = self:getLayerPosition(selectedLayer)
+	table.insert(self.layers, position, Layer[type](self, type))
+end
 function Map:draw()
 	for i = #self.layers, 1, -1 do
 		self.layers[i]:draw()

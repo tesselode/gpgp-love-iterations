@@ -91,9 +91,12 @@ function mapEditor:createLayersWindow()
 			self.map:renameLayer(self.editor:getSelectedLayer(), self.layerRenameText)
 			self.layerRenameText = ''
 		end
-		imgui.Button('Add geometry layer', -1, 0)
-		imgui.Button('Add entity layer', -1, 0)
-		imgui.Button('Remove layer', -1, 0)
+		if imgui.Button('Add geometry layer', -1, 0) then
+			self.map:addLayer(self.editor:getSelectedLayer(), 'Geometry')
+		end
+		if imgui.Button('Add entity layer', -1, 0) then
+			self.map:addLayer(self.editor:getSelectedLayer(), 'Entity')
+		end
 		imgui.End()
 	end
 end
