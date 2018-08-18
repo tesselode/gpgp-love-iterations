@@ -1,4 +1,4 @@
-local mapEditor = require 'state.map-editor'
+local mainEditor = require 'state.main-editor'
 local gamestate = require 'lib.gamestate'
 local Project = require 'class.project'
 
@@ -8,7 +8,7 @@ function welcome:directorydropped(path)
 	love.filesystem.mount(path, 'project')
 	assert(love.filesystem.getInfo 'project/config.lua', 'not a project folder')
 	local project = Project 'project'
-	gamestate.switch(mapEditor, project)
+	gamestate.switch(mainEditor, project)
 end
 
 function welcome:draw()
