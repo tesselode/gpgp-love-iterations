@@ -62,6 +62,9 @@ function Editor:new(map)
 		['moved layer down'] = signal.register('moved layer down', function()
 			self.currentLayer = self.currentLayer + 1
 		end),
+		['added layer'] = signal.register('added layer', function(layer)
+			self:setCurrentLayer(layer)
+		end)
 	}
 end
 

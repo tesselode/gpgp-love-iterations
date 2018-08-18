@@ -44,9 +44,10 @@ function Map:renameLayer(layer, name)
 	layer.name = name
 end
 
-function Map:addLayer(selectedLayer, type)
-	local position = self:getLayerPosition(selectedLayer)
-	table.insert(self.layers, position, Layer[type](self, type))
+function Map:addLayer(position, type)
+	local layer = Layer[type](self, type)
+	table.insert(self.layers, position, layer)
+	signal.emit('added layer', layer)
 end
 
 function Map:draw()
