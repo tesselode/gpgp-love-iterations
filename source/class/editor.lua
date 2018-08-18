@@ -103,7 +103,7 @@ function Editor:wheelmoved(x, y)
 	if love.keyboard.isDown 'lctrl' then
 		if y < 0 then self:zoomOut() end
 		if y > 0 then self:zoomIn() end
-	else
+	elseif self.selectedLayer.palette then
 		if y < 0 then
 			self.paletteSelection[self.selectedLayer] = self.paletteSelection[self.selectedLayer] - 1
 			if self.paletteSelection[self.selectedLayer] < 1 then
