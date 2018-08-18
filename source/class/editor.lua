@@ -64,7 +64,15 @@ function Editor:new(map)
 		end),
 		['added layer'] = signal.register('added layer', function(layer)
 			self:setCurrentLayer(layer)
-		end)
+		end),
+		['removed layer'] = signal.register('removed layer', function(layer)
+			self.currentItem[layer] = nil
+			if #self.map.layers == 0 then
+				self.currentLayer = nil
+			elseif self.currentLayer > #self.map.layers then
+				self:setCurrentLayer(self.map.layers[#self.map.layers])
+			end
+		end),
 	}
 end
 

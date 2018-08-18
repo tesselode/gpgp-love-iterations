@@ -96,6 +96,9 @@ function mapEditor:createLayersWindow()
 		if imgui.Button('Add entity layer', -1, 0) then
 			self.map:addLayer(self.editor.currentLayer, 'Entity')
 		end
+		if imgui.Button('Remove layer', -1, 0) then
+			self.map:removeLayer(self.editor:getCurrentLayer())
+		end
 		imgui.End()
 	end
 end

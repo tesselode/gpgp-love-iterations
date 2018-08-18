@@ -50,6 +50,12 @@ function Map:addLayer(position, type)
 	signal.emit('added layer', layer)
 end
 
+function Map:removeLayer(layer)
+	if #self.layers == 1 then return end
+	table.remove(self.layers, self:getLayerPosition(layer))
+	signal.emit('removed layer', layer)
+end
+
 function Map:draw()
 	for i = #self.layers, 1, -1 do
 		self.layers[i]:draw()
