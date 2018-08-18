@@ -54,21 +54,15 @@ function mapEditor:createSidebar()
 
 	-- layer options
 	imgui.Text 'Layer options'
-	local width = imgui.GetWindowSize()
-	if imgui.Button('Move up', (width - 25)/2, 0) then
+	imgui.PushItemWidth(-1)
+	self.editor:getCurrentLayer().name = imgui.InputText('', self.editor:getCurrentLayer().name, 100)
+	imgui.PopItemWidth()
+	if imgui.Button('Move up', (imgui.GetWindowSize() - 25)/2, 0) then
 		self.map:moveLayerUp(self.editor:getCurrentLayer())
 	end
 	imgui.SameLine()
-	if imgui.Button('Move down', (width - 25)/2, 0) then
+	if imgui.Button('Move down', (imgui.GetWindowSize() - 25)/2, 0) then
 		self.map:moveLayerDown(self.editor:getCurrentLayer())
-	end
-	imgui.PushItemWidth(-100)
-	self.layerRenameText = imgui.InputText('', self.layerRenameText, 100)
-	imgui.PopItemWidth()
-	imgui.SameLine()
-	if imgui.Button('Rename', 91, 0) then
-		self.map:renameLayer(self.editor:getCurrentLayer(), self.layerRenameText)
-		self.layerRenameText = ''
 	end
 	if imgui.Button('Add geometry layer', -1, 0) then
 		self.map:addLayer(self.editor.currentLayer, 'Geometry')
