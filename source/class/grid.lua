@@ -4,7 +4,28 @@ local Grid = Object:extend()
 
 function Grid:new(level)
 	self.level = level
-	self.zoom = 16
+	self.zoom = 32
+	self.transform = love.math.newTransform()
+	self.transform:translate(love.graphics.getWidth() / 2,
+		love.graphics.getHeight() / 2)
+	self.transform:scale(self.zoom)
+	self.transform:translate(-self.level.width / 2, -self.level.height / 2)
+end
+
+function Grid:mousemoved(x, y, dx, dy, istouch)
+	if not love.mouse.isDown(3) then return end
+	self.transform:translate(dx / self.zoom, dy / self.zoom)
+end
+
+function Grid:wheelmoved(x, y)
+	if not love.keyboard.isDown('lctrl') then return end
+	if y < 0 then
+		self.zoom = self.zoom / 1.1
+		self.transform:scale(1 / 1.1)
+	elseif y > 0 then
+		self.zoom = self.zoom * 1.1
+		self.transform:scale(1.1)
+	end
 end
 
 function Grid:drawBorder()
@@ -30,7 +51,7 @@ end
 
 function Grid:draw()
 	love.graphics.push 'all'
-	love.graphics.scale(self.zoom)
+	love.graphics.applyTransform(self.transform)
 	self:drawGridlines()
 	self:drawBorder()
 	love.graphics.pop()
