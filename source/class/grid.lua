@@ -18,7 +18,7 @@ function Grid:mousemoved(x, y, dx, dy, istouch)
 end
 
 function Grid:wheelmoved(x, y)
-	if not love.keyboard.isDown('lctrl') then return end
+	if not love.keyboard.isDown 'lctrl' then return end
 	if y < 0 then
 		self.zoom = self.zoom / 1.1
 		self.transform:scale(1 / 1.1)
