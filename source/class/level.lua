@@ -7,8 +7,8 @@ local Level = Object:extend()
 function Level:new(project, data)
 	self.project = project
 	self.data = data or {
-		width = project.data.defaultLevelWidth,
-		height = project.data.defaultLevelHeight,
+		width = project.defaultLevelWidth,
+		height = project.defaultLevelHeight,
 		layers = {GeometryLayer()},
 	}
 end
