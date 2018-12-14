@@ -7,11 +7,12 @@ function Grid:initTransform()
 	self.transform:translate(love.graphics.getWidth() / 2,
 		love.graphics.getHeight() / 2)
 	self.transform:scale(self.zoom)
-	self.transform:translate(-self.level.width / 2, -self.level.height / 2)
+	self.transform:translate(-self.width / 2, -self.height / 2)
 end
 
-function Grid:new(level)
-	self.level = level
+function Grid:new(width, height)
+	self.width = width
+	self.height = height
 	self.zoom = 32
 	self.previousCursorX = 0
 	self.previousCursorY = 0
@@ -50,7 +51,7 @@ function Grid:drawBorder()
 	love.graphics.push 'all'
 	love.graphics.setColor(1, 1, 1)
 	love.graphics.setLineWidth(2 / self.zoom)
-	love.graphics.rectangle('line', 0, 0, self.level.width, self.level.height)
+	love.graphics.rectangle('line', 0, 0, self.width, self.height)
 	love.graphics.pop()
 end
 
@@ -58,11 +59,11 @@ function Grid:drawGridlines()
 	love.graphics.push 'all'
 	love.graphics.setColor(1, 1, 1, 1/3)
 	love.graphics.setLineWidth(2 / self.zoom)
-	for x = 1, self.level.width - 1 do
-		love.graphics.line(x, 0, x, self.level.height)
+	for x = 1, self.width - 1 do
+		love.graphics.line(x, 0, x, self.height)
 	end
-	for y = 1, self.level.height - 1 do
-		love.graphics.line(0, y, self.level.width, y)
+	for y = 1, self.height - 1 do
+		love.graphics.line(0, y, self.width, y)
 	end
 	love.graphics.pop()
 end
@@ -75,7 +76,6 @@ function Grid:draw(f)
 	self:drawBorder()
 	love.graphics.pop()
 	local cursorX, cursorY = self:getCursorPosition()
-	love.graphics.print(cursorX .. ' ' .. cursorY)
 end
 
 return Grid

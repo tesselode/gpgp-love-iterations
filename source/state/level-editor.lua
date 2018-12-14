@@ -5,7 +5,8 @@ local Level = require 'class.level'
 local levelEditor = {}
 
 function levelEditor:initGrid()
-	self.grid = Grid(self.level)
+	local level = self:getCurrentLevelState()
+	self.grid = Grid(level.width, level.height)
 
 	function self.grid.onMoveCursor(x, y)
 		local cursorX, cursorY = self.grid:getCursorPosition()
@@ -18,24 +19,61 @@ function levelEditor:initGrid()
 end
 
 function levelEditor:enter(_, project, level)
-	self.level = level or Level(project)
+	self.levelHistory = {
+		{
+			level = level or Level(project),
+			description = level and 'Open level' or 'New level',
+		}
+	}
+	self.levelHistoryPosition = 1
 	self.selectedLayerIndex = 1
 	self:initGrid()
 end
 
+function levelEditor:getCurrentLevelState()
+	return self.levelHistory[self.levelHistoryPosition].level
+end
+
+function levelEditor:modifyLevel(level, description)
+	self.levelHistoryPosition = self.levelHistoryPosition + 1
+	for i = self.levelHistoryPosition + 1, #self.levelHistory do
+		self.levelHistory[i] = nil
+	end
+	self.levelHistory[self.levelHistoryPosition] = {
+		level = level,
+		description = description,
+	}
+end
+
+function levelEditor:undo()
+	if self.levelHistoryPosition > 1 then
+		self.levelHistoryPosition = self.levelHistoryPosition - 1
+	end
+end
+
+function levelEditor:redo()
+	if self.levelHistoryPosition < #self.levelHistory then
+		self.levelHistoryPosition = self.levelHistoryPosition + 1
+	end
+end
+
 function levelEditor:place(l, t, r, b)
-	local selectedLayer = self.level.layers[self.selectedLayerIndex]
+	local level = self:getCurrentLevelState()
+	local selectedLayer = level.layers[self.selectedLayerIndex]
 	if selectedLayer:is(GeometryLayer) then
-		self.level = self.level:setLayer(self.selectedLayerIndex,
-			selectedLayer:place(l, t, r, b))
+		self:modifyLevel(level:setLayer(self.selectedLayerIndex,
+				selectedLayer:place(l, t, r, b)),
+			'Place tiles')
 	end
 end
 
 function levelEditor:remove(l, t, r, b)
-	local selectedLayer = self.level.layers[self.selectedLayerIndex]
+	local level = self:getCurrentLevelState()
+	local selectedLayer = level.layers[self.selectedLayerIndex]
 	if selectedLayer:is(GeometryLayer) then
-		self.level = self.level:setLayer(self.selectedLayerIndex,
-			selectedLayer:remove(l, t, r, b))
+		self:modifyLevel(level:setLayer(self.selectedLayerIndex,
+				selectedLayer:remove(l, t, r, b)),
+			'Remove tiles')
 	end
 end
 
@@ -56,6 +94,15 @@ function levelEditor:wheelmoved(x, y)
 	self.grid:wheelmoved(x, y)
 end
 
+function levelEditor:keypressed(key, scancode, isrepeat)
+	if key == 'z' and love.keyboard.isDown 'lctrl' then
+		self:undo()
+	end
+	if key == 'y' and love.keyboard.isDown 'lctrl' then
+		self:redo()
+	end
+end
+
 function levelEditor:drawCursor()
 	local cursorX, cursorY = self.grid:getCursorPosition()
 	love.graphics.push 'all'
@@ -67,7 +114,7 @@ end
 
 function levelEditor:draw()
 	self.grid:draw(function()
-		self.level:draw()
+		self:getCurrentLevelState():draw()
 		self:drawCursor()
 	end)
 end
