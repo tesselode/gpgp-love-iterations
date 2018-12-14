@@ -1,4 +1,4 @@
-local GeometryLayer = require 'layer.geometry'
+local GeometryLayer = require 'class.layer.geometry'
 local Object = require 'lib.classic'
 
 local Level = Object:extend()
@@ -11,8 +11,7 @@ function Level:new(project)
 end
 
 function Level:setLayer(layerIndex, layer)
-	local level = Level()
-	level.project = self.project
+	local level = Level(self.project)
 	level.width = self.width
 	level.height = self.height
 	for i, v in ipairs(self.layers) do
@@ -23,6 +22,12 @@ function Level:setLayer(layerIndex, layer)
 		end
 	end
 	return level
+end
+
+function Level:draw()
+	for _, layer in ipairs(self.layers) do
+		layer:draw()
+	end
 end
 
 return Level

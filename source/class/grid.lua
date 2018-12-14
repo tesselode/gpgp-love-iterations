@@ -2,14 +2,20 @@ local Object = require 'lib.classic'
 
 local Grid = Object:extend()
 
-function Grid:new(level)
-	self.level = level
-	self.zoom = 32
+function Grid:initTransform()
 	self.transform = love.math.newTransform()
 	self.transform:translate(love.graphics.getWidth() / 2,
 		love.graphics.getHeight() / 2)
 	self.transform:scale(self.zoom)
 	self.transform:translate(-self.level.width / 2, -self.level.height / 2)
+end
+
+function Grid:new(level)
+	self.level = level
+	self.zoom = 32
+	self.previousCursorX = 0
+	self.previousCursorY = 0
+	self:initTransform()
 end
 
 function Grid:getCursorPosition()
@@ -18,8 +24,15 @@ function Grid:getCursorPosition()
 end
 
 function Grid:mousemoved(x, y, dx, dy, istouch)
-	if not love.mouse.isDown(3) then return end
-	self.transform:translate(dx / self.zoom, dy / self.zoom)
+	if love.mouse.isDown(3) then
+		self.transform:translate(dx / self.zoom, dy / self.zoom)
+		return
+	end
+	local cursorX, cursorY = self:getCursorPosition()
+	if cursorX ~= self.previousCursorX or cursorY ~= self.previousCursorY then
+		if self.onMoveCursor then self.onMoveCursor(cursorX, cursorY) end
+	end
+	self.previousCursorX, self.previousCursorY = cursorX, cursorY
 end
 
 function Grid:wheelmoved(x, y)
