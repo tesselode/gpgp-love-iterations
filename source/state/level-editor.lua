@@ -16,8 +16,18 @@ function levelEditor:wheelmoved(x, y)
 	self.grid:wheelmoved(x, y)
 end
 
+function levelEditor:drawCursor()
+	local cursorX, cursorY = self.grid:getCursorPosition()
+	love.graphics.push 'all'
+	love.graphics.setColor(116/255, 208/255, 232/255, 1/3)
+	love.graphics.rectangle('fill', cursorX, cursorY, 1, 1)
+	love.graphics.pop()
+end
+
 function levelEditor:draw()
-	self.grid:draw()
+	self.grid:draw(function()
+		self:drawCursor()
+	end)
 end
 
 return levelEditor

@@ -12,6 +12,11 @@ function Grid:new(level)
 	self.transform:translate(-self.level.width / 2, -self.level.height / 2)
 end
 
+function Grid:getCursorPosition()
+	local relativeX, relativeY = self.transform:inverseTransformPoint(love.mouse.getPosition())
+	return math.floor(relativeX), math.floor(relativeY)
+end
+
 function Grid:mousemoved(x, y, dx, dy, istouch)
 	if not love.mouse.isDown(3) then return end
 	self.transform:translate(dx / self.zoom, dy / self.zoom)
@@ -49,12 +54,15 @@ function Grid:drawGridlines()
 	love.graphics.pop()
 end
 
-function Grid:draw()
+function Grid:draw(f)
 	love.graphics.push 'all'
 	love.graphics.applyTransform(self.transform)
+	f()
 	self:drawGridlines()
 	self:drawBorder()
 	love.graphics.pop()
+	local cursorX, cursorY = self:getCursorPosition()
+	love.graphics.print(cursorX .. ' ' .. cursorY)
 end
 
 return Grid
