@@ -75,7 +75,6 @@ function Grid:draw(f)
 	self:drawGridlines()
 	self:drawBorder()
 	love.graphics.pop()
-	local cursorX, cursorY = self:getCursorPosition()
 end
 
 return Grid

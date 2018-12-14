@@ -6,7 +6,7 @@ local levelEditor = {}
 
 function levelEditor:initGrid()
 	local level = self:getCurrentLevelState()
-	self.grid = Grid(level.width, level.height)
+	self.grid = Grid(level.data.width, level.data.height)
 
 	function self.grid.onMoveCursor(x, y)
 		local cursorX, cursorY = self.grid:getCursorPosition()
@@ -59,7 +59,7 @@ end
 
 function levelEditor:place(l, t, r, b)
 	local level = self:getCurrentLevelState()
-	local selectedLayer = level.layers[self.selectedLayerIndex]
+	local selectedLayer = level.data.layers[self.selectedLayerIndex]
 	if selectedLayer:is(GeometryLayer) then
 		self:modifyLevel(level:setLayer(self.selectedLayerIndex,
 				selectedLayer:place(l, t, r, b)),
@@ -69,7 +69,7 @@ end
 
 function levelEditor:remove(l, t, r, b)
 	local level = self:getCurrentLevelState()
-	local selectedLayer = level.layers[self.selectedLayerIndex]
+	local selectedLayer = level.data.layers[self.selectedLayerIndex]
 	if selectedLayer:is(GeometryLayer) then
 		self:modifyLevel(level:setLayer(self.selectedLayerIndex,
 				selectedLayer:remove(l, t, r, b)),

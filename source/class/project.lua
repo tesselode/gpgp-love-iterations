@@ -2,12 +2,14 @@ local Object = require 'lib.classic'
 
 local Project = Object:extend()
 
-function Project:new()
-	self.tileSize = 16
-	self.defaultLevelWidth = 16
-	self.defaultLevelHeight = 9
-	self.maxLevelWidth = 1000
-	self.maxLevelHeight = 1000
+function Project:new(data)
+	self.data = data or {
+		tileSize = 16,
+		defaultLevelWidth = 16,
+		defaultLevelHeight = 9,
+		maxLevelWidth = 1000,
+		maxLevelHeight = 1000,
+	}
 end
 
 return Project

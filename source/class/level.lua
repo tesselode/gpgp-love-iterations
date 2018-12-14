@@ -1,31 +1,27 @@
 local GeometryLayer = require 'class.layer.geometry'
 local Object = require 'lib.classic'
+local util = require 'util'
 
 local Level = Object:extend()
 
-function Level:new(project)
+function Level:new(project, data)
 	self.project = project
-	self.width = project.defaultLevelWidth
-	self.height = project.defaultLevelHeight
-	self.layers = {GeometryLayer()}
+	self.data = data or {
+		width = project.data.defaultLevelWidth,
+		height = project.data.defaultLevelHeight,
+		layers = {GeometryLayer()},
+	}
 end
 
 function Level:setLayer(layerIndex, layer)
-	local level = Level(self.project)
-	level.width = self.width
-	level.height = self.height
-	for i, v in ipairs(self.layers) do
-		if i == layerIndex then
-			level.layers[i] = layer
-		else
-			level.layers[i] = v
-		end
-	end
-	return level
+	local data = util.shallowCopy(self.data)
+	data.layers = util.shallowCopy(data.layers)
+	data.layers[layerIndex] = layer
+	return Level(self.project, data)
 end
 
 function Level:draw()
-	for _, layer in ipairs(self.layers) do
+	for _, layer in ipairs(self.data.layers) do
 		layer:draw()
 	end
 end
