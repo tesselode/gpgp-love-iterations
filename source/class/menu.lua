@@ -1,15 +1,17 @@
+local font = require 'font'
 local Object = require 'lib.classic'
 
 local Menu = Object:extend()
 
 Menu.margin = 50
-Menu.itemMargin = 2
+Menu.titlePadding = 16
+Menu.columnPadding = 16
+Menu.itemPadding = 4
 Menu.bgColor = {.1, .1, .1}
 Menu.textColor = {.9, .9, .9}
+Menu.dividerColor = {.5, .5, .5}
 Menu.highlightColor = {39/255, 175/255, 229/255}
 Menu.transitionSpeed = 20
-
-love.graphics.setFont(love.graphics.newFont(18))
 
 function Menu:new(screen)
 	self.screenStack = {screen}
@@ -43,7 +45,7 @@ function Menu:up()
 	local selection = self.selection[self.screenStackPosition]
 	selection.row = selection.row - 1
 	if selection.row == 0 then
-		selection.row = #screen[selection.column]
+		selection.row = #screen.content[selection.column]
 	end
 end
 
@@ -51,7 +53,7 @@ function Menu:down()
 	local screen = self:getCurrentScreen()
 	local selection = self.selection[self.screenStackPosition]
 	selection.row = selection.row + 1
-	if selection.row == #screen[selection.column] + 1 then
+	if selection.row == #screen.content[selection.column] + 1 then
 		selection.row = 1
 	end
 end
@@ -62,26 +64,26 @@ function Menu:left()
 	if selection.column > 1 then
 		selection.column = selection.column - 1
 	end
-	if selection.row > #screen[selection.column] then
-		selection.row = #screen[selection.column]
+	if selection.row > #screen.content[selection.column] then
+		selection.row = #screen.content[selection.column]
 	end
 end
 
 function Menu:right()
 	local screen = self:getCurrentScreen()
 	local selection = self.selection[self.screenStackPosition]
-	if selection.column < #screen then
+	if selection.column < #screen.content then
 		selection.column = selection.column + 1
 	end
-	if selection.row > #screen[selection.column] then
-		selection.row = #screen[selection.column]
+	if selection.row > #screen.content[selection.column] then
+		selection.row = #screen.content[selection.column]
 	end
 end
 
 function Menu:select()
 	local screen = self:getCurrentScreen()
 	local selection = self.selection[self.screenStackPosition]
-	local item = screen[selection.column][selection.row]
+	local item = screen.content[selection.column][selection.row]
 	if item and item.onSelect then item.onSelect(self) end
 end
 
@@ -90,28 +92,41 @@ function Menu:update(dt)
 end
 
 function Menu:drawColumn(screenIndex, columnIndex, columnWidth, column)
-	local itemHeight = love.graphics.getFont():getHeight() + self.itemMargin * 2
+	local itemHeight = font.normal:getHeight() + self.itemPadding * 2
 	local selection = self.selection[screenIndex]
 	love.graphics.push 'all'
 	for itemIndex, item in ipairs(column) do
 		local y = itemHeight * (itemIndex - 1)
 		if selection.column == columnIndex and selection.row == itemIndex then
 			love.graphics.setColor(self.highlightColor)
-			love.graphics.rectangle('fill', 0, y, columnWidth, itemHeight)
+			love.graphics.rectangle('fill', self.columnPadding, y,
+				columnWidth - self.columnPadding * 2, itemHeight)
 		end
 		love.graphics.setColor(self.textColor)
-		love.graphics.print(item.text, self.itemMargin, y + self.itemMargin)
+		love.graphics.setFont(font.normal)
+		love.graphics.print(item.text, self.itemPadding + self.columnPadding, y + self.itemPadding)
 	end
 	love.graphics.pop()
 end
 
-function Menu:drawScreen(menuWidth, screenIndex)
+function Menu:drawScreen(menuWidth, menuHeight, screenIndex)
 	local screen = self:getScreen(screenIndex)
-	local columnWidth = menuWidth / #screen
-	for columnIndex, column in ipairs(screen) do
+	local columnWidth = menuWidth / #screen.content
+	love.graphics.setColor(self.textColor)
+	love.graphics.setFont(font.big)
+	love.graphics.print(screen.title, self.titlePadding, self.titlePadding)
+	love.graphics.setColor(self.dividerColor)
+	love.graphics.line(self.titlePadding, font.big:getHeight() + 2 * self.titlePadding,
+		menuWidth - self.titlePadding, font.big:getHeight() + 2 * self.titlePadding)
+	for columnIndex, column in ipairs(screen.content) do
 		love.graphics.push 'all'
-		love.graphics.translate(columnWidth * (columnIndex - 1), 0)
+		love.graphics.translate(columnWidth * (columnIndex - 1),
+			font.big:getHeight() + 3 * self.titlePadding)
 		self:drawColumn(screenIndex, columnIndex, columnWidth, column)
+		if columnIndex < #screen.content then
+			love.graphics.setColor(self.dividerColor)
+			love.graphics.line(columnWidth, 0, columnWidth, menuHeight)
+		end
 		love.graphics.pop()
 	end
 end
@@ -131,7 +146,7 @@ function Menu:draw()
 	for screenIndex = 1, #self.screenStack do
 		love.graphics.push 'all'
 		love.graphics.translate(menuWidth * (screenIndex - 1), 0)
-		self:drawScreen(menuWidth, screenIndex)
+		self:drawScreen(menuWidth, menuHeight, screenIndex)
 		love.graphics.pop()
 	end
 	love.graphics.pop()

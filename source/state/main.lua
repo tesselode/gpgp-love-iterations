@@ -13,24 +13,30 @@ function main:enter(_, project)
 	end
 	self.selectedEditor = 1
 	self.menu = Menu(function() return {
-		{
+		title = 'Main menu',
+		content = {
 			{
-				text = 'Layers...',
-				onSelect = function(menu)
-					menu:push(function() return {
-						{
-							{text = 'Front tiles'},
-							{text = 'Entities'},
-							{text = 'Geometry'},
-							{text = 'Back tiles'},
-						},
-						{
-							{text = 'New layer'},
-							{text = 'Move layer up'},
-							{text = 'Move layer down'},
-						},
-					} end)
-				end,
+				{
+					text = 'Layers...',
+					onSelect = function(menu)
+						menu:push(function() return {
+							title = 'Layers',
+							content = {
+								{
+									{text = 'Front tiles'},
+									{text = 'Entities'},
+									{text = 'Geometry'},
+									{text = 'Back tiles'},
+								},
+								{
+									{text = 'New layer'},
+									{text = 'Move layer up'},
+									{text = 'Move layer down'},
+								},
+							},
+						} end)
+					end,
+				},
 			},
 		},
 	} end)
