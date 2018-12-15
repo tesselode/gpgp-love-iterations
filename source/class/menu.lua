@@ -41,20 +41,17 @@ function Menu:pop()
 end
 
 function Menu:up()
-	local screen = self:getCurrentScreen()
 	local selection = self.selection[self.screenStackPosition]
-	selection.row = selection.row - 1
-	if selection.row == 0 then
-		selection.row = #screen.content[selection.column]
+	if selection.row > 1 then
+		selection.row = selection.row - 1
 	end
 end
 
 function Menu:down()
 	local screen = self:getCurrentScreen()
 	local selection = self.selection[self.screenStackPosition]
-	selection.row = selection.row + 1
-	if selection.row == #screen.content[selection.column] + 1 then
-		selection.row = 1
+	if selection.row < #screen.content[selection.column] then
+		selection.row = selection.row + 1
 	end
 end
 
@@ -91,10 +88,14 @@ function Menu:update(dt)
 	self.drawXOffset = self.drawXOffset + (self.screenStackPosition - 1 - self.drawXOffset) * self.transitionSpeed * dt
 end
 
-function Menu:drawColumn(screenIndex, columnIndex, columnWidth, column)
+function Menu:drawColumn(screenIndex, columnIndex, columnWidth, columnHeight, column)
 	local itemHeight = font.normal:getHeight() + self.itemPadding * 2
 	local selection = self.selection[screenIndex]
 	love.graphics.push 'all'
+	local scroll = selection.row * itemHeight - columnHeight / 2
+	scroll = math.min(#column * itemHeight - columnHeight, scroll)
+	scroll = math.max(scroll, 0)
+	love.graphics.translate(0, -scroll)
 	for itemIndex, item in ipairs(column) do
 		local y = itemHeight * (itemIndex - 1)
 		if selection.column == columnIndex and selection.row == itemIndex then
@@ -112,36 +113,40 @@ end
 function Menu:drawScreen(menuWidth, menuHeight, screenIndex)
 	local screen = self:getScreen(screenIndex)
 	local columnWidth = menuWidth / #screen.content
+	love.graphics.push 'all'
 	love.graphics.setColor(self.textColor)
 	love.graphics.setFont(font.big)
 	love.graphics.print(screen.title, self.titlePadding, self.titlePadding)
 	love.graphics.setColor(self.dividerColor)
-	love.graphics.line(self.titlePadding, font.big:getHeight() + 2 * self.titlePadding,
-		menuWidth - self.titlePadding, font.big:getHeight() + 2 * self.titlePadding)
+	love.graphics.translate(0, font.big:getHeight() + 2 * self.titlePadding)
+	love.graphics.line(self.titlePadding, 0, menuWidth - self.titlePadding, 0)
+	love.graphics.translate(0, self.titlePadding)
+	local columnContentHeight = menuHeight - (font.big:getHeight() + 3 * self.titlePadding)
+	love.graphics.stencil(function()
+		love.graphics.rectangle('fill', 0, 0, menuWidth, columnContentHeight)
+	end, 'replace', 1)
+	love.graphics.setStencilTest('greater', 0)
 	for columnIndex, column in ipairs(screen.content) do
 		love.graphics.push 'all'
-		love.graphics.translate(columnWidth * (columnIndex - 1),
-			font.big:getHeight() + 3 * self.titlePadding)
-		self:drawColumn(screenIndex, columnIndex, columnWidth, column)
+		love.graphics.translate(columnWidth * (columnIndex - 1), 0)
+		self:drawColumn(screenIndex, columnIndex, columnWidth, columnContentHeight, column)
 		if columnIndex < #screen.content then
 			love.graphics.setColor(self.dividerColor)
 			love.graphics.line(columnWidth, 0, columnWidth, menuHeight)
 		end
 		love.graphics.pop()
 	end
+	love.graphics.pop()
 end
 
 function Menu:draw()
 	local menuWidth = love.graphics.getWidth() - self.margin * 2
 	local menuHeight = love.graphics.getHeight() - self.margin * 2
 	love.graphics.push 'all'
+	love.graphics.setScissor(self.margin, self.margin, menuWidth, menuHeight)
 	love.graphics.translate(self.margin, self.margin)
 	love.graphics.setColor(self.bgColor)
 	love.graphics.rectangle('fill', 0, 0, menuWidth, menuHeight)
-	love.graphics.stencil(function()
-		love.graphics.rectangle('fill', 0, 0, menuWidth, menuHeight)
-	end, 'replace', 1)
-	love.graphics.setStencilTest('greater', 0)
 	love.graphics.translate(-self.drawXOffset * menuWidth, 0)
 	for screenIndex = 1, #self.screenStack do
 		love.graphics.push 'all'
