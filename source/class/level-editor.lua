@@ -1,10 +1,11 @@
 local GeometryLayer = require 'class.layer.geometry'
 local Grid = require 'class.grid'
 local Level = require 'class.level'
+local Object = require 'lib.classic'
 
-local levelEditor = {}
+local LevelEditor = Object:extend()
 
-function levelEditor:initGrid()
+function LevelEditor:initGrid()
 	local level = self:getCurrentLevelState()
 	self.grid = Grid(level.data.width, level.data.height)
 
@@ -18,7 +19,7 @@ function levelEditor:initGrid()
 	end
 end
 
-function levelEditor:enter(_, project, level)
+function LevelEditor:new(project, level)
 	self.levelHistory = {
 		{
 			level = level or Level(project),
@@ -30,11 +31,11 @@ function levelEditor:enter(_, project, level)
 	self:initGrid()
 end
 
-function levelEditor:getCurrentLevelState()
+function LevelEditor:getCurrentLevelState()
 	return self.levelHistory[self.levelHistoryPosition].level
 end
 
-function levelEditor:modifyLevel(level, description)
+function LevelEditor:modifyLevel(level, description)
 	self.levelHistoryPosition = self.levelHistoryPosition + 1
 	for i = self.levelHistoryPosition + 1, #self.levelHistory do
 		self.levelHistory[i] = nil
@@ -45,19 +46,19 @@ function levelEditor:modifyLevel(level, description)
 	}
 end
 
-function levelEditor:undo()
+function LevelEditor:undo()
 	if self.levelHistoryPosition > 1 then
 		self.levelHistoryPosition = self.levelHistoryPosition - 1
 	end
 end
 
-function levelEditor:redo()
+function LevelEditor:redo()
 	if self.levelHistoryPosition < #self.levelHistory then
 		self.levelHistoryPosition = self.levelHistoryPosition + 1
 	end
 end
 
-function levelEditor:place(l, t, r, b)
+function LevelEditor:place(l, t, r, b)
 	local level = self:getCurrentLevelState()
 	local selectedLayer = level.data.layers[self.selectedLayerIndex]
 	if selectedLayer:is(GeometryLayer) then
@@ -67,7 +68,7 @@ function levelEditor:place(l, t, r, b)
 	end
 end
 
-function levelEditor:remove(l, t, r, b)
+function LevelEditor:remove(l, t, r, b)
 	local level = self:getCurrentLevelState()
 	local selectedLayer = level.data.layers[self.selectedLayerIndex]
 	if selectedLayer:is(GeometryLayer) then
@@ -77,11 +78,11 @@ function levelEditor:remove(l, t, r, b)
 	end
 end
 
-function levelEditor:mousemoved(x, y, dx, dy, istouch)
+function LevelEditor:mousemoved(x, y, dx, dy, istouch)
 	self.grid:mousemoved(x, y, dx, dy, istouch)
 end
 
-function levelEditor:mousepressed(x, y, button, istouch, presses)
+function LevelEditor:mousepressed(x, y, button, istouch, presses)
 	local cursorX, cursorY = self.grid:getCursorPosition()
 	if button == 1 then
 		self:place(cursorX, cursorY, cursorX, cursorY)
@@ -90,11 +91,11 @@ function levelEditor:mousepressed(x, y, button, istouch, presses)
 	end
 end
 
-function levelEditor:wheelmoved(x, y)
+function LevelEditor:wheelmoved(x, y)
 	self.grid:wheelmoved(x, y)
 end
 
-function levelEditor:keypressed(key, scancode, isrepeat)
+function LevelEditor:keypressed(key, scancode, isrepeat)
 	if key == 'z' and love.keyboard.isDown 'lctrl' then
 		self:undo()
 	end
@@ -103,7 +104,7 @@ function levelEditor:keypressed(key, scancode, isrepeat)
 	end
 end
 
-function levelEditor:drawCursor()
+function LevelEditor:drawCursor()
 	local cursorX, cursorY = self.grid:getCursorPosition()
 	love.graphics.push 'all'
 	local color = love.mouse.isDown(2) and {234/255, 30/255, 108/255, 1/3} or {116/255, 208/255, 232/255, 1/3}
@@ -112,11 +113,11 @@ function levelEditor:drawCursor()
 	love.graphics.pop()
 end
 
-function levelEditor:draw()
+function LevelEditor:draw()
 	self.grid:draw(function()
 		self:getCurrentLevelState():draw()
 		self:drawCursor()
 	end)
 end
 
-return levelEditor
+return LevelEditor
