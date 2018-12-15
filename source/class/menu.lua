@@ -1,9 +1,9 @@
 local font = require 'font'
 local Object = require 'lib.classic'
+local util = require 'util'
 
 local Menu = Object:extend()
 
-Menu.margin = 50
 Menu.titlePadding = 16
 Menu.columnPadding = 16
 Menu.itemPadding = 4
@@ -11,13 +11,19 @@ Menu.bgColor = {.1, .1, .1}
 Menu.textColor = {.9, .9, .9}
 Menu.dividerColor = {.5, .5, .5}
 Menu.highlightColor = {39/255, 175/255, 229/255}
-Menu.transitionSpeed = 20
+Menu.transitionSpeed = 15
 
 function Menu:new(screen)
 	self.screenStack = {screen}
 	self.screenStackPosition = 1
 	self.selection = {{row = 1, column = 1}}
 	self.drawXOffset = 0
+	self.width = self:getTargetWidth()
+end
+
+function Menu:getTargetWidth()
+	local numColumns = #self:getCurrentScreen().content
+	return util.lerp(.5, .9, math.min(1, (numColumns - 1) / 2))
 end
 
 function Menu:getScreen(screenIndex)
@@ -85,7 +91,10 @@ function Menu:select()
 end
 
 function Menu:update(dt)
-	self.drawXOffset = self.drawXOffset + (self.screenStackPosition - 1 - self.drawXOffset) * self.transitionSpeed * dt
+	self.width = util.lerp(self.width, self:getTargetWidth(), self.transitionSpeed * dt)
+	self.drawXOffset = util.lerp(self.drawXOffset,
+		self.screenStackPosition - 1,
+		self.transitionSpeed * dt)
 end
 
 function Menu:drawColumn(screenIndex, columnIndex, columnWidth, columnHeight, column)
@@ -140,11 +149,13 @@ function Menu:drawScreen(menuWidth, menuHeight, screenIndex)
 end
 
 function Menu:draw()
-	local menuWidth = love.graphics.getWidth() - self.margin * 2
-	local menuHeight = love.graphics.getHeight() - self.margin * 2
+	local menuWidth = love.graphics.getWidth() * self.width
+	local menuHeight = love.graphics.getHeight() * .9
+	local menuX = (love.graphics.getWidth() - menuWidth) / 2
+	local menuY = (love.graphics.getHeight() - menuHeight) / 2
 	love.graphics.push 'all'
-	love.graphics.setScissor(self.margin, self.margin, menuWidth, menuHeight)
-	love.graphics.translate(self.margin, self.margin)
+	love.graphics.setScissor(menuX, menuY, menuWidth, menuHeight)
+	love.graphics.translate(menuX, menuY)
 	love.graphics.setColor(self.bgColor)
 	love.graphics.rectangle('fill', 0, 0, menuWidth, menuHeight)
 	love.graphics.translate(-self.drawXOffset * menuWidth, 0)
