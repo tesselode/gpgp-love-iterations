@@ -12,15 +12,15 @@ function main:enter(_, project)
 	self.selectedEditor = 1
 	self.menu = Menu(function() return {
 		{
-			{text = 'New layer'},
-			{text = 'Move layer up'},
-			{text = 'Move layer down'},
-		},
-		{
 			{text = 'Front tiles'},
 			{text = 'Entities'},
 			{text = 'Geometry'},
 			{text = 'Back tiles'},
+		},
+		{
+			{text = 'New layer'},
+			{text = 'Move layer up'},
+			{text = 'Move layer down'},
 		},
 	} end)
 end
@@ -43,6 +43,10 @@ end
 
 function main:keypressed(key, scancode, isrepeat)
 	self:getCurrentEditor():keypressed(key, scancode, isrepeat)
+	if key == 'left' then self.menu:left() end
+	if key == 'right' then self.menu:right() end
+	if key == 'up' then self.menu:up() end
+	if key == 'down' then self.menu:down() end
 end
 
 function main:draw()

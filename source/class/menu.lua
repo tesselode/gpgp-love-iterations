@@ -24,6 +24,46 @@ function Menu:getCurrentScreen()
 	return self:getScreen(self.screenStackPosition)
 end
 
+function Menu:up()
+	local screen = self:getCurrentScreen()
+	local selection = self.selection[self.screenStackPosition]
+	selection.row = selection.row - 1
+	if selection.row == 0 then
+		selection.row = #screen[selection.column]
+	end
+end
+
+function Menu:down()
+	local screen = self:getCurrentScreen()
+	local selection = self.selection[self.screenStackPosition]
+	selection.row = selection.row + 1
+	if selection.row == #screen[selection.column] + 1 then
+		selection.row = 1
+	end
+end
+
+function Menu:left()
+	local screen = self:getCurrentScreen()
+	local selection = self.selection[self.screenStackPosition]
+	if selection.column > 1 then
+		selection.column = selection.column - 1
+	end
+	if selection.row > #screen[selection.column] then
+		selection.row = #screen[selection.column]
+	end
+end
+
+function Menu:right()
+	local screen = self:getCurrentScreen()
+	local selection = self.selection[self.screenStackPosition]
+	if selection.column < #screen then
+		selection.column = selection.column + 1
+	end
+	if selection.row > #screen[selection.column] then
+		selection.row = #screen[selection.column]
+	end
+end
+
 function Menu:drawColumn(columnIndex, columnWidth, column)
 	local itemHeight = love.graphics.getFont():getHeight() + self.itemMargin * 2
 	local selection = self.selection[self.screenStackPosition]
