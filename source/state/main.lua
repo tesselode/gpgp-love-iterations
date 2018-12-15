@@ -1,4 +1,5 @@
 local LevelEditor = require 'class.level-editor'
+local Menu = require 'class.menu'
 
 local main = {}
 
@@ -9,6 +10,19 @@ function main:enter(_, project)
 		table.insert(self.editors, LevelEditor(self.project, level))
 	end
 	self.selectedEditor = 1
+	self.menu = Menu(function() return {
+		{
+			{text = 'New layer'},
+			{text = 'Move layer up'},
+			{text = 'Move layer down'},
+		},
+		{
+			{text = 'Front tiles'},
+			{text = 'Entities'},
+			{text = 'Geometry'},
+			{text = 'Back tiles'},
+		},
+	} end)
 end
 
 function main:getCurrentEditor()
@@ -33,6 +47,7 @@ end
 
 function main:draw()
 	self:getCurrentEditor():draw()
+	self.menu:draw()
 end
 
 return main
