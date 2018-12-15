@@ -7,6 +7,7 @@ Menu.itemMargin = 2
 Menu.bgColor = {.1, .1, .1}
 Menu.textColor = {.9, .9, .9}
 Menu.highlightColor = {39/255, 175/255, 229/255}
+Menu.transitionSpeed = 20
 
 love.graphics.setFont(love.graphics.newFont(18))
 
@@ -14,6 +15,7 @@ function Menu:new(screen)
 	self.screenStack = {screen}
 	self.screenStackPosition = 1
 	self.selection = {{row = 1, column = 1}}
+	self.drawXOffset = 0
 end
 
 function Menu:getScreen(screenIndex)
@@ -22,6 +24,18 @@ end
 
 function Menu:getCurrentScreen()
 	return self:getScreen(self.screenStackPosition)
+end
+
+function Menu:push(screen)
+	self.screenStackPosition = self.screenStackPosition + 1
+	self.screenStack[self.screenStackPosition] = screen
+	self.selection[self.screenStackPosition] = {row = 1, column = 1}
+end
+
+function Menu:pop()
+	if self.screenStackPosition > 1 then
+		self.screenStackPosition = self.screenStackPosition - 1
+	end
 end
 
 function Menu:up()
@@ -64,9 +78,20 @@ function Menu:right()
 	end
 end
 
-function Menu:drawColumn(columnIndex, columnWidth, column)
-	local itemHeight = love.graphics.getFont():getHeight() + self.itemMargin * 2
+function Menu:select()
+	local screen = self:getCurrentScreen()
 	local selection = self.selection[self.screenStackPosition]
+	local item = screen[selection.column][selection.row]
+	if item and item.onSelect then item.onSelect(self) end
+end
+
+function Menu:update(dt)
+	self.drawXOffset = self.drawXOffset + (self.screenStackPosition - 1 - self.drawXOffset) * self.transitionSpeed * dt
+end
+
+function Menu:drawColumn(screenIndex, columnIndex, columnWidth, column)
+	local itemHeight = love.graphics.getFont():getHeight() + self.itemMargin * 2
+	local selection = self.selection[screenIndex]
 	love.graphics.push 'all'
 	for itemIndex, item in ipairs(column) do
 		local y = itemHeight * (itemIndex - 1)
@@ -86,7 +111,7 @@ function Menu:drawScreen(menuWidth, screenIndex)
 	for columnIndex, column in ipairs(screen) do
 		love.graphics.push 'all'
 		love.graphics.translate(columnWidth * (columnIndex - 1), 0)
-		self:drawColumn(columnIndex, columnWidth, column)
+		self:drawColumn(screenIndex, columnIndex, columnWidth, column)
 		love.graphics.pop()
 	end
 end
@@ -98,7 +123,17 @@ function Menu:draw()
 	love.graphics.translate(self.margin, self.margin)
 	love.graphics.setColor(self.bgColor)
 	love.graphics.rectangle('fill', 0, 0, menuWidth, menuHeight)
-	self:drawScreen(menuWidth, self.screenStackPosition)
+	love.graphics.stencil(function()
+		love.graphics.rectangle('fill', 0, 0, menuWidth, menuHeight)
+	end, 'replace', 1)
+	love.graphics.setStencilTest('greater', 0)
+	love.graphics.translate(-self.drawXOffset * menuWidth, 0)
+	for screenIndex = 1, #self.screenStack do
+		love.graphics.push 'all'
+		love.graphics.translate(menuWidth * (screenIndex - 1), 0)
+		self:drawScreen(menuWidth, screenIndex)
+		love.graphics.pop()
+	end
 	love.graphics.pop()
 end
 

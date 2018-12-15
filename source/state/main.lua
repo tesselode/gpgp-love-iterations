@@ -12,15 +12,24 @@ function main:enter(_, project)
 	self.selectedEditor = 1
 	self.menu = Menu(function() return {
 		{
-			{text = 'Front tiles'},
-			{text = 'Entities'},
-			{text = 'Geometry'},
-			{text = 'Back tiles'},
-		},
-		{
-			{text = 'New layer'},
-			{text = 'Move layer up'},
-			{text = 'Move layer down'},
+			{
+				text = 'Layers...',
+				onSelect = function(menu)
+					menu:push(function() return {
+						{
+							{text = 'Front tiles'},
+							{text = 'Entities'},
+							{text = 'Geometry'},
+							{text = 'Back tiles'},
+						},
+						{
+							{text = 'New layer'},
+							{text = 'Move layer up'},
+							{text = 'Move layer down'},
+						},
+					} end)
+				end,
+			},
 		},
 	} end)
 end
@@ -47,6 +56,12 @@ function main:keypressed(key, scancode, isrepeat)
 	if key == 'right' then self.menu:right() end
 	if key == 'up' then self.menu:up() end
 	if key == 'down' then self.menu:down() end
+	if key == 'return' then self.menu:select() end
+	if key == 'escape' then self.menu:pop() end
+end
+
+function main:update(dt)
+	self.menu:update(dt)
 end
 
 function main:draw()
