@@ -33,9 +33,9 @@ function Menu:push(screen)
 end
 
 function Menu:pop()
-	if self.screenStackPosition > 1 then
-		self.screenStackPosition = self.screenStackPosition - 1
-	end
+	if self.screenStackPosition == 1 then return false end
+	self.screenStackPosition = self.screenStackPosition - 1
+	return true
 end
 
 function Menu:up()
