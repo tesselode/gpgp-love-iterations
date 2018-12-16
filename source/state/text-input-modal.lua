@@ -28,6 +28,16 @@ function textInputModal:keypressed(key)
 			self.cursor = self.cursor - 1
 		end
 	end
+	if key == 'delete' and self.cursor < #self.text then
+		local textBeforeCursor = self.text:sub(1, self.cursor + 1)
+		local textAfterCursor = self.text:sub(self.cursor + 2)
+		local offset = utf8.offset(textBeforeCursor, -1)
+		if offset then
+			self.text = textBeforeCursor:sub(1, offset - 1) .. textAfterCursor
+		end
+	end
+	if key == 'home' then self.cursor = 0 end
+	if key == 'end' then self.cursor = #self.text end
 end
 
 function textInputModal:draw()
