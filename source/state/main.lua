@@ -1,6 +1,8 @@
+local gamestate = require 'lib.gamestate'
 local GeometryLayer = require 'class.layer.geometry'
 local LevelEditor = require 'class.level-editor'
 local Menu = require 'class.menu'
+local textInputModal = require 'state.text-input-modal'
 local util = require 'util'
 
 local main = {}
@@ -40,6 +42,15 @@ function main:createLayersMenu()
 		{
 			text = 'Move layer down',
 			onSelect = function() editor:moveLayerDown() end,
+		},
+		{
+			text = 'Rename layer',
+			onSelect = function()
+				gamestate.push(textInputModal,
+					'Enter a new name for the layer',
+					'',
+					function(name) editor:renameLayer(name) end)
+			end,
 		},
 		{
 			text = 'Remove layer',

@@ -1,12 +1,16 @@
 local font = require 'font'
+local gamestate = require 'lib.gamestate'
 local utf8 = require 'utf8'
 local util = require 'util'
 
 local textInputModal = {}
 
-function textInputModal:enter()
-	self.text = ''
-	self.cursor = 0
+function textInputModal:enter(previous, message, startingText, onConfirm)
+	self.previous = previous
+	self.message = message
+	self.text = startingText
+	self.onConfirm = onConfirm
+	self.cursor = #self.text
 end
 
 function textInputModal:textinput(t)
@@ -40,6 +44,11 @@ function textInputModal:keypressed(key)
 	end
 	if key == 'home' then self.cursor = 0 end
 	if key == 'end' then self.cursor = #self.text end
+	if key == 'return' then
+		if self.onConfirm then self.onConfirm(self.text) end
+		gamestate.pop()
+	end
+	if key == 'escape' then gamestate.pop() end
 end
 
 function textInputModal:drawText()
@@ -53,11 +62,17 @@ function textInputModal:drawText()
 end
 
 function textInputModal:draw()
+	if self.previous and self.previous.draw then
+		self.previous:draw()
+		love.graphics.setColor(0, 0, 0, .5)
+		love.graphics.rectangle('fill', 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+	end
 	love.graphics.push 'all'
 	love.graphics.translate(love.graphics.getWidth() / 4, love.graphics.getHeight() / 2.25)
+	love.graphics.setColor(1, 1, 1)
 	love.graphics.setFont(font.normal)
-	love.graphics.print 'Enter text!'
-	love.graphics.translate(0, font.normal:getHeight())
+	love.graphics.print(self.message)
+	love.graphics.translate(0, font.normal:getHeight() * 1.5)
 	self:drawText()
 	love.graphics.pop()
 end

@@ -91,6 +91,18 @@ function LevelEditor:moveLayerDown()
 	self.selectedLayerIndex = self.selectedLayerIndex + 1
 end
 
+function LevelEditor:renameLayer(name)
+	local level = self:getCurrentLevelState()
+	local layer = level.data.layers[self.selectedLayerIndex]
+	self:modifyLevel(
+		level:setLayer(
+			self.selectedLayerIndex,
+			layer:setName(name)
+		),
+		'Rename layer "' .. layer.data.name .. '" to "' .. name .. '"'
+	)
+end
+
 function LevelEditor:place(l, t, r, b)
 	local level = self:getCurrentLevelState()
 	local selectedLayer = level.data.layers[self.selectedLayerIndex]

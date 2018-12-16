@@ -17,6 +17,12 @@ function GeometryLayer:hasItemAt(x, y)
 	return false
 end
 
+function GeometryLayer:setName(name)
+	local data = util.shallowCopy(self.data)
+	data.name = name
+	return GeometryLayer(data)
+end
+
 function GeometryLayer:place(l, t, r, b)
 	local data = util.shallowCopy(self.data)
 	data.items = util.shallowCopy(data.items)
