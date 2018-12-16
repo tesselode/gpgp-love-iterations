@@ -13,6 +13,42 @@ function Level:new(project, data)
 	}
 end
 
+function Level:addLayer(layerIndex, layer)
+	local data = util.shallowCopy(self.data)
+	data.layers = util.shallowCopy(data.layers)
+	table.insert(data.layers, layerIndex, layer)
+	return Level(self.project, data)
+end
+
+function Level:removeLayer(layerIndex)
+	local data = util.shallowCopy(self.data)
+	data.layers = util.shallowCopy(data.layers)
+	table.remove(data.layers, layerIndex)
+	return Level(self.project, data)
+end
+
+function Level:moveLayerUp(layerIndex)
+	if layerIndex <= 1 then return self end
+	local data = util.shallowCopy(self.data)
+	data.layers = util.shallowCopy(data.layers)
+	local a = data.layers[layerIndex]
+	local b = data.layers[layerIndex - 1]
+	data.layers[layerIndex - 1] = a
+	data.layers[layerIndex] = b
+	return Level(self.project, data)
+end
+
+function Level:moveLayerDown(layerIndex)
+	if layerIndex >= #self.data.layers then return self end
+	local data = util.shallowCopy(self.data)
+	data.layers = util.shallowCopy(data.layers)
+	local a = data.layers[layerIndex]
+	local b = data.layers[layerIndex + 1]
+	data.layers[layerIndex + 1] = a
+	data.layers[layerIndex] = b
+	return Level(self.project, data)
+end
+
 function Level:setLayer(layerIndex, layer)
 	local data = util.shallowCopy(self.data)
 	data.layers = util.shallowCopy(data.layers)

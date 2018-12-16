@@ -26,7 +26,9 @@ function Column:new(items)
 end
 
 function Column:getItems()
-	return type(self.items) == 'function' and self.items() or self.items
+	local items = type(self.items) == 'function' and self.items() or self.items
+	self.selected = math.min(#items, self.selected)
+	return items
 end
 
 function Column:up()

@@ -1,9 +1,67 @@
+local GeometryLayer = require 'class.layer.geometry'
 local LevelEditor = require 'class.level-editor'
 local Menu = require 'class.menu'
 
 local main = {}
 
 main.menuEnterSpeed = 20
+
+function main:createLayersMenu()
+	local editor = self.editors[self.selectedEditor]
+	local function layerList()
+		local level = editor:getCurrentLevelState()
+		local layers = {}
+		for layerIndex, layer in ipairs(level.data.layers) do
+			local text = layer.data.name
+			if layerIndex == editor.selectedLayerIndex then
+				text = text .. ' (selected)'
+			end
+			table.insert(layers, {
+				text = text,
+				onSelect = function()
+					editor.selectedLayerIndex = layerIndex
+				end,
+			})
+		end
+		return layers
+	end
+	local layerActions = {
+		{
+			text = 'Add geometry layer',
+			onSelect = function()
+				editor:addLayer(GeometryLayer())
+			end,
+		},
+		{
+			text = 'Move layer up',
+			onSelect = function() editor:moveLayerUp() end,
+		},
+		{
+			text = 'Move layer down',
+			onSelect = function() editor:moveLayerDown() end,
+		},
+		{
+			text = 'Remove layer',
+			onSelect = function() editor:removeLayer() end,
+		},
+	}
+	return {layerList, layerActions}
+end
+
+function main:initMenu()
+	self.menu = Menu('Main menu', {
+		{
+			{
+				text = 'Layers...',
+				onSelect = function(menu)
+					menu:push('Layers', self:createLayersMenu())
+				end,
+			}
+		}
+	})
+	self.showMenu = false
+	self.menuYOffset = -1
+end
 
 function main:enter(_, project)
 	self.project = project
@@ -12,76 +70,7 @@ function main:enter(_, project)
 		table.insert(self.editors, LevelEditor(self.project, level))
 	end
 	self.selectedEditor = 1
-
-	self.menu = Menu('Main menu', {
-		{
-			{text = 'New level'},
-			{text = 'Save level...'},
-			{text = 'Save level as...'},
-			{text = 'Rename level...'},
-			{text = 'Close project'},
-		},
-		{
-			{text = 'Levels...'},
-			{
-				text = 'Layers...',
-				onSelect = function(menu)
-					menu:push('Layers', {
-						{
-							{text = 'Front tiles'},
-							{text = 'Entities'},
-							{text = 'Geometry'},
-							{text = 'Back tiles'},
-							{text = 'Front tiles'},
-							{text = 'Entities'},
-							{text = 'Geometry'},
-							{text = 'Back tiles'},
-							{text = 'Front tiles'},
-							{text = 'Entities'},
-							{text = 'Geometry'},
-							{text = 'Back tiles'},
-							{text = 'Front tiles'},
-							{text = 'Entities'},
-							{text = 'Geometry'},
-							{text = 'Back tiles'},
-							{text = 'Front tiles'},
-							{text = 'Entities'},
-							{text = 'Geometry'},
-							{text = 'Back tiles'},
-							{text = 'Front tiles'},
-							{text = 'Entities'},
-							{text = 'Geometry'},
-							{text = 'Back tiles'},
-							{text = 'Front tiles'},
-							{text = 'Entities'},
-							{text = 'Geometry'},
-							{text = 'Back tiles'},
-							{text = 'Front tiles'},
-							{text = 'Entities'},
-							{text = 'Geometry'},
-							{text = 'Back tiles'},
-							{text = 'Front tiles'},
-							{text = 'Entities'},
-							{text = 'Geometry'},
-							{text = 'Back tiles'},
-						},
-						{
-							{text = 'Add geometry layer'},
-							{text = 'Add tile layer'},
-							{text = 'Add entity layer'},
-							{text = 'Move layer up'},
-							{text = 'Move layer down'},
-							{text = 'Remove layer'},
-						}
-					})
-				end,
-			},
-			{text = 'Entities...'},
-			{text = 'History...'},
-		}
-	})
-	self.showMenu = false
-	self.menuYOffset = -1
+	self:initMenu()
 end
 
 function main:getCurrentEditor()

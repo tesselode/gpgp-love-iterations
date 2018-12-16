@@ -58,6 +58,39 @@ function LevelEditor:redo()
 	end
 end
 
+function LevelEditor:addLayer(layer)
+	local level = self:getCurrentLevelState()
+	self:modifyLevel(level:addLayer(self.selectedLayerIndex, layer), 'Add layer')
+end
+
+function LevelEditor:removeLayer()
+	local level = self:getCurrentLevelState()
+	local layer = level.data.layers[self.selectedLayerIndex]
+	self:modifyLevel(level:removeLayer(self.selectedLayerIndex),
+		'Remove layer "' .. layer.data.name .. '"')
+	if self.selectedLayerIndex > #level.data.layers - 1 then
+		self.selectedLayerIndex = #level.data.layers - 1
+	end
+end
+
+function LevelEditor:moveLayerUp()
+	local level = self:getCurrentLevelState()
+	local layer = level.data.layers[self.selectedLayerIndex]
+	if self.selectedLayerIndex <= 1 then return end
+	self:modifyLevel(level:moveLayerUp(self.selectedLayerIndex),
+		'Move layer "' .. layer.data.name .. '" up')
+	self.selectedLayerIndex = self.selectedLayerIndex - 1
+end
+
+function LevelEditor:moveLayerDown()
+	local level = self:getCurrentLevelState()
+	local layer = level.data.layers[self.selectedLayerIndex]
+	if self.selectedLayerIndex >= #level.data.layers then return end
+	self:modifyLevel(level:moveLayerDown(self.selectedLayerIndex),
+		'Move layer "' .. layer.data.name .. '" down')
+	self.selectedLayerIndex = self.selectedLayerIndex + 1
+end
+
 function LevelEditor:place(l, t, r, b)
 	local level = self:getCurrentLevelState()
 	local selectedLayer = level.data.layers[self.selectedLayerIndex]
