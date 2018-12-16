@@ -11,6 +11,7 @@ local style = {
 	focusedHighlightColor = {39/255, 175/255, 229/255, 2/3},
 	unfocusedHighlightColor = {98/255, 154/255, 175/255, 1/3},
 	transitionSpeed = 15,
+	scrollAnimationSpeed = 30,
 }
 
 local Column = Object:extend()
@@ -18,6 +19,7 @@ local Column = Object:extend()
 function Column:new(items)
 	self.items = items
 	self.selected = 1
+	self.highlightY = (self.selected - 1) * self:getItemHeight()
 end
 
 function Column:getItems()
@@ -61,13 +63,19 @@ function Column:select(menu)
 	end
 end
 
+function Column:update(dt)
+	self.highlightY = util.lerp(self.highlightY,
+		(self.selected - 1) * self:getItemHeight(),
+		style.scrollAnimationSpeed * dt)
+end
+
 function Column:getItemHeight()
 	return font.normal:getHeight() + 2 * style.itemPadding
 end
 
 function Column:getScrollPosition(height)
 	local itemHeight = self:getItemHeight()
-	local scrollPosition = self.selected * itemHeight - height/2
+	local scrollPosition = self.highlightY - height/2
 	scrollPosition = math.min(#self:getItems() * itemHeight - height, scrollPosition)
 	scrollPosition = math.max(scrollPosition, 0)
 	return scrollPosition
@@ -76,14 +84,12 @@ end
 function Column:drawItems(width, focused)
 	local itemHeight = self:getItemHeight()
 	love.graphics.push 'all'
-	for itemIndex, item in ipairs(self:getItems()) do
-		if itemIndex == self.selected then
-			love.graphics.setColor(focused and style.focusedHighlightColor or style.unfocusedHighlightColor)
-			love.graphics.rectangle('fill', style.mainPadding, 0,
-				width - style.mainPadding * 2, itemHeight)
-		end
-		love.graphics.setColor(style.textColor)
-		love.graphics.setFont(font.normal)
+	love.graphics.setColor(focused and style.focusedHighlightColor or style.unfocusedHighlightColor)
+	love.graphics.rectangle('fill', style.mainPadding, self.highlightY,
+		width - style.mainPadding * 2, itemHeight)
+	love.graphics.setColor(style.textColor)
+	love.graphics.setFont(font.normal)
+	for _, item in ipairs(self:getItems()) do
 		love.graphics.print(item.text, style.mainPadding + style.itemPadding, style.itemPadding)
 		love.graphics.translate(0, itemHeight)
 	end
@@ -136,6 +142,12 @@ function Screen:select(menu)
 	self.columns[self.selected]:select(menu)
 end
 
+function Screen:update(dt)
+	for _, column in ipairs(self.columns) do
+		column:update(dt)
+	end
+end
+
 function Screen:draw(width, height)
 	local titleHeight = font.big:getHeight() + style.mainPadding * 3
 	local columnWidth = width / #self.columns
@@ -151,7 +163,7 @@ function Screen:draw(width, height)
 		column:draw(columnWidth, height - titleHeight, columnIndex == self.selected)
 		if columnIndex < #self.columns then
 			love.graphics.setColor(style.dividerColor)
-			love.graphics.line(columnWidth, 0, columnWidth, height)
+			love.graphics.line(columnWidth, 0, columnWidth, height - titleHeight)
 			love.graphics.translate(columnWidth, 0)
 		end
 	end
@@ -212,6 +224,9 @@ function Menu:select()
 end
 
 function Menu:update(dt)
+	for _, screen in ipairs(self.screenStack) do
+		screen:update(dt)
+	end
 	self.width = util.lerp(self.width, self:getTargetWidth(), style.transitionSpeed * dt)
 	self.drawXOffset = util.lerp(self.drawXOffset,
 		self.screenStackPosition - 1,
