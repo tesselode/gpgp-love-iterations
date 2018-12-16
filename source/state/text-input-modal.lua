@@ -1,4 +1,6 @@
+local font = require 'font'
 local utf8 = require 'utf8'
+local util = require 'util'
 
 local textInputModal = {}
 
@@ -40,13 +42,24 @@ function textInputModal:keypressed(key)
 	if key == 'end' then self.cursor = #self.text end
 end
 
-function textInputModal:draw()
+function textInputModal:drawText()
+	love.graphics.setFont(font.big)
 	love.graphics.print(self.text)
 	local textBeforeCursor = self.text:sub(1, self.cursor)
-	local cursorPosition = love.graphics.getFont():getWidth(textBeforeCursor)
-	love.graphics.line(cursorPosition, 0, cursorPosition, love.graphics.getFont():getHeight())
+	local cursorPosition = font.big:getWidth(textBeforeCursor)
+	love.graphics.setColor(1, 1, 1, .5 + .5 * util.beefySine(love.timer.getTime() * 8, 1/4))
+	love.graphics.setLineWidth(2)
+	love.graphics.line(cursorPosition, 0, cursorPosition, font.big:getHeight())
+end
 
-	love.graphics.print(self.cursor, 0, 16)
+function textInputModal:draw()
+	love.graphics.push 'all'
+	love.graphics.translate(love.graphics.getWidth() / 4, love.graphics.getHeight() / 2.25)
+	love.graphics.setFont(font.normal)
+	love.graphics.print 'Enter text!'
+	love.graphics.translate(0, font.normal:getHeight())
+	self:drawText()
+	love.graphics.pop()
 end
 
 return textInputModal
