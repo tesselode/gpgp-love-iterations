@@ -1,6 +1,7 @@
 local GeometryLayer = require 'class.layer.geometry'
 local LevelEditor = require 'class.level-editor'
 local Menu = require 'class.menu'
+local util = require 'util'
 
 local main = {}
 
@@ -60,7 +61,7 @@ function main:initMenu()
 		}
 	})
 	self.showMenu = false
-	self.menuYOffset = -1
+	self.menuTransitonPosition = 0
 end
 
 function main:enter(_, project)
@@ -78,20 +79,28 @@ function main:getCurrentEditor()
 end
 
 function main:mousemoved(x, y, dx, dy, istouch)
-	self:getCurrentEditor():mousemoved(x, y, dx, dy, istouch)
+	if not self.showMenu then
+		self:getCurrentEditor():mousemoved(x, y, dx, dy, istouch)
+	end
 end
 
 function main:mousepressed(x, y, button, istouch, presses)
-	self:getCurrentEditor():mousepressed(x, y, button, istouch, presses)
+	if not self.showMenu then
+		self:getCurrentEditor():mousepressed(x, y, button, istouch, presses)
+	end
 end
 
 function main:wheelmoved(x, y)
-	self:getCurrentEditor():wheelmoved(x, y)
+	if not self.showMenu then
+		self:getCurrentEditor():wheelmoved(x, y)
+	end
 end
 
 function main:keypressed(key, scancode, isrepeat)
-	self:getCurrentEditor():keypressed(key, scancode, isrepeat)
-	if key == 'space' then
+	if not self.showMenu then
+		self:getCurrentEditor():keypressed(key, scancode, isrepeat)
+	end
+	if key == 'tab' then
 		self.showMenu = not self.showMenu
 	end
 	if key == 'escape' then
@@ -110,14 +119,17 @@ end
 
 function main:update(dt)
 	self.menu:update(dt)
-	local targetMenuYOffset = self.showMenu and 0 or -1
-	self.menuYOffset = self.menuYOffset + (targetMenuYOffset - self.menuYOffset) * self.menuEnterSpeed * dt
+	local targetMenuTransitonPosition = self.showMenu and 1 or 0
+	self.menuTransitonPosition = util.lerp(self.menuTransitonPosition,
+		targetMenuTransitonPosition, self.menuEnterSpeed * dt)
 end
 
 function main:draw()
 	self:getCurrentEditor():draw()
 	love.graphics.push 'all'
-	love.graphics.translate(0, self.menuYOffset * love.graphics.getHeight())
+	love.graphics.setColor(0, 0, 0, self.menuTransitonPosition / 2)
+	love.graphics.rectangle('fill', 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+	love.graphics.translate(0, (self.menuTransitonPosition - 1) * love.graphics.getHeight())
 	self.menu:draw()
 	love.graphics.pop()
 end
