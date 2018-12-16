@@ -12,58 +12,64 @@ function main:enter(_, project)
 		table.insert(self.editors, LevelEditor(self.project, level))
 	end
 	self.selectedEditor = 1
-	self.menu = Menu(function() return {
-		title = 'Main menu',
-		content = {
+
+	self.menu = Menu('Main menu', {
+		{
 			{
-				{
-					text = 'Layers...',
-					onSelect = function(menu)
-						menu:push(function() return {
-							title = 'Layers',
-							content = {
-								{
-									{text = 'Front tiles'},
-									{text = 'Entities'},
-									{text = 'Geometry'},
-									{text = 'Back tiles'},
-									{text = 'Front tiles'},
-									{text = 'Entities'},
-									{text = 'Geometry'},
-									{text = 'Back tiles'},
-									{text = 'Front tiles'},
-									{text = 'Entities'},
-									{text = 'Geometry'},
-									{text = 'Back tiles'},
-									{text = 'Front tiles'},
-									{text = 'Entities'},
-									{text = 'Geometry'},
-									{text = 'Back tiles'},
-									{text = 'Front tiles'},
-									{text = 'Entities'},
-									{text = 'Geometry'},
-									{text = 'Back tiles'},
-									{text = 'Front tiles'},
-									{text = 'Entities'},
-									{text = 'Geometry'},
-									{text = 'Back tiles'},
-									{text = 'Front tiles'},
-									{text = 'Entities'},
-									{text = 'Geometry'},
-									{text = 'Back tiles'},
-								},
-								{
-									{text = 'New layer'},
-									{text = 'Move layer up'},
-									{text = 'Move layer down'},
-								},
-							},
-						} end)
-					end,
-				},
-			},
-		},
-	} end)
+				text = 'Layers...',
+				onSelect = function(menu)
+					menu:push('Layers', {
+						{
+							{text = 'Front tiles'},
+							{text = 'Entities'},
+							{text = 'Geometry'},
+							{text = 'Back tiles'},
+							{text = 'Front tiles'},
+							{text = 'Entities'},
+							{text = 'Geometry'},
+							{text = 'Back tiles'},
+							{text = 'Front tiles'},
+							{text = 'Entities'},
+							{text = 'Geometry'},
+							{text = 'Back tiles'},
+							{text = 'Front tiles'},
+							{text = 'Entities'},
+							{text = 'Geometry'},
+							{text = 'Back tiles'},
+							{text = 'Front tiles'},
+							{text = 'Entities'},
+							{text = 'Geometry'},
+							{text = 'Back tiles'},
+							{text = 'Front tiles'},
+							{text = 'Entities'},
+							{text = 'Geometry'},
+							{text = 'Back tiles'},
+							{text = 'Front tiles'},
+							{text = 'Entities'},
+							{text = 'Geometry'},
+							{text = 'Back tiles'},
+							{text = 'Front tiles'},
+							{text = 'Entities'},
+							{text = 'Geometry'},
+							{text = 'Back tiles'},
+							{text = 'Front tiles'},
+							{text = 'Entities'},
+							{text = 'Geometry'},
+							{text = 'Back tiles'},
+						},
+						{
+							{text = 'Add geometry layer'},
+							{text = 'Add tile layer'},
+							{text = 'Add entity layer'},
+							{text = 'Move layer up'},
+							{text = 'Move layer down'},
+							{text = 'Remove layer'},
+						}
+					})
+				end,
+			}
+		}
+	})
 	self.showMenu = false
 	self.menuYOffset = -1
 end
