@@ -5,5 +5,5 @@ love.keyboard.setKeyRepeat(true)
 
 function love.load()
 	gamestate.registerEvents()
-	gamestate.switch(welcome)
+	gamestate.switch(require 'state.text-input-modal')
 end
