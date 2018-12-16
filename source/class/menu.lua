@@ -3,6 +3,9 @@ local Object = require 'lib.classic'
 local util = require 'util'
 
 local style = {
+	minMenuWidth = 400,
+	maxMenuWidth = 800,
+	maxColumns = 3,
 	mainPadding = 16,
 	itemPadding = 4,
 	bgColor = {.1, .1, .1},
@@ -181,7 +184,8 @@ end
 
 function Menu:getTargetWidth()
 	local numColumns = #self:getCurrentScreen().columns
-	return util.lerp(.5, .9, math.min(1, (numColumns - 1) / 2))
+	return util.lerp(style.minMenuWidth, style.maxMenuWidth,
+		math.min(1, (numColumns - 1) / (style.maxColumns - 1)))
 end
 
 function Menu:getScreen(screenIndex)
@@ -234,9 +238,9 @@ function Menu:update(dt)
 end
 
 function Menu:draw()
-	local menuWidth = love.graphics.getWidth() * self.width
+	local menuWidth = self.width
 	local menuHeight = love.graphics.getHeight() * .9
-	local menuX = (love.graphics.getWidth() - menuWidth) / 2
+	local menuX = 50
 	local menuY = (love.graphics.getHeight() - menuHeight) / 2
 	love.graphics.push 'all'
 	love.graphics.setScissor(menuX, menuY, menuWidth, menuHeight)

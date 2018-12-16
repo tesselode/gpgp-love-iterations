@@ -15,6 +15,14 @@ function main:enter(_, project)
 
 	self.menu = Menu('Main menu', {
 		{
+			{text = 'New level'},
+			{text = 'Save level...'},
+			{text = 'Save level as...'},
+			{text = 'Rename level...'},
+			{text = 'Close project'},
+		},
+		{
+			{text = 'Levels...'},
 			{
 				text = 'Layers...',
 				onSelect = function(menu)
@@ -67,7 +75,9 @@ function main:enter(_, project)
 						}
 					})
 				end,
-			}
+			},
+			{text = 'Entities...'},
+			{text = 'History...'},
 		}
 	})
 	self.showMenu = false
