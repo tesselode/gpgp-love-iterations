@@ -131,7 +131,7 @@ function LevelEditor:save(levelName)
 	self.levelName = levelName or self.levelName
 	assert(self.levelName, 'cannot save level before setting a level name')
 	local data = self:getCurrentLevelState():export()
-	local filePath = self.project.directory .. '/levels/' .. levelName .. '.lua'
+	local filePath = self.project.directory .. '/levels/' .. self.levelName .. '.lua'
 	local file = io.open(filePath, 'w')
 	file:write('return ' .. serpent.block(data, {comment = false}))
 	file:close()
