@@ -15,6 +15,7 @@ local style = {
 	unfocusedHighlightColor = {98/255, 154/255, 175/255, 1/3},
 	transitionSpeed = 15,
 	scrollAnimationSpeed = 30,
+	selectAnimationSpeed = 7.5,
 }
 
 local Column = Object:extend()
@@ -23,6 +24,7 @@ function Column:new(items)
 	self.items = items
 	self.selected = 1
 	self.highlightY = (self.selected - 1) * self:getItemHeight()
+	self.selectAnimationPosition = 1
 end
 
 function Column:getItems()
@@ -66,12 +68,15 @@ function Column:select(menu)
 	if item.onSelect then
 		item.onSelect(menu)
 	end
+	self.selectAnimationPosition = 0
 end
 
 function Column:update(dt)
 	self.highlightY = util.lerp(self.highlightY,
 		(self.selected - 1) * self:getItemHeight(),
 		style.scrollAnimationSpeed * dt)
+	self.selectAnimationPosition = util.lerp(self.selectAnimationPosition,
+		1, style.selectAnimationSpeed * dt)
 end
 
 function Column:getItemHeight()
@@ -92,6 +97,9 @@ function Column:drawItems(width, focused)
 	love.graphics.setColor(focused and style.focusedHighlightColor or style.unfocusedHighlightColor)
 	love.graphics.rectangle('fill', style.mainPadding, self.highlightY,
 		width - style.mainPadding * 2, itemHeight)
+	love.graphics.setColor(1, 1, 1, (1 - self.selectAnimationPosition) / 3)
+	love.graphics.rectangle('fill', style.mainPadding, self.highlightY,
+		self.selectAnimationPosition * (width - style.mainPadding * 2), itemHeight)
 	love.graphics.setColor(style.textColor)
 	love.graphics.setFont(font.normal)
 	for _, item in ipairs(self:getItems()) do
