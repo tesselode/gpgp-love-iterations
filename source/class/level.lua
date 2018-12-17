@@ -21,6 +21,7 @@ function Level:addLayer(layerIndex, layer)
 end
 
 function Level:removeLayer(layerIndex)
+	if #self.data.layers <= 1 then return self end
 	local data = util.shallowCopy(self.data)
 	data.layers = util.shallowCopy(data.layers)
 	table.remove(data.layers, layerIndex)

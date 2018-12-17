@@ -66,6 +66,7 @@ end
 function LevelEditor:removeLayer()
 	local level = self:getCurrentLevelState()
 	local layer = level.data.layers[self.selectedLayerIndex]
+	if #level.data.layers <= 1 then return end
 	self:modifyLevel(level:removeLayer(self.selectedLayerIndex),
 		'Remove layer "' .. layer.data.name .. '"')
 	if self.selectedLayerIndex > #level.data.layers - 1 then
