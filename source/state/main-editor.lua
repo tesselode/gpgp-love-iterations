@@ -101,6 +101,27 @@ function main:createLayersMenu()
 	return {layerList, layerActions}
 end
 
+function main:createHistoryMenu()
+	local editor = self.editors[self.selectedEditor]
+	return {function()
+		local history = {}
+		for i = #editor.levelHistory, 1, -1 do
+			local step = editor.levelHistory[i]
+			local text = step.description
+			if i == editor.levelHistoryPosition then
+				text = text .. ' (current)'
+			end
+			table.insert(history, {
+				text = text,
+				onSelect = function()
+					editor.levelHistoryPosition = i
+				end,
+			})
+		end
+		return history
+	end}
+end
+
 function main:initMenu()
 	self.menu = Menu('Main menu', {
 		{
@@ -114,6 +135,12 @@ function main:initMenu()
 				text = 'Layers...',
 				onSelect = function(menu)
 					menu:push('Layers', self:createLayersMenu())
+				end,
+			},
+			{
+				text = 'History...',
+				onSelect = function(menu)
+					menu:push('History', self:createHistoryMenu())
 				end,
 			},
 			{
