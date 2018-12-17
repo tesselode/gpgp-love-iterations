@@ -116,6 +116,10 @@ function main:initMenu()
 					menu:push('Layers', self:createLayersMenu())
 				end,
 			},
+			{
+				text = 'Close project',
+				onSelect = function() gamestate.switch(require 'state.welcome') end,
+			},
 		}
 	})
 	self.showMenu = false
