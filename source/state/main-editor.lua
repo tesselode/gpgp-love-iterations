@@ -26,7 +26,16 @@ function main:createLevelsMenu()
 		end
 		return levels
 	end
-	return {levelList}
+	local levelActions = {
+		{
+			text = 'New level',
+			onSelect = function()
+				table.insert(self.editors, LevelEditor(self.project))
+				self.selectedEditor = #self.editors
+			end,
+		}
+	}
+	return {levelList, levelActions}
 end
 
 function main:createLayersMenu()
