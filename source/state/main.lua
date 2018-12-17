@@ -9,6 +9,26 @@ local main = {}
 
 main.menuEnterSpeed = 20
 
+function main:createLevelsMenu()
+	local function levelList()
+		local levels = {}
+		for editorIndex, editor in ipairs(self.editors) do
+			local text = editor.levelName or 'New level'
+			if editorIndex == self.selectedEditor then
+				text = text .. ' (current)'
+			end
+			table.insert(levels, {
+				text = text,
+				onSelect = function()
+					self.selectedEditor = editorIndex
+				end,
+			})
+		end
+		return levels
+	end
+	return {levelList}
+end
+
 function main:createLayersMenu()
 	local editor = self.editors[self.selectedEditor]
 	local function layerList()
@@ -64,11 +84,17 @@ function main:initMenu()
 	self.menu = Menu('Main menu', {
 		{
 			{
+				text = 'Levels...',
+				onSelect = function(menu)
+					menu:push('Levels', self:createLevelsMenu())
+				end,
+			},
+			{
 				text = 'Layers...',
 				onSelect = function(menu)
 					menu:push('Layers', self:createLayersMenu())
 				end,
-			}
+			},
 		}
 	})
 	self.showMenu = false
@@ -78,8 +104,11 @@ end
 function main:enter(_, project)
 	self.project = project
 	self.editors = {}
-	for _, level in ipairs(self.project:loadLevels()) do
-		table.insert(self.editors, LevelEditor(self.project, level))
+	for levelName, level in self.project:getLevels() do
+		table.insert(self.editors, LevelEditor(self.project, levelName, level))
+	end
+	if #self.editors == 0 then
+		table.insert(self.editors, LevelEditor(self.project))
 	end
 	self.selectedEditor = 1
 	self:initMenu()

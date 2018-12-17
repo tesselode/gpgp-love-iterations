@@ -19,13 +19,14 @@ function LevelEditor:initGrid()
 	end
 end
 
-function LevelEditor:new(project, level)
+function LevelEditor:new(project, levelName, level)
 	self.levelHistory = {
 		{
 			level = level or Level(project),
 			description = level and 'Open level' or 'New level',
 		}
 	}
+	self.levelName = levelName
 	self.levelHistoryPosition = 1
 	self.selectedLayerIndex = 1
 	self:initGrid()
