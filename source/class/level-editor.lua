@@ -2,6 +2,7 @@ local GeometryLayer = require 'class.layer.geometry'
 local Grid = require 'class.grid'
 local Level = require 'class.level'
 local Object = require 'lib.classic'
+local serpent = require 'lib.serpent'
 
 local LevelEditor = Object:extend()
 
@@ -20,6 +21,7 @@ function LevelEditor:initGrid()
 end
 
 function LevelEditor:new(project, levelName, level)
+	self.project = project
 	self.levelHistory = {
 		{
 			level = level or Level(project),
@@ -123,6 +125,16 @@ function LevelEditor:remove(l, t, r, b)
 				selectedLayer:remove(l, t, r, b)),
 			'Remove tiles')
 	end
+end
+
+function LevelEditor:save(levelName)
+	self.levelName = levelName or self.levelName
+	assert(self.levelName, 'cannot save level before setting a level name')
+	local data = self:getCurrentLevelState():export()
+	local filePath = self.project.directory .. '/levels/' .. levelName .. '.lua'
+	local file = io.open(filePath, 'w')
+	file:write('return ' .. serpent.block(data, {comment = false}))
+	file:close()
 end
 
 function LevelEditor:mousemoved(x, y, dx, dy, istouch)

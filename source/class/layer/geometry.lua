@@ -47,6 +47,14 @@ function GeometryLayer:remove(l, t, r, b)
 	return GeometryLayer(data)
 end
 
+function GeometryLayer:export()
+	return {
+		name = self.data.name,
+		type = 'geometry',
+		items = self.data.items,
+	}
+end
+
 function GeometryLayer:draw()
 	love.graphics.push 'all'
 	love.graphics.setColor(116/255, 208/255, 232/255, 1/3)

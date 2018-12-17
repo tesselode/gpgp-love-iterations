@@ -57,6 +57,17 @@ function Level:setLayer(layerIndex, layer)
 	return Level(self.project, data)
 end
 
+function Level:export()
+	local data = {}
+	data.width = self.data.width
+	data.height = self.data.height
+	data.layers = {}
+	for _, layer in ipairs(self.data.layers) do
+		table.insert(data.layers, layer:export())
+	end
+	return data
+end
+
 function Level:draw()
 	for _, layer in ipairs(self.data.layers) do
 		layer:draw()

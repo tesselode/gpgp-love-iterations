@@ -33,7 +33,19 @@ function main:createLevelsMenu()
 				table.insert(self.editors, LevelEditor(self.project))
 				self.selectedEditor = #self.editors
 			end,
-		}
+		},
+		{
+			text = 'Save level...',
+			onSelect = function()
+				self:save()
+			end,
+		},
+		{
+			text = 'Save level as...',
+			onSelect = function()
+				self:save(true)
+			end,
+		},
 	}
 	return {levelList, levelActions}
 end
@@ -121,6 +133,21 @@ function main:enter(_, project)
 	end
 	self.selectedEditor = 1
 	self:initMenu()
+end
+
+function main:save(saveAs)
+	local editor = self.editors[self.selectedEditor]
+	if (not editor.levelName) or saveAs then
+		gamestate.push(textInputModal,
+			'Enter a name for the level',
+			'',
+			function(name)
+				editor:save(name)
+			end
+		)
+	else
+		editor:save()
+	end
 end
 
 function main:getCurrentEditor()
