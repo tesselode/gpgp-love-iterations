@@ -3,6 +3,13 @@ local util = require 'util'
 
 local GeometryLayer = Object:extend()
 
+function GeometryLayer.Import(exportedData)
+	return GeometryLayer {
+		name = exportedData.name,
+		items = exportedData.items,
+	}
+end
+
 function GeometryLayer:new(data)
 	self.data = data or {
 		name = 'New geometry layer',

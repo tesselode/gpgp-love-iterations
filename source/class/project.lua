@@ -20,7 +20,7 @@ function Project:getLevels()
 		for _, item in ipairs(love.filesystem.getDirectoryItems(levelsDirectoryPath)) do
 			if love.filesystem.getInfo(levelsDirectoryPath .. item, 'file') and item:sub(-4) == '.lua' then
 				table.insert(levelNames, item:sub(1, -5))
-				table.insert(levels, Level(self, love.filesystem.load(levelsDirectoryPath .. item)()))
+				table.insert(levels, Level.Import(self, love.filesystem.load(levelsDirectoryPath .. item)()))
 			end
 		end
 	end

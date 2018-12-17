@@ -4,6 +4,20 @@ local util = require 'util'
 
 local Level = Object:extend()
 
+function Level.Import(project, exportedData)
+	local data = {
+		width = exportedData.width,
+		height = exportedData.height,
+		layers = {},
+	}
+	for _, layer in ipairs(exportedData.layers) do
+		if layer.type == 'geometry' then
+			table.insert(data.layers, GeometryLayer.Import(layer))
+		end
+	end
+	return Level(project, data)
+end
+
 function Level:new(project, data)
 	self.project = project
 	self.data = data or {
