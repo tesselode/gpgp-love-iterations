@@ -3,6 +3,7 @@ local GeometryLayer = require 'class.layer.geometry'
 local LevelEditor = require 'class.level-editor'
 local Menu = require 'class.menu'
 local textInputModal = require 'state.text-input-modal'
+local TileLayer = require 'class.layer.tile'
 local util = require 'util'
 
 local main = {}
@@ -50,15 +51,38 @@ function main:createLevelsMenu()
 	return {levelList, levelActions}
 end
 
+function main:createAddTileLayerMenu()
+	local editor = self.editors[self.selectedEditor]
+	return {function()
+		local tilesets = {}
+		for _, tileset in ipairs(editor.project.tilesets) do
+			table.insert(tilesets, {
+				text = tileset.name,
+				onSelect = function(menu)
+					editor:addLayer(TileLayer(tileset.name))
+					menu:pop()
+				end,
+			})
+		end
+		return tilesets
+	end}
+end
+
 function main:createLayersMenu()
 	local editor = self.editors[self.selectedEditor]
 	local function layerList()
 		local level = editor:getCurrentLevelState()
 		local layers = {}
 		for layerIndex, layer in ipairs(level.data.layers) do
-			local text = layer.data.name
+			local text = ''
 			if layerIndex == editor.selectedLayerIndex then
-				text = text .. ' (selected)'
+				text = text .. '*'
+			end
+			text = text .. layer.data.name
+			if layer:is(GeometryLayer) then
+				text = text .. ' (geometry)'
+			elseif layer:is(TileLayer) then
+				text = text .. ' (tile - ' .. layer.data.tilesetName .. ')'
 			end
 			table.insert(layers, {
 				text = text,
@@ -74,6 +98,12 @@ function main:createLayersMenu()
 			text = 'Add geometry layer',
 			onSelect = function()
 				editor:addLayer(GeometryLayer())
+			end,
+		},
+		{
+			text = 'Add tile layer...',
+			onSelect = function(menu)
+				menu:push('Select tileset', self:createAddTileLayerMenu())
 			end,
 		},
 		{

@@ -186,6 +186,8 @@ end
 local Menu = Object:extend()
 
 function Menu:new(title, columns)
+	assert(type(title) == 'string', 'Must provide a title')
+	assert(type(columns) == 'table', 'Must provide menu content')
 	self.screenStack = {Screen(title, columns)}
 	self.screenStackPosition = 1
 	self.drawXOffset = 0
