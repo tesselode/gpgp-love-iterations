@@ -3,6 +3,8 @@ local Grid = require 'class.grid'
 local Level = require 'class.level'
 local Object = require 'lib.classic'
 local serpent = require 'lib.serpent'
+local Stamp = require 'class.stamp'
+local TileLayer = require 'class.layer.tile'
 
 local LevelEditor = Object:extend()
 
@@ -31,6 +33,7 @@ function LevelEditor:new(project, levelName, level)
 	self.levelName = levelName
 	self.levelHistoryPosition = 1
 	self.selectedLayerIndex = 1
+	self.tileStamp = Stamp()
 	self:initGrid()
 end
 
@@ -61,9 +64,12 @@ function LevelEditor:redo()
 	end
 end
 
-function LevelEditor:addLayer(layer)
+function LevelEditor:addLayer(layerType, ...)
 	local level = self:getCurrentLevelState()
-	self:modifyLevel(level:addLayer(self.selectedLayerIndex, layer), 'Add layer')
+	self:modifyLevel(
+		level:addLayer(self.selectedLayerIndex, layerType, ...),
+		'Add layer'
+	)
 end
 
 function LevelEditor:removeLayer()
@@ -113,6 +119,10 @@ function LevelEditor:place(l, t, r, b)
 	if selectedLayer:is(GeometryLayer) then
 		self:modifyLevel(level:setLayer(self.selectedLayerIndex,
 				selectedLayer:place(l, t, r, b)),
+			'Place geometry')
+	elseif selectedLayer:is(TileLayer) then
+		self:modifyLevel(level:setLayer(self.selectedLayerIndex,
+				selectedLayer:place(l, t, r, b, self.tileStamp)),
 			'Place tiles')
 	end
 end

@@ -10,7 +10,8 @@ function GeometryLayer.Import(exportedData)
 	}
 end
 
-function GeometryLayer:new(data)
+function GeometryLayer:new(project, data)
+	self.project = project
 	self.data = data or {
 		name = 'New geometry layer',
 		items = {},
@@ -27,7 +28,7 @@ end
 function GeometryLayer:setName(name)
 	local data = util.shallowCopy(self.data)
 	data.name = name
-	return GeometryLayer(data)
+	return GeometryLayer(self.project, data)
 end
 
 function GeometryLayer:place(l, t, r, b)
@@ -40,7 +41,7 @@ function GeometryLayer:place(l, t, r, b)
 			end
 		end
 	end
-	return GeometryLayer(data)
+	return GeometryLayer(self.project, data)
 end
 
 function GeometryLayer:remove(l, t, r, b)
@@ -51,7 +52,7 @@ function GeometryLayer:remove(l, t, r, b)
 			table.insert(data.items, item)
 		end
 	end
-	return GeometryLayer(data)
+	return GeometryLayer(self.project, data)
 end
 
 function GeometryLayer:export()

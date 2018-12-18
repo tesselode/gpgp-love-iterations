@@ -1,5 +1,6 @@
 local GeometryLayer = require 'class.layer.geometry'
 local Object = require 'lib.classic'
+local TileLayer = require 'class.layer.tile'
 local util = require 'util'
 
 local Level = Object:extend()
@@ -12,7 +13,7 @@ function Level.Import(project, exportedData)
 	}
 	for _, layer in ipairs(exportedData.layers) do
 		if layer.type == 'geometry' then
-			table.insert(data.layers, GeometryLayer.Import(layer))
+			table.insert(data.layers, GeometryLayer.Import(project, layer))
 		end
 	end
 	return Level(project, data)
@@ -23,13 +24,19 @@ function Level:new(project, data)
 	self.data = data or {
 		width = project.defaultLevelWidth,
 		height = project.defaultLevelHeight,
-		layers = {GeometryLayer()},
+		layers = {GeometryLayer(project)},
 	}
 end
 
-function Level:addLayer(layerIndex, layer)
+function Level:addLayer(layerIndex, layerType, ...)
 	local data = util.shallowCopy(self.data)
 	data.layers = util.shallowCopy(data.layers)
+	local layer
+	if layerType == 'geometry' then
+		layer = GeometryLayer(self.project, ...)
+	elseif layerType == 'tile' then
+		layer = TileLayer(self.project, ...)
+	end
 	table.insert(data.layers, layerIndex, layer)
 	return Level(self.project, data)
 end

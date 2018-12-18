@@ -59,7 +59,7 @@ function main:createAddTileLayerMenu()
 			table.insert(tilesets, {
 				text = tileset.name,
 				onSelect = function(menu)
-					editor:addLayer(TileLayer(tileset.name))
+					editor:addLayer('tile', tileset.name)
 					menu:pop()
 				end,
 			})
@@ -97,7 +97,7 @@ function main:createLayersMenu()
 		{
 			text = 'Add geometry layer',
 			onSelect = function()
-				editor:addLayer(GeometryLayer())
+				editor:addLayer 'geometry'
 			end,
 		},
 		{
