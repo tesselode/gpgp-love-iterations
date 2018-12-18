@@ -7,7 +7,7 @@ local welcome = {}
 function welcome:directorydropped(path)
 	local success = love.filesystem.mount(path, 'project')
 	if not success then return end
-	local project = Project(path, 'project', love.filesystem.load('project/config.lua')())
+	local project = Project(path, 'project')
 	gamestate.switch(mainEditor, project)
 end
 

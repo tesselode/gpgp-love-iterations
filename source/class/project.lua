@@ -1,15 +1,25 @@
 local Level = require 'class.level'
 local Object = require 'lib.classic'
+local Tileset = require 'class.tileset'
 
 local Project = Object:extend()
 
-function Project:new(directory, mountPoint, data)
+function Project:new(directory, mountPoint)
 	self.directory = directory
 	self.mountPoint = mountPoint
+	local data = love.filesystem.load(mountPoint .. '/config.lua')()
 	self.defaultLevelWidth = data.defaultLevelWidth or 16
 	self.defaultLevelHeight = data.defaultLevelHeight or 9
 	self.maxLevelWidth = data.maxLevelWidth or 1000
 	self.maxLevelHeight = data.maxLevelHeight or 1000
+	self.tilesets = {}
+	if data.tilesets then
+		for _, tilesetData in ipairs(data.tilesets) do
+			local tileset = Tileset(mountPoint, tilesetData)
+			table.insert(self.tilesets, tileset)
+			self.tilesets[tilesetData.name] = tileset
+		end
+	end
 end
 
 function Project:getLevels()
