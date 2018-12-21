@@ -41,6 +41,10 @@ function LevelEditor:getCurrentLevelState()
 	return self.levelHistory[self.levelHistoryPosition].level
 end
 
+function LevelEditor:getSelectedLayer()
+	return self:getCurrentLevelState().data.layers[self.selectedLayerIndex]
+end
+
 function LevelEditor:modifyLevel(level, description)
 	self.levelHistoryPosition = self.levelHistoryPosition + 1
 	for i = self.levelHistoryPosition + 1, #self.levelHistory do

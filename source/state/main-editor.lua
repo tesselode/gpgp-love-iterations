@@ -4,6 +4,7 @@ local LevelEditor = require 'class.level-editor'
 local Menu = require 'class.menu'
 local textInputModal = require 'state.text-input-modal'
 local TileLayer = require 'class.layer.tile'
+local tilePicker = require 'state.tile-picker'
 local util = require 'util'
 
 local main = {}
@@ -234,9 +235,7 @@ function main:wheelmoved(x, y)
 end
 
 function main:keypressed(key, scancode, isrepeat)
-	if not self.showMenu then
-		self:getCurrentEditor():keypressed(key, scancode, isrepeat)
-	end
+	local selectedLayer = self:getCurrentEditor():getSelectedLayer()
 	if key == 'tab' then
 		self.showMenu = not self.showMenu
 	end
@@ -251,6 +250,12 @@ function main:keypressed(key, scancode, isrepeat)
 		if key == 'up' then self.menu:up() end
 		if key == 'down' then self.menu:down() end
 		if key == 'return' then self.menu:select() end
+	else
+		if key == 'space' and selectedLayer:is(TileLayer) then
+			gamestate.push(tilePicker, self.project.tilesets[selectedLayer.data.tilesetName])
+		else
+			self:getCurrentEditor():keypressed(key, scancode, isrepeat)
+		end
 	end
 end
 
