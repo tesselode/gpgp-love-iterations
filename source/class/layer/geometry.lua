@@ -31,11 +31,11 @@ function GeometryLayer:setName(name)
 	return GeometryLayer(self.project, data)
 end
 
-function GeometryLayer:place(l, t, r, b)
+function GeometryLayer:place(rect)
 	local data = util.shallowCopy(self.data)
 	data.items = util.shallowCopy(data.items)
-	for x = l, r do
-		for y = t, b do
+	for x = rect.left, rect.right do
+		for y = rect.top, rect.bottom do
 			if not self:hasItemAt(x, y) then
 				table.insert(data.items, {x = x, y = y})
 			end
@@ -44,11 +44,11 @@ function GeometryLayer:place(l, t, r, b)
 	return GeometryLayer(self.project, data)
 end
 
-function GeometryLayer:remove(l, t, r, b)
+function GeometryLayer:remove(rect)
 	local data = util.shallowCopy(self.data)
 	data.items = {}
 	for _, item in ipairs(self.data.items) do
-		if not util.pointInRect(item.x, item.y, l, t, r, b) then
+		if not rect:containsPoint(item.x, item.y) then
 			table.insert(data.items, item)
 		end
 	end
@@ -63,11 +63,11 @@ function GeometryLayer:export()
 	}
 end
 
-function GeometryLayer:drawCursor(cursorX, cursorY, removing)
+function GeometryLayer:drawCursor(cursorRect, removing)
 	love.graphics.push 'all'
 	local color = love.mouse.isDown(2) and {234/255, 30/255, 108/255, 1/3} or {116/255, 208/255, 232/255, 1/3}
 	love.graphics.setColor(color)
-	love.graphics.rectangle('fill', cursorX, cursorY, 1, 1)
+	love.graphics.rectangle('fill', cursorRect:getGraphicsRect())
 	love.graphics.pop()
 end
 

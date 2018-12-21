@@ -2,6 +2,7 @@ local GeometryLayer = require 'class.layer.geometry'
 local Grid = require 'class.grid'
 local Level = require 'class.level'
 local Object = require 'lib.classic'
+local Rect = require 'class.rect'
 local serpent = require 'lib.serpent'
 local Stamp = require 'class.stamp'
 local TileLayer = require 'class.layer.tile'
@@ -11,15 +12,7 @@ local LevelEditor = Object:extend()
 function LevelEditor:initGrid()
 	local level = self:getCurrentLevelState()
 	self.grid = Grid(level.data.width, level.data.height)
-
-	function self.grid.onMoveCursor(x, y)
-		local cursorX, cursorY = self.grid:getCursorPosition()
-		if love.mouse.isDown(1) then
-			self:place(cursorX, cursorY, cursorX, cursorY)
-		elseif love.mouse.isDown(2) then
-			self:remove(cursorX, cursorY, cursorX, cursorY)
-		end
-	end
+	function self.grid.onMoveCursor(...) self:onMoveCursor(...) end
 end
 
 function LevelEditor:new(project, levelName, level)
@@ -33,6 +26,9 @@ function LevelEditor:new(project, levelName, level)
 	self.levelName = levelName
 	self.levelHistoryPosition = 1
 	self.selectedLayerIndex = 1
+	self.tool = 'box'
+	self.cursorRect = Rect(0, 0)
+	self.cursorState = 'idle'
 	self.tileStamp = Stamp()
 	self:initGrid()
 end
@@ -121,26 +117,26 @@ function LevelEditor:renameLayer(name)
 	)
 end
 
-function LevelEditor:place(l, t, r, b)
+function LevelEditor:place(rect)
 	local level = self:getCurrentLevelState()
 	local selectedLayer = level.data.layers[self.selectedLayerIndex]
 	if selectedLayer:is(GeometryLayer) then
 		self:modifyLevel(level:setLayer(self.selectedLayerIndex,
-				selectedLayer:place(l, t, r, b)),
+				selectedLayer:place(rect)),
 			'Place geometry')
 	elseif selectedLayer:is(TileLayer) then
 		self:modifyLevel(level:setLayer(self.selectedLayerIndex,
-				selectedLayer:place(l, t, r, b, self.tileStamp)),
+				selectedLayer:place(rect, self.tileStamp)),
 			'Place tiles')
 	end
 end
 
-function LevelEditor:remove(l, t, r, b)
+function LevelEditor:remove(rect)
 	local level = self:getCurrentLevelState()
 	local selectedLayer = level.data.layers[self.selectedLayerIndex]
 	if selectedLayer:is(GeometryLayer) then
 		self:modifyLevel(level:setLayer(self.selectedLayerIndex,
-				selectedLayer:remove(l, t, r, b)),
+				selectedLayer:remove(rect)),
 			'Remove tiles')
 	end
 end
@@ -159,13 +155,44 @@ function LevelEditor:mousemoved(x, y, dx, dy, istouch)
 	self.grid:mousemoved(x, y, dx, dy, istouch)
 end
 
-function LevelEditor:mousepressed(x, y, button, istouch, presses)
-	local cursorX, cursorY = self.grid:getCursorPosition()
-	if button == 1 then
-		self:place(cursorX, cursorY, cursorX, cursorY)
-	elseif button == 2 then
-		self:remove(cursorX, cursorY, cursorX, cursorY)
+function LevelEditor:onMoveCursor(cursorX, cursorY)
+	if self.tool == 'pencil' then
+		self.cursorRect = Rect(cursorX, cursorY)
+		if self.cursorState == 'place' then
+			self:place(self.cursorRect)
+		elseif self.cursorState == 'remove' then
+			self:remove(self.cursorRect)
+		end
+	elseif self.tool == 'box' then
+		if self.cursorState == 'idle' then
+			self.cursorRect = Rect(cursorX, cursorY)
+		else
+			self.cursorRect.right = cursorX
+			self.cursorRect.bottom = cursorY
+		end
 	end
+end
+
+function LevelEditor:mousepressed(x, y, button, istouch, presses)
+	if button == 1 then
+		self.cursorState = 'place'
+		if self.tool == 'pencil' then self:place(self.cursorRect) end
+	elseif button == 2 then
+		self.cursorState = 'remove'
+		if self.tool == 'pencil' then self:remove(self.cursorRect) end
+	end
+end
+
+function LevelEditor:mousereleased(x, y, button, istouch, presses)
+	if self.tool == 'box' then
+		if self.cursorState == 'place' then
+			self:place(self.cursorRect:normalized())
+		elseif self.cursorState == 'remove' then
+			self:remove(self.cursorRect:normalized())
+		end
+		self.cursorRect = Rect(self.grid:getCursorPosition())
+	end
+	self.cursorState = 'idle'
 end
 
 function LevelEditor:wheelmoved(x, y)
@@ -182,13 +209,12 @@ function LevelEditor:keypressed(key, scancode, isrepeat)
 end
 
 function LevelEditor:drawCursor()
-	local cursorX, cursorY = self.grid:getCursorPosition()
 	local removing = love.mouse.isDown(2)
 	local layer = self:getSelectedLayer()
 	if layer:is(GeometryLayer) then
-		layer:drawCursor(cursorX, cursorY, removing)
+		layer:drawCursor(self.cursorRect:normalized(), removing)
 	elseif layer:is(TileLayer) then
-		layer:drawCursor(cursorX, cursorY, removing, self.tileStamp)
+		layer:drawCursor(self.cursorRect:normalized(), removing, self.tileStamp)
 	end
 end
 

@@ -228,6 +228,12 @@ function main:mousepressed(x, y, button, istouch, presses)
 	end
 end
 
+function main:mousereleased(x, y, button, istouch, presses)
+	if not self.showMenu then
+		self:getCurrentEditor():mousereleased(x, y, button, istouch, presses)
+	end
+end
+
 function main:wheelmoved(x, y)
 	if not self.showMenu then
 		self:getCurrentEditor():wheelmoved(x, y)
