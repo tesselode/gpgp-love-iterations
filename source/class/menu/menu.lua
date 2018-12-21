@@ -71,9 +71,9 @@ end
 
 function Menu:draw()
 	local menuWidth = self.width
-	local menuHeight = love.graphics.getHeight() * .9
-	local menuX = 50
-	local menuY = (love.graphics.getHeight() - menuHeight) / 2
+	local menuHeight = love.graphics.getHeight() - 56
+	local menuX = 0
+	local menuY = 56
 	love.graphics.push 'all'
 	love.graphics.setScissor(menuX, menuY, menuWidth, menuHeight)
 	love.graphics.translate(menuX, menuY)

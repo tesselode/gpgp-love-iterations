@@ -189,6 +189,9 @@ end
 
 function main:initToolbar()
 	self.toolbar = Toolbar {
+		onShowMenu = function()
+			self.showMenu = true
+		end,
 		onSelectPencilTool = function()
 			self:getCurrentEditor():setTool 'pencil'
 		end,
@@ -234,7 +237,7 @@ end
 function main:mousemoved(x, y, dx, dy, istouch)
 	if not self.showMenu then
 		self.toolbar:mousemoved(x, y, dx, dy, istouch)
-		if not self.toolbar:pointInBounds(x, y) then
+		if y > self.toolbar:getHeight() then
 			self:getCurrentEditor():mousemoved(x, y, dx, dy, istouch)
 		end
 	end
@@ -243,7 +246,7 @@ end
 function main:mousepressed(x, y, button, istouch, presses)
 	if not self.showMenu then
 		self.toolbar:mousepressed(x, y, button, istouch, presses)
-		if not self.toolbar:pointInBounds(x, y) then
+		if y > self.toolbar:getHeight() then
 			self:getCurrentEditor():mousepressed(x, y, button, istouch, presses)
 		end
 	end
@@ -252,7 +255,7 @@ end
 function main:mousereleased(x, y, button, istouch, presses)
 	if not self.showMenu then
 		self.toolbar:mousereleased(x, y, button, istouch, presses)
-		if not self.toolbar:pointInBounds(x, y) then
+		if y > self.toolbar:getHeight() then
 			self:getCurrentEditor():mousereleased(x, y, button, istouch, presses)
 		end
 	end
