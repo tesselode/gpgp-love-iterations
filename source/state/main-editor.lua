@@ -1,5 +1,7 @@
+local Button = require 'class.ui.button'
 local gamestate = require 'lib.gamestate'
 local GeometryLayer = require 'class.layer.geometry'
+local image = require 'image'
 local LevelEditor = require 'class.level-editor'
 local Menu = require 'class.menu'
 local textInputModal = require 'state.text-input-modal'
@@ -195,6 +197,8 @@ function main:enter(_, project)
 	end
 	self.selectedEditor = 1
 	self:initMenu()
+
+	self.testButton = Button(16, 16, image.pencil)
 end
 
 function main:save(saveAs)
@@ -219,18 +223,21 @@ end
 function main:mousemoved(x, y, dx, dy, istouch)
 	if not self.showMenu then
 		self:getCurrentEditor():mousemoved(x, y, dx, dy, istouch)
+		self.testButton:mousemoved(x, y, dx, dy, istouch)
 	end
 end
 
 function main:mousepressed(x, y, button, istouch, presses)
 	if not self.showMenu then
 		self:getCurrentEditor():mousepressed(x, y, button, istouch, presses)
+		self.testButton:mousepressed(x, y, button, istouch, presses)
 	end
 end
 
 function main:mousereleased(x, y, button, istouch, presses)
 	if not self.showMenu then
 		self:getCurrentEditor():mousereleased(x, y, button, istouch, presses)
+		self.testButton:mousereleased(x, y, button, istouch, presses)
 	end
 end
 
@@ -284,6 +291,8 @@ function main:draw()
 	love.graphics.translate(0, (self.menuTransitonPosition - 1) * love.graphics.getHeight())
 	self.menu:draw()
 	love.graphics.pop()
+
+	self.testButton:draw()
 end
 
 return main
