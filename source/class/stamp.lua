@@ -17,4 +17,17 @@ function Stamp:getTileAt(x, y)
 	return false
 end
 
+function Stamp:extended(width, height)
+	local items = {}
+	for x = 0, width - 1 do
+		for y = 0, height - 1 do
+			local tileX, tileY = self:getTileAt(x % self.width, y % self.height)
+			if tileX and tileY then
+				table.insert(items, {x = x, y = y, tileX = tileX, tileY = tileY})
+			end
+		end
+	end
+	return Stamp(width, height, items)
+end
+
 return Stamp

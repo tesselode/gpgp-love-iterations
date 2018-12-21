@@ -126,7 +126,7 @@ function LevelEditor:place(rect)
 			'Place geometry')
 	elseif selectedLayer:is(TileLayer) then
 		self:modifyLevel(level:setLayer(self.selectedLayerIndex,
-				selectedLayer:place(rect, self.tileStamp)),
+				selectedLayer:place(rect, self.tileStamp, self.tool)),
 			'Place tiles')
 	end
 end
@@ -135,6 +135,10 @@ function LevelEditor:remove(rect)
 	local level = self:getCurrentLevelState()
 	local selectedLayer = level.data.layers[self.selectedLayerIndex]
 	if selectedLayer:is(GeometryLayer) then
+		self:modifyLevel(level:setLayer(self.selectedLayerIndex,
+				selectedLayer:remove(rect)),
+			'Remove geometry')
+	elseif selectedLayer:is(TileLayer) then
 		self:modifyLevel(level:setLayer(self.selectedLayerIndex,
 				selectedLayer:remove(rect)),
 			'Remove tiles')
@@ -214,7 +218,7 @@ function LevelEditor:drawCursor()
 	if layer:is(GeometryLayer) then
 		layer:drawCursor(self.cursorRect:normalized(), removing)
 	elseif layer:is(TileLayer) then
-		layer:drawCursor(self.cursorRect:normalized(), removing, self.tileStamp)
+		layer:drawCursor(self.cursorRect:normalized(), removing, self.tileStamp, self.tool)
 	end
 end
 

@@ -32,7 +32,7 @@ end
 
 function tilePicker:mousereleased(x, y, button, istouch, presses)
 	if button == 1 and self.onSelect then
-		self.onSelect(self.tileset:getStamp(self.selection))
+		self.onSelect(self.tileset:getStamp(self.selection:normalized()))
 	end
 end
 

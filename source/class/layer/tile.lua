@@ -47,7 +47,11 @@ function TileLayer:remove(rect)
 	return TileLayer(self.project, data)
 end
 
-function TileLayer:place(rect, stamp)
+function TileLayer:place(rect, stamp, tool)
+	if tool == 'box' then
+		local _, _, width, height = rect:getGraphicsRect()
+		stamp = stamp:extended(width, height)
+	end
 	local data = util.shallowCopy(self.data)
 	data.items = util.shallowCopy(data.items)
 	for stampX = 0, stamp.width - 1 do
@@ -77,8 +81,13 @@ function TileLayer:export()
 	}
 end
 
-function TileLayer:drawCursor(cursorRect, removing, stamp)
+function TileLayer:drawCursor(cursorRect, removing, stamp, tool)
+	if tool == 'box' then
+		local _, _, width, height = cursorRect:getGraphicsRect()
+		stamp = stamp:extended(width, height)
+	end
 	GeometryLayer.drawCursor(self, cursorRect, removing)
+	if removing then return end
 	love.graphics.push 'all'
 	love.graphics.setColor(1, 1, 1, 2/3)
 	local tileset = self.project.tilesets[self.data.tilesetName]
