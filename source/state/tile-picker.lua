@@ -1,3 +1,4 @@
+local gamestate = require 'lib.gamestate'
 local Grid = require 'class.grid'
 local Rect = require 'class.rect'
 
@@ -30,13 +31,19 @@ function tilePicker:mousepressed(x, y, button, istouch, presses)
 end
 
 function tilePicker:mousereleased(x, y, button, istouch, presses)
-	if button == 1 then
-		-- commit selection, or something
+	if button == 1 and self.onSelect then
+		self.onSelect(self.tileset:getStamp(self.selection))
 	end
 end
 
 function tilePicker:wheelmoved(x, y)
 	self.grid:wheelmoved(x, y)
+end
+
+function tilePicker:keypressed(key, scancode, isrepeat)
+	if key == 'space' or key == 'escape' then
+		gamestate.pop()
+	end
 end
 
 function tilePicker:drawSelectionRect()

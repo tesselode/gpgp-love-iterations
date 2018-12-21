@@ -49,16 +49,20 @@ end
 function TileLayer:place(l, t, r, b, stamp)
 	local data = util.shallowCopy(self.data)
 	data.items = util.shallowCopy(data.items)
-	for stampX = 1, stamp.width do
-		for stampY = 1, stamp.height do
-			local x = l + stampX - 1
-			local y = t + stampY - 1
+	for stampX = 0, stamp.width - 1 do
+		for stampY = 0, stamp.height - 1 do
+			local x = l + stampX
+			local y = t + stampY
 			local tileX, tileY = stamp:getTileAt(stampX, stampY)
-			local itemIndex = self:getItemAt(x, y)
-			if itemIndex then
-				table.remove(data.items, itemIndex)
+			if tileX and tileY then
+				local _, existingItem = self:getItemAt(x, y)
+				if existingItem then
+					existingItem.tileX = tileX
+					existingItem.tileY = tileY
+				else
+					table.insert(data.items, {x = x, y = y, tileX = tileX, tileY = tileY})
+				end
 			end
-			table.insert(data.items, {x = x, y = y, tileX = tileX, tileY = tileY})
 		end
 	end
 	return TileLayer(self.project, data)

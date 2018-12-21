@@ -252,7 +252,11 @@ function main:keypressed(key, scancode, isrepeat)
 		if key == 'return' then self.menu:select() end
 	else
 		if key == 'space' and selectedLayer:is(TileLayer) then
-			gamestate.push(tilePicker, self.project.tilesets[selectedLayer.data.tilesetName])
+			gamestate.push(
+				tilePicker,
+				self.project.tilesets[selectedLayer.data.tilesetName],
+				function(stamp) self:getCurrentEditor():setTileStamp(stamp) end
+			)
 		else
 			self:getCurrentEditor():keypressed(key, scancode, isrepeat)
 		end

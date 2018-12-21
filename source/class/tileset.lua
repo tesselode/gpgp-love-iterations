@@ -1,4 +1,5 @@
 local Object = require 'lib.classic'
+local Stamp = require 'class.stamp'
 
 local Tileset = Object:extend()
 
@@ -7,6 +8,20 @@ function Tileset:new(mountPoint, data)
 	self.tileSize = data.tileSize
 	self.image = love.graphics.newImage(mountPoint .. '/images/' .. data.imagePath)
 	self.image:setFilter('nearest', 'nearest')
+end
+
+function Tileset:getStamp(rect)
+	local width = rect.right - rect.left + 1
+	local height = rect.bottom - rect.top + 1
+	local tiles = {}
+	for tileX = rect.left, rect.right do
+		for tileY = rect.top, rect.bottom do
+			local x = tileX - rect.left
+			local y = tileY - rect.top
+			table.insert(tiles, {x = x, y = y, tileX = tileX, tileY = tileY})
+		end
+	end
+	return Stamp(width, height, tiles)
 end
 
 function Tileset:drawFullImage()

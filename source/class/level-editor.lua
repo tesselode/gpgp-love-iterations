@@ -45,6 +45,10 @@ function LevelEditor:getSelectedLayer()
 	return self:getCurrentLevelState().data.layers[self.selectedLayerIndex]
 end
 
+function LevelEditor:setTileStamp(stamp)
+	self.tileStamp = stamp
+end
+
 function LevelEditor:modifyLevel(level, description)
 	self.levelHistoryPosition = self.levelHistoryPosition + 1
 	for i = self.levelHistoryPosition + 1, #self.levelHistory do
