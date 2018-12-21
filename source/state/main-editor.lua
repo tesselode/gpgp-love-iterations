@@ -7,6 +7,7 @@ local Menu = require 'class.menu'
 local textInputModal = require 'state.text-input-modal'
 local TileLayer = require 'class.layer.tile'
 local tilePicker = require 'state.tile-picker'
+local Toolbar = require 'class.ui.toolbar'
 local util = require 'util'
 
 local main = {}
@@ -186,6 +187,17 @@ function main:initMenu()
 	self.menuTransitonPosition = 0
 end
 
+function main:initToolbar()
+	self.toolbar = Toolbar {
+		onSelectPencilTool = function()
+			self:getCurrentEditor():setTool 'pencil'
+		end,
+		onSelectBoxTool = function()
+			self:getCurrentEditor():setTool 'box'
+		end,
+	}
+end
+
 function main:enter(_, project)
 	self.project = project
 	self.editors = {}
@@ -197,8 +209,7 @@ function main:enter(_, project)
 	end
 	self.selectedEditor = 1
 	self:initMenu()
-
-	self.testButton = Button(16, 16, image.pencil)
+	self:initToolbar()
 end
 
 function main:save(saveAs)
@@ -222,22 +233,28 @@ end
 
 function main:mousemoved(x, y, dx, dy, istouch)
 	if not self.showMenu then
-		self:getCurrentEditor():mousemoved(x, y, dx, dy, istouch)
-		self.testButton:mousemoved(x, y, dx, dy, istouch)
+		self.toolbar:mousemoved(x, y, dx, dy, istouch)
+		if not self.toolbar:pointInBounds(x, y) then
+			self:getCurrentEditor():mousemoved(x, y, dx, dy, istouch)
+		end
 	end
 end
 
 function main:mousepressed(x, y, button, istouch, presses)
 	if not self.showMenu then
-		self:getCurrentEditor():mousepressed(x, y, button, istouch, presses)
-		self.testButton:mousepressed(x, y, button, istouch, presses)
+		self.toolbar:mousepressed(x, y, button, istouch, presses)
+		if not self.toolbar:pointInBounds(x, y) then
+			self:getCurrentEditor():mousepressed(x, y, button, istouch, presses)
+		end
 	end
 end
 
 function main:mousereleased(x, y, button, istouch, presses)
 	if not self.showMenu then
-		self:getCurrentEditor():mousereleased(x, y, button, istouch, presses)
-		self.testButton:mousereleased(x, y, button, istouch, presses)
+		self.toolbar:mousereleased(x, y, button, istouch, presses)
+		if not self.toolbar:pointInBounds(x, y) then
+			self:getCurrentEditor():mousereleased(x, y, button, istouch, presses)
+		end
 	end
 end
 
@@ -283,16 +300,19 @@ function main:update(dt)
 		targetMenuTransitonPosition, self.menuEnterSpeed * dt)
 end
 
-function main:draw()
-	self:getCurrentEditor():draw()
+function main:drawMenu()
 	love.graphics.push 'all'
 	love.graphics.setColor(0, 0, 0, self.menuTransitonPosition / 2)
 	love.graphics.rectangle('fill', 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
 	love.graphics.translate(0, (self.menuTransitonPosition - 1) * love.graphics.getHeight())
 	self.menu:draw()
 	love.graphics.pop()
+end
 
-	self.testButton:draw()
+function main:draw()
+	self:getCurrentEditor():draw()
+	self.toolbar:draw(self:getCurrentEditor().tool)
+	self:drawMenu()
 end
 
 return main

@@ -26,7 +26,7 @@ function LevelEditor:new(project, levelName, level)
 	self.levelName = levelName
 	self.levelHistoryPosition = 1
 	self.selectedLayerIndex = 1
-	self.tool = 'box'
+	self.tool = 'pencil'
 	self.cursorRect = Rect(0, 0)
 	self.cursorState = 'idle'
 	self.tileStamp = Stamp()
@@ -39,6 +39,10 @@ end
 
 function LevelEditor:getSelectedLayer()
 	return self:getCurrentLevelState().data.layers[self.selectedLayerIndex]
+end
+
+function LevelEditor:setTool(tool)
+	self.tool = tool
 end
 
 function LevelEditor:setTileStamp(stamp)
