@@ -1,3 +1,4 @@
+local GeometryLayer = require 'class.layer.geometry'
 local Object = require 'lib.classic'
 local util = require 'util'
 
@@ -76,9 +77,21 @@ function TileLayer:export()
 	}
 end
 
+function TileLayer:drawCursor(cursorX, cursorY, removing, stamp)
+	GeometryLayer.drawCursor(self, cursorX, cursorY, removing)
+	love.graphics.push 'all'
+	love.graphics.setColor(1, 1, 1, 2/3)
+	local tileset = self.project.tilesets[self.data.tilesetName]
+	for _, tile in ipairs(stamp.tiles) do
+		tileset:drawTile(cursorX + tile.x, cursorY + tile.y,
+			tile.tileX, tile.tileY)
+	end
+	love.graphics.pop()
+end
+
 function TileLayer:draw()
 	love.graphics.push 'all'
-	love.graphics.setColor(116/255, 208/255, 232/255, 1/3)
+	love.graphics.setColor(1, 1, 1)
 	for _, item in ipairs(self.data.items) do
 		local tileset = self.project.tilesets[self.data.tilesetName]
 		tileset:drawTile(item.x, item.y, item.tileX, item.tileY)

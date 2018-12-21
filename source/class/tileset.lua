@@ -31,13 +31,10 @@ function Tileset:drawFullImage()
 end
 
 function Tileset:drawTile(x, y, tileX, tileY)
-	love.graphics.push 'all'
-	love.graphics.setColor(1, 1, 1)
 	local quad = love.graphics.newQuad(tileX * self.tileSize, tileY * self.tileSize,
 		self.tileSize, self.tileSize,
 		self.image:getWidth(), self.image:getHeight())
 	love.graphics.draw(self.image, quad, x, y, 0, 1 / self.tileSize)
-	love.graphics.pop()
 end
 
 return Tileset

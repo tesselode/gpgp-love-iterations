@@ -63,6 +63,14 @@ function GeometryLayer:export()
 	}
 end
 
+function GeometryLayer:drawCursor(cursorX, cursorY, removing)
+	love.graphics.push 'all'
+	local color = love.mouse.isDown(2) and {234/255, 30/255, 108/255, 1/3} or {116/255, 208/255, 232/255, 1/3}
+	love.graphics.setColor(color)
+	love.graphics.rectangle('fill', cursorX, cursorY, 1, 1)
+	love.graphics.pop()
+end
+
 function GeometryLayer:draw()
 	love.graphics.push 'all'
 	love.graphics.setColor(116/255, 208/255, 232/255, 1/3)

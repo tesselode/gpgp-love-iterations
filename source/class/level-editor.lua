@@ -183,11 +183,13 @@ end
 
 function LevelEditor:drawCursor()
 	local cursorX, cursorY = self.grid:getCursorPosition()
-	love.graphics.push 'all'
-	local color = love.mouse.isDown(2) and {234/255, 30/255, 108/255, 1/3} or {116/255, 208/255, 232/255, 1/3}
-	love.graphics.setColor(color)
-	love.graphics.rectangle('fill', cursorX, cursorY, 1, 1)
-	love.graphics.pop()
+	local removing = love.mouse.isDown(2)
+	local layer = self:getSelectedLayer()
+	if layer:is(GeometryLayer) then
+		layer:drawCursor(cursorX, cursorY, removing)
+	elseif layer:is(TileLayer) then
+		layer:drawCursor(cursorX, cursorY, removing, self.tileStamp)
+	end
 end
 
 function LevelEditor:draw()
