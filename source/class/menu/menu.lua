@@ -1,6 +1,8 @@
+local Button = require 'class.ui.button'
 local Object = require 'lib.classic'
 local Screen = require 'class.menu.screen'
 local style = require 'class.menu.style'
+local Toolbar = require 'class.ui.toolbar'
 local util = require 'util'
 
 local Menu = Object:extend()
@@ -70,10 +72,10 @@ function Menu:update(dt)
 end
 
 function Menu:draw()
-	local menuWidth = self.width
-	local menuHeight = love.graphics.getHeight() - 56
 	local menuX = 0
-	local menuY = 56
+	local menuY = Button.padding * 2 + Button.imageSize + Toolbar.padding * 2
+	local menuWidth = self.width
+	local menuHeight = love.graphics.getHeight() - menuY
 	love.graphics.push 'all'
 	love.graphics.setScissor(menuX, menuY, menuWidth, menuHeight)
 	love.graphics.translate(menuX, menuY)

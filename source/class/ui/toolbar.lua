@@ -21,7 +21,7 @@ function Toolbar:new(callbacks)
 end
 
 function Toolbar:getHeight()
-	return (16 + 2 * Button.padding) * Button.scale + 2 * self.padding
+	return Button.imageSize + 2 * Button.padding + 2 * self.padding
 end
 
 function Toolbar:mousemoved(x, y, dx, dy, istouch)

@@ -2,14 +2,14 @@ local Object = require 'lib.classic'
 
 local Button = Object:extend()
 
-Button.padding = 2
-Button.scale = 2
+Button.imageSize = 24
+Button.padding = 4
 Button.color = {
-	idle = {1/2, 1/2, 1/2},
-	hovered = {2/3, 2/3, 2/3},
-	pressed = {.55, .55, .55},
-	bg = {1/4, 1/4, 1/4},
-	activeBg = {4/5, 4/5, 4/5},
+	idle = {.5, .5, .5},
+	hovered = {.8, .8, .8},
+	pressed = {.65, .65, .65},
+	bg = {1/3, 1/3, 1/3},
+	activeBg = {.8, .8, .8},
 }
 
 function Button:new(x, y, image, onPress)
@@ -22,11 +22,11 @@ function Button:new(x, y, image, onPress)
 end
 
 function Button:getWidth()
-	return self.scale * (self.image:getWidth() + self.padding * 2)
+	return self.imageSize + self.padding * 2
 end
 
 function Button:getHeight()
-	return self.scale * (self.image:getHeight() + self.padding * 2)
+	return self.imageSize + self.padding * 2
 end
 
 function Button:getSize()
@@ -70,15 +70,14 @@ function Button:mousereleased(x, y, button, istouch, presses)
 end
 
 function Button:draw(active)
+	local imageScale = self.imageSize / self.image:getHeight()
 	love.graphics.push 'all'
-	love.graphics.setLineWidth(self.scale)
 	if active then
 		love.graphics.setColor(self.color.activeBg)
 		love.graphics.rectangle('fill', self:getRect())
-		love.graphics.rectangle('line', self:getRect())
 		love.graphics.setColor(0, 0, 0)
-		love.graphics.draw(self.image, self.x + self.padding * self.scale,
-			self.y + self.padding * self.scale, 0, self.scale)
+		love.graphics.draw(self.image, self.x + self.padding,
+			self.y + self.padding, 0, imageScale)
 		love.graphics.pop()
 		return
 	end
@@ -89,9 +88,8 @@ function Button:draw(active)
 	love.graphics.setColor(self.pressed and self.color.pressed
 		or self.hovered and self.color.hovered
 		or self.color.idle)
-	love.graphics.rectangle('line', self:getRect())
-	love.graphics.draw(self.image, self.x + self.padding * self.scale,
-		self.y + self.padding * self.scale, 0, self.scale)
+	love.graphics.draw(self.image, self.x + self.padding,
+		self.y + self.padding, 0, imageScale)
 	love.graphics.pop()
 end
 
