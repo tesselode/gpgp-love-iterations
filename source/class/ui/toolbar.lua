@@ -11,13 +11,19 @@ Toolbar.separatorColor = {4/5, 4/5, 4/5}
 function Toolbar:new(callbacks)
 	self.buttons = {}
 	self.separators = {}
-	self.buttons.hamburger = Button(self.padding, self.padding,
-		image.hamburger, callbacks.onShowMenu)
-	table.insert(self.separators, self.buttons.hamburger:getRight() + self.separatorMargin)
+	self.buttons.levels = Button(self.padding, self.padding,
+		image.folder)
+	self.buttons.layers = Button(self.buttons.levels:getRight() + self.padding,
+		self.padding, image.layers)
+	self.buttons.history = Button(self.buttons.layers:getRight() + self.padding,
+		self.padding, image.history)
+	table.insert(self.separators, self.buttons.history:getRight() + self.separatorMargin)
 	self.buttons.pencil = Button(self.separators[#self.separators] + self.separatorMargin, self.padding,
 		image.pencil, callbacks.onSelectPencilTool)
 	self.buttons.box = Button(self.buttons.pencil:getRight(),
 		self.padding, image.box, callbacks.onSelectBoxTool)
+	self.buttons.select = Button(self.buttons.box:getRight(),
+		self.padding, image.select)
 end
 
 function Toolbar:getHeight()
@@ -51,9 +57,12 @@ end
 
 function Toolbar:draw(tool)
 	self:drawBackground()
-	self.buttons.hamburger:draw()
+	self.buttons.levels:draw()
+	self.buttons.layers:draw()
+	self.buttons.history:draw()
 	self.buttons.pencil:draw(tool == 'pencil')
 	self.buttons.box:draw(tool == 'box')
+	self.buttons.select:draw()
 	love.graphics.push 'all'
 	love.graphics.setColor(self.separatorColor)
 	for _, x in ipairs(self.separators) do
