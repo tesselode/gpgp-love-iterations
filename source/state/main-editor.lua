@@ -188,7 +188,11 @@ function main:initMenu()
 end
 
 function main:initToolbar()
-	self.toolbar = Toolbar {
+	self.toolbar = Toolbar({
+		getTool = function()
+			return self:getCurrentEditor().tool 
+		end,
+	}, {
 		onShowMenu = function()
 			self.showMenu = true
 		end,
@@ -198,7 +202,7 @@ function main:initToolbar()
 		onSelectBoxTool = function()
 			self:getCurrentEditor():setTool 'box'
 		end,
-	}
+	})
 end
 
 function main:enter(_, project)

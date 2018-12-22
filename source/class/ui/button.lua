@@ -12,11 +12,12 @@ Button.color = {
 	activeBg = {.8, .8, .8},
 }
 
-function Button:new(x, y, image, onPress)
+function Button:new(x, y, image, onPress, isActive)
 	self.x = x
 	self.y = y
 	self.image = image
 	self.onPress = onPress
+	self.isActive = isActive
 	self.hovered = false
 	self.pressed = false
 end
@@ -69,10 +70,10 @@ function Button:mousereleased(x, y, button, istouch, presses)
 	self.pressed = false
 end
 
-function Button:draw(active)
+function Button:draw()
 	local imageScale = self.imageSize / self.image:getHeight()
 	love.graphics.push 'all'
-	if active then
+	if self.isActive and self.isActive() then
 		love.graphics.setColor(self.color.activeBg)
 		love.graphics.rectangle('fill', self:getRect())
 		love.graphics.setColor(0, 0, 0)
