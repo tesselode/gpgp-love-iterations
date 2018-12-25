@@ -1,52 +1,69 @@
-local Button = require 'class.ui.button'
+local boxer = require 'lib.boxer'
 local image = require 'image'
-local Object = require 'lib.classic'
-local Row = require 'class.ui.row'
-local Separator = require 'class.ui.separator'
+local ToolbarButton = require 'class.ui.toolbar-button'
 
-local Toolbar = Object:extend()
+local toolbarHeight = 48
+local buttonMargin = 8
 
-Toolbar.padding = 8
+return function(props)
+	local toolbar = boxer.box {
+		x = 0,
+		y = 0,
+		width = function() return love.graphics.getWidth() end,
+		height = toolbarHeight,
+		style = {
+			idle = {
+				fillColor = {.1, .1, .1},
+			},
+		},
+	}
 
-function Toolbar:new(props, callbacks)
-	self.row = Row(self.padding, self.padding)
-		:addItem(Button, image.folder)
-		:addItem(Button, image.layers)
-		:addItem(Button, image.history)
-		:addItem(Separator, Button.imageSize + Button.padding * 2)
-		:addItem(Button, image.pencil, callbacks.onSelectPencilTool,
-			function() return props.getTool() == 'pencil' end)
-		:addItemCompact(Button, image.box, callbacks.onSelectBoxTool,
-			function() return props.getTool() == 'box' end)
-		:addItemCompact(Button, image.select)
+	local levelsButton = ToolbarButton {
+		x = buttonMargin,
+		y = buttonMargin,
+		image = image.folder,
+	}
+	local layersButton = ToolbarButton {
+		x = function() return levelsButton.right + buttonMargin end,
+		y = buttonMargin,
+		image = image.layers,
+	}
+	local historyButton = ToolbarButton {
+		x = function() return layersButton.right + buttonMargin end,
+		y = buttonMargin,
+		image = image.history,
+	}
+
+	local selectButton = ToolbarButton {
+		right = function() return love.graphics.getWidth() - buttonMargin end,
+		y = buttonMargin,
+		image = image.select,
+		isActive = function() return props.getTool() == 'select' end,
+		onPress = function() props.setTool 'select' end,
+	}
+	local boxButton = ToolbarButton {
+		right = function() return selectButton.left end,
+		y = buttonMargin,
+		image = image.box,
+		isActive = function() return props.getTool() == 'box' end,
+		onPress = function() props.setTool 'box' end,
+	}
+	local pencilButton = ToolbarButton {
+		right = function() return boxButton.left end,
+		y = buttonMargin,
+		image = image.pencil,
+		isActive = function() return props.getTool() == 'pencil' end,
+		onPress = function() props.setTool 'pencil' end,
+	}
+
+	toolbar.children = {
+		levelsButton,
+		layersButton,
+		historyButton,
+		selectButton,
+		boxButton,
+		pencilButton,
+	}
+
+	return toolbar
 end
-
-function Toolbar:getHeight()
-	return Button.imageSize + 2 * Button.padding + 2 * self.padding
-end
-
-function Toolbar:mousemoved(x, y, dx, dy, istouch)
-	self.row:mousemoved(x, y, dx, dy, istouch)
-end
-
-function Toolbar:mousepressed(x, y, button, istouch, presses)
-	self.row:mousepressed(x, y, button, istouch, presses)
-end
-
-function Toolbar:mousereleased(x, y, button, istouch, presses)
-	self.row:mousereleased(x, y, button, istouch, presses)
-end
-
-function Toolbar:drawBackground()
-	love.graphics.push 'all'
-	love.graphics.setColor(1/5, 1/5, 1/5)
-	love.graphics.rectangle('fill', 0, 0,love.graphics.getWidth(), self:getHeight())
-	love.graphics.pop()
-end
-
-function Toolbar:draw()
-	self:drawBackground()
-	self.row:draw()
-end
-
-return Toolbar

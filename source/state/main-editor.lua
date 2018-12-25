@@ -1,7 +1,5 @@
-local Button = require 'class.ui.button'
 local gamestate = require 'lib.gamestate'
 local GeometryLayer = require 'class.layer.geometry'
-local image = require 'image'
 local LevelEditor = require 'class.level-editor'
 local Menu = require 'class.menu'
 local textInputModal = require 'state.text-input-modal'
@@ -157,7 +155,7 @@ function main:createHistoryMenu()
 end
 
 function main:initMenu()
-	self.menu = Menu('Main menu', {
+	self.menu = Menu(0, self.toolbar.bottom, 'Main menu', {
 		{
 			{
 				text = 'Levels...',
@@ -190,17 +188,10 @@ end
 function main:initToolbar()
 	self.toolbar = Toolbar({
 		getTool = function()
-			return self:getCurrentEditor().tool 
+			return self:getCurrentEditor().tool
 		end,
-	}, {
-		onShowMenu = function()
-			self.showMenu = true
-		end,
-		onSelectPencilTool = function()
-			self:getCurrentEditor():setTool 'pencil'
-		end,
-		onSelectBoxTool = function()
-			self:getCurrentEditor():setTool 'box'
+		setTool = function(tool)
+			self:getCurrentEditor():setTool(tool)
 		end,
 	})
 end
@@ -215,8 +206,8 @@ function main:enter(_, project)
 		table.insert(self.editors, LevelEditor(self.project))
 	end
 	self.selectedEditor = 1
-	self:initMenu()
 	self:initToolbar()
+	self:initMenu()
 end
 
 function main:save(saveAs)
@@ -241,7 +232,7 @@ end
 function main:mousemoved(x, y, dx, dy, istouch)
 	if not self.showMenu then
 		self.toolbar:mousemoved(x, y, dx, dy, istouch)
-		if y > self.toolbar:getHeight() then
+		if not self.toolbar:containsPoint(x, y) then
 			self:getCurrentEditor():mousemoved(x, y, dx, dy, istouch)
 		end
 	end
@@ -250,7 +241,7 @@ end
 function main:mousepressed(x, y, button, istouch, presses)
 	if not self.showMenu then
 		self.toolbar:mousepressed(x, y, button, istouch, presses)
-		if y > self.toolbar:getHeight() then
+		if not self.toolbar:containsPoint(x, y) then
 			self:getCurrentEditor():mousepressed(x, y, button, istouch, presses)
 		end
 	end
@@ -259,7 +250,7 @@ end
 function main:mousereleased(x, y, button, istouch, presses)
 	if not self.showMenu then
 		self.toolbar:mousereleased(x, y, button, istouch, presses)
-		if y > self.toolbar:getHeight() then
+		if not self.toolbar:containsPoint(x, y) then
 			self:getCurrentEditor():mousereleased(x, y, button, istouch, presses)
 		end
 	end
@@ -318,7 +309,7 @@ end
 
 function main:draw()
 	self:getCurrentEditor():draw()
-	self.toolbar:draw(self:getCurrentEditor().tool)
+	self.toolbar:draw()
 	self:drawMenu()
 end
 

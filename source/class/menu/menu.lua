@@ -1,4 +1,3 @@
-local Button = require 'class.ui.button'
 local Object = require 'lib.classic'
 local Screen = require 'class.menu.screen'
 local style = require 'class.menu.style'
@@ -7,9 +6,13 @@ local util = require 'util'
 
 local Menu = Object:extend()
 
-function Menu:new(title, columns)
+function Menu:new(x, y, title, columns)
+	assert(type(x) == 'number', 'Must provide an x position')
+	assert(type(y) == 'number', 'Must provide a y position')
 	assert(type(title) == 'string', 'Must provide a title')
 	assert(type(columns) == 'table', 'Must provide menu content')
+	self.x = x
+	self.y = y
 	self.screenStack = {Screen(title, columns)}
 	self.screenStackPosition = 1
 	self.drawXOffset = 0
@@ -72,13 +75,11 @@ function Menu:update(dt)
 end
 
 function Menu:draw()
-	local menuX = 0
-	local menuY = Button.padding * 2 + Button.imageSize + Toolbar.padding * 2
 	local menuWidth = self.width
-	local menuHeight = love.graphics.getHeight() - menuY
+	local menuHeight = love.graphics.getHeight() - self.y
 	love.graphics.push 'all'
-	love.graphics.setScissor(menuX, menuY, menuWidth, menuHeight)
-	love.graphics.translate(menuX, menuY)
+	love.graphics.setScissor(self.x, self.y, menuWidth, menuHeight)
+	love.graphics.translate(self.x, self.y)
 	love.graphics.setColor(style.bgColor)
 	love.graphics.rectangle('fill', 0, 0, menuWidth, menuHeight)
 	love.graphics.translate(-self.drawXOffset * menuWidth, 0)
