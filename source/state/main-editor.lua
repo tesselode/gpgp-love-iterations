@@ -12,7 +12,7 @@ local main = {}
 
 main.menuEnterSpeed = 20
 
-function main:createLevelsMenu()
+function main:initLevelsMenu()
 	local function levelList()
 		local levels = {}
 		for editorIndex, editor in ipairs(self.editors) do
@@ -50,10 +50,12 @@ function main:createLevelsMenu()
 			end,
 		},
 	}
-	return {levelList, levelActions}
+	local levelsScreen = {levelList, levelActions}
+	local levelsButton = self.toolbar.children[1]
+	self.menu = Menu(levelsButton.x, levelsButton.bottom, 'Levels', levelsScreen)
 end
 
-function main:createAddTileLayerMenu()
+function main:createAddTileLayerMenuScreen()
 	local editor = self.editors[self.selectedEditor]
 	return {function()
 		local tilesets = {}
@@ -70,7 +72,7 @@ function main:createAddTileLayerMenu()
 	end}
 end
 
-function main:createLayersMenu()
+function main:initLayersMenu()
 	local editor = self.editors[self.selectedEditor]
 	local function layerList()
 		local level = editor:getCurrentLevelState()
@@ -105,7 +107,7 @@ function main:createLayersMenu()
 		{
 			text = 'Add tile layer...',
 			onSelect = function(menu)
-				menu:push('Select tileset', self:createAddTileLayerMenu())
+				menu:push('Select tileset', self:createAddTileLayerMenuScreen())
 			end,
 		},
 		{
@@ -130,12 +132,14 @@ function main:createLayersMenu()
 			onSelect = function() editor:removeLayer() end,
 		},
 	}
-	return {layerList, layerActions}
+	local layersScreen = {layerList, layerActions}
+	local layersButton = self.toolbar.children[2]
+	self.menu = Menu(layersButton.x, layersButton.bottom, 'Layers', layersScreen)
 end
 
-function main:createHistoryMenu()
+function main:initHistoryMenu()
 	local editor = self.editors[self.selectedEditor]
-	return {function()
+	local historyScreen = {function()
 		local history = {}
 		for i = #editor.levelHistory, 1, -1 do
 			local step = editor.levelHistory[i]
@@ -152,37 +156,8 @@ function main:createHistoryMenu()
 		end
 		return history
 	end}
-end
-
-function main:initMenu()
-	self.menu = Menu(0, self.toolbar.bottom, 'Main menu', {
-		{
-			{
-				text = 'Levels...',
-				onSelect = function(menu)
-					menu:push('Levels', self:createLevelsMenu())
-				end,
-			},
-			{
-				text = 'Layers...',
-				onSelect = function(menu)
-					menu:push('Layers', self:createLayersMenu())
-				end,
-			},
-			{
-				text = 'History...',
-				onSelect = function(menu)
-					menu:push('History', self:createHistoryMenu())
-				end,
-			},
-			{
-				text = 'Close project',
-				onSelect = function() gamestate.switch(require 'state.welcome') end,
-			},
-		}
-	})
-	self.showMenu = false
-	self.menuTransitonPosition = 0
+	local historyButton = self.toolbar.children[3]
+	self.menu = Menu(historyButton.x, historyButton.bottom, 'History', historyScreen)
 end
 
 function main:initToolbar()
@@ -193,6 +168,9 @@ function main:initToolbar()
 		setTool = function(tool)
 			self:getCurrentEditor():setTool(tool)
 		end,
+		showLevelsMenu = function() self:initLevelsMenu() end,
+		showLayersMenu = function() self:initLayersMenu() end,
+		showHistoryMenu = function() self:initHistoryMenu() end,
 	})
 end
 
@@ -207,7 +185,6 @@ function main:enter(_, project)
 	end
 	self.selectedEditor = 1
 	self:initToolbar()
-	self:initMenu()
 end
 
 function main:save(saveAs)
@@ -230,8 +207,8 @@ function main:getCurrentEditor()
 end
 
 function main:mousemoved(x, y, dx, dy, istouch)
-	if not self.showMenu then
-		self.toolbar:mousemoved(x, y, dx, dy, istouch)
+	self.toolbar:mousemoved(x, y, dx, dy, istouch)
+	if not self.menu then
 		if not self.toolbar:containsPoint(x, y) then
 			self:getCurrentEditor():mousemoved(x, y, dx, dy, istouch)
 		end
@@ -239,8 +216,8 @@ function main:mousemoved(x, y, dx, dy, istouch)
 end
 
 function main:mousepressed(x, y, button, istouch, presses)
-	if not self.showMenu then
-		self.toolbar:mousepressed(x, y, button, istouch, presses)
+	self.toolbar:mousepressed(x, y, button, istouch, presses)
+	if not self.menu then
 		if not self.toolbar:containsPoint(x, y) then
 			self:getCurrentEditor():mousepressed(x, y, button, istouch, presses)
 		end
@@ -248,8 +225,8 @@ function main:mousepressed(x, y, button, istouch, presses)
 end
 
 function main:mousereleased(x, y, button, istouch, presses)
-	if not self.showMenu then
-		self.toolbar:mousereleased(x, y, button, istouch, presses)
+	self.toolbar:mousereleased(x, y, button, istouch, presses)
+	if not self.menu then
 		if not self.toolbar:containsPoint(x, y) then
 			self:getCurrentEditor():mousereleased(x, y, button, istouch, presses)
 		end
@@ -257,22 +234,19 @@ function main:mousereleased(x, y, button, istouch, presses)
 end
 
 function main:wheelmoved(x, y)
-	if not self.showMenu then
+	if not self.menu then
 		self:getCurrentEditor():wheelmoved(x, y)
 	end
 end
 
 function main:keypressed(key, scancode, isrepeat)
 	local selectedLayer = self:getCurrentEditor():getSelectedLayer()
-	if key == 'tab' then
-		self.showMenu = not self.showMenu
-	end
-	if key == 'escape' then
-		if not self.menu:pop() then
-			self.showMenu = false
+	if self.menu then
+		if key == 'escape' then
+			if not self.menu:pop() then
+				self.menu = nil
+			end
 		end
-	end
-	if self.showMenu then
 		if key == 'left' then self.menu:left() end
 		if key == 'right' then self.menu:right() end
 		if key == 'up' then self.menu:up() end
@@ -292,25 +266,13 @@ function main:keypressed(key, scancode, isrepeat)
 end
 
 function main:update(dt)
-	self.menu:update(dt)
-	local targetMenuTransitonPosition = self.showMenu and 1 or 0
-	self.menuTransitonPosition = util.lerp(self.menuTransitonPosition,
-		targetMenuTransitonPosition, self.menuEnterSpeed * dt)
-end
-
-function main:drawMenu()
-	love.graphics.push 'all'
-	love.graphics.setColor(0, 0, 0, self.menuTransitonPosition / 2)
-	love.graphics.rectangle('fill', 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
-	love.graphics.translate(0, (self.menuTransitonPosition - 1) * love.graphics.getHeight())
-	self.menu:draw()
-	love.graphics.pop()
+	if self.menu then self.menu:update(dt) end
 end
 
 function main:draw()
 	self:getCurrentEditor():draw()
 	self.toolbar:draw()
-	self:drawMenu()
+	if self.menu then self.menu:draw() end
 end
 
 return main

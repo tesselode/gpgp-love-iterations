@@ -22,16 +22,19 @@ return function(props)
 		x = buttonMargin,
 		y = buttonMargin,
 		image = image.folder,
+		onPress = props.showLevelsMenu,
 	}
 	local layersButton = ToolbarButton {
 		x = function() return levelsButton.right + buttonMargin end,
 		y = buttonMargin,
 		image = image.layers,
+		onPress = props.showLayersMenu,
 	}
 	local historyButton = ToolbarButton {
 		x = function() return layersButton.right + buttonMargin end,
 		y = buttonMargin,
 		image = image.history,
+		onPress = props.showHistoryMenu,
 	}
 
 	local selectButton = ToolbarButton {
