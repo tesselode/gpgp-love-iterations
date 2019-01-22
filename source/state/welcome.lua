@@ -1,19 +1,11 @@
-local boxer = require 'lib.boxer'
-local image = require 'image'
 local mainEditor = require 'state.main-editor'
 local Project = require 'class.project'
-local ToolbarButton = require 'class.ui.toolbar-button'
+local MainToolbar = require 'class.ui.main-toolbar'
 
 local welcome = {}
 
 function welcome:enter()
-	self.button = ToolbarButton {
-		x = 50,
-		y = 50,
-		image = image.pencil,
-		onPress = function() print 'hi!' end,
-		isActive = function() return love.keyboard.isDown 'space' end,
-	}
+	self.toolbar = MainToolbar {}
 end
 
 function welcome:directorydropped(path)
@@ -24,21 +16,21 @@ function welcome:directorydropped(path)
 end
 
 function welcome:mousemoved(...)
-	self.button:mousemoved(...)
+	self.toolbar:mousemoved(...)
 end
 
 function welcome:mousepressed(...)
-	self.button:mousepressed(...)
+	self.toolbar:mousepressed(...)
 end
 
 function welcome:mousereleased(...)
-	self.button:mousereleased(...)
+	self.toolbar:mousereleased(...)
 end
 
 function welcome:draw()
 	love.graphics.push 'all'
 	love.graphics.print 'drag a project folder onto the window to begin'
-	self.button:draw()
+	self.toolbar:draw()
 	love.graphics.pop()
 end
 
