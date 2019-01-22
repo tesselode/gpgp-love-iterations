@@ -1,33 +1,39 @@
-local boxer = {}
+local boxer = {
+	_VERSION = 'Boxer',
+	_DESCRIPTION = 'Layout library for LÖVE.',
+	_URL = 'https://github.com/tesselode/boxer',
+	_LICENSE = [[
+		MIT License
 
---- utilities ---
+		Copyright (c) 2019 Andrew Minnich
 
--- returns whether exactly one of the arguments evaluates to true
-local function one(...)
-	local result = false
+		Permission is hereby granted, free of charge, to any person obtaining a copy
+		of this software and associated documentation files (the "Software"), to deal
+		in the Software without restriction, including without limitation the rights
+		to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+		copies of the Software, and to permit persons to whom the Software is
+		furnished to do so, subject to the following conditions:
+
+		The above copyright notice and this permission notice shall be included in all
+		copies or substantial portions of the Software.
+
+		THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+		IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+		FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+		AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+		LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+		OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+		SOFTWARE.
+	]]
+}
+
+-- returns the number of arguments that evaluate to true
+local function count(...)
+	local amount = 0
 	for i = 1, select('#', ...) do
-		local arg = select(i, ...)
-		if not result then
-			if arg then result = true end
-		else
-			if arg then return false end
-		end
+		if select(i, ...) then amount = amount + 1 end
 	end
-	return result
-end
-
--- merges tables together
-local function merge(...)
-	local t = {}
-	for i = 1, select('#', ...) do
-		local t2 = select(i, ...)
-		if type(t2) == 'table' then
-			for k, v in pairs(t2) do
-				t[k] = v
-			end
-		end
-	end
-	return t
+	return amount
 end
 
 --[[
@@ -43,140 +49,49 @@ local function get(value)
 	end
 end
 
---[[
-	gets an instance property. looks for a property.get function. if that's not found,
-	defaults to getting self._propertyName.
-]]
-local function getProperty(self, property, propertyName)
-	if type(property) == 'table' and property.get then
-		return property.get(self)
-	else
-		return get(self['_' .. propertyName])
-	end
-end
-
---[[
-	sets an instance property. looks for a property.set function. if that's not found,
-	defaults to setting self._propertyName.
-]]
-local function setProperty(self, property, propertyName, value)
-	if type(property) == 'table' and property.set then
-		property.set(self, value)
-	else
-		self['_' .. propertyName] = value
-	end
-end
-
--- gets the metamethods of a class, given the class table and an optional parent
-local function getMetamethods(class, parent)
-	local function __index(self, k)
-		if class.properties[k] then
-			return getProperty(self, class.properties[k], k)
-		elseif parent and parent.properties[k] then
-			return getProperty(self, parent.properties[k], k)
-		elseif class[k] then
-			return class[k]
-		elseif parent then
-			return parent[k]
-		end
-	end
-	local function __newindex(self, k, v)
-		if class.properties[k] then
-			setProperty(self, class.properties[k], k, v)
-		elseif parent and parent.properties[k] then
-			setProperty(self, parent.properties[k], k, v)
-		else
-			rawset(self, k, v)
-		end
-	end
-	return __index, __newindex
-end
-
---[[
-	--- Boxes ---
-	The basic box class. Handles a bunch of cool stuff, like:
-	- getting/setting positions with metatable magic ✨
-	- mouse events
-	- getting styles
-	- drawing rectangles (wow!)
-]]
-
-local Box = {
-	properties = {
-		x = {
-			get = function(self) return self:getX(0) end,
-			set = function(self, value) self:setX(value, 0) end,
-		},
-		left = {
-			get = function(self) return self:getX(0) end,
-			set = function(self, value) self:setX(value, 0) end,
-		},
-		center = {
-			get = function(self) return self:getX(.5) end,
-			set = function(self, value) self:setX(value, .5) end,
-		},
-		right = {
-			get = function(self) return self:getX(1) end,
-			set = function(self, value) self:setX(value, 1) end,
-		},
-		y = {
-			get = function(self) return self:getY(0) end,
-			set = function(self, value) self:setY(value, 0) end,
-		},
-		top = {
-			get = function(self) return self:getY(0) end,
-			set = function(self, value) self:setY(value, 0) end,
-		},
-		middle = {
-			get = function(self) return self:getY(.5) end,
-			set = function(self, value) self:setY(value, .5) end,
-		},
-		bottom = {
-			get = function(self) return self:getY(1) end,
-			set = function(self, value) self:setY(value, 1) end,
-		},
-		width = true,
-		height = true,
-		clipChildren = true,
-		transparent = true,
-	}
-}
-
--- gets the style that should be used for drawing given the box's state
--- (idle/pressed/released)
-function Box:_getCurrentStyle()
-	if not (self.style and self.style.idle) then return nil end
-	local style = merge(
-		self.style.idle,
-		self.hovered and self.style.hovered,
-		self.pressed and self.style.pressed
-	)
-	for k, v in pairs(style) do style[k] = get(v) end
-	return style
-end
+local Box = {}
 
 -- gets a position along the x-axis of the box depending on the offset
 -- (0 = left, 0.5 = center, 1 = right, etc.)
 function Box:getX(offset)
 	offset = offset or 0
-	local width = self.width
 	local x = get(self._x)
-	x = x - width * self._anchorX
-	return x + width * offset
+	x = x - self.width * self._anchorX
+	return x + self.width * offset
 end
 
 -- gets a position along the y-axis of the box depending on the offset
 -- (0 = top, 0.5 = middle, 1 = bottom, etc.)
 function Box:getY(offset)
 	offset = offset or 0
-	local height = self.height
 	local y = get(self._y)
-	y = y - height * self._anchorY
-	return y + height * offset
+	y = y - self.height * self._anchorY
+	return y + self.height * offset
 end
 
 function Box:getRect()
 	return self.x, self.y, self.width, self.height
+end
+
+function Box:getChild(name)
+	for _, child in ipairs(self.children) do
+		if child.name == name then
+			return child
+		end
+	end
+	return false
+end
+
+-- gets a style property given the box's state
+-- (idle/pressed/released)
+function Box:getCurrentStyle(property)
+	if not (self.style and self.style.idle) then return nil end
+	if self._pressed and self.style.pressed then
+		return get(self.style.pressed[property])
+	elseif self._hovered and self.style.hovered then
+		return get(self.style.hovered[property])
+	end
+	return get(self.style.idle[property])
 end
 
 function Box:containsPoint(x, y)
@@ -184,26 +99,6 @@ function Box:containsPoint(x, y)
 	   and x <= self.right
 	   and y >= self.top
 	   and y <= self.bottom
-end
-
---[[
-	returns whether the box overlaps with another box
-	can take either left, top, right, bottom arguments
-	or a single table with x, y, width, and height properties
-	(can be another boxer Box or just whatever table)
-]]
-function Box:overlaps(a, b, c, d)
-	local x, y, width, height
-	if type(a) == 'table' then
-		assert(a.x and a.y and a.width and a.height)
-		x, y, width, height = a.x, a.y, a.width, a.height
-	else
-		x, y, width, height = a, b, c, d
-	end
-	return self.left < x + width
-	   and self.right > x
-	   and self.top < y + height
-	   and self.bottom > y
 end
 
 --[[
@@ -232,23 +127,39 @@ end
 	block other child boxes behind them (unless they're transparent)
 ]]
 function Box:mousemoved(x, y, dx, dy, istouch)
-	self.hovered = self:containsPoint(x, y)
+	if self.disabled then return end
+	if self.clipChildren and not self:containsPoint(x, y) then
+		for _, child in ipairs(self.children) do
+			child:_mouseoff()
+		end
+		self:_mouseoff()
+		return
+	end
 	for i = #self.children, 1, -1 do
 		local child = self.children[i]
-		local mouseClipped = self.clipChildren and not self.hovered
-		if mouseClipped then
-			child:mouseoff()
-		else
-			child:mousemoved(x - self.x, y - self.y, dx, dy, istouch)
-			if not child.transparent and child:containsPoint(x - self.x, y - self.y) then
-				for j = i - 1, 1, -1 do
-					local lowerChild = self.children[j]
-					lowerChild:mouseoff()
-				end
-				self.hovered = false
-				return
+		child:mousemoved(x - self.x, y - self.y, dx, dy, istouch)
+		if not child.transparent and child:containsPoint(x - self.x, y - self.y) then
+			for j = i - 1, 1, -1 do
+				local lowerChild = self.children[j]
+				lowerChild:_mouseoff()
 			end
+			self:_mouseoff()
+			return
 		end
+	end
+	self._hoveredPrevious = self._hovered
+	self._hovered = self:containsPoint(x, y)
+	if self.onMove and self._hovered then
+		self.onMove(x - self.x, y - self.y, dx, dy)
+	end
+	if self.onDrag and self._pressed then
+		self.onDrag(self._pressed, dx, dy)
+	end
+	if self._hovered and not self._hoveredPrevious and self.onEnter then
+		self.onEnter()
+	end
+	if not self._hovered and self._hoveredPrevious and self.onLeave then
+		self.onLeave()
 	end
 end
 
@@ -257,93 +168,103 @@ end
 	used when a box shouldn't be hovered, but the mouse is technically over it
 	(outside of a clipping region, blocked by another box, etc.)
 ]]
-function Box:mouseoff()
-	self.hovered = false
+function Box:_mouseoff()
+	if self.disabled then return end
+	self._hoveredPrevious = self._hovered
+	self._hovered = false
+	if not self._hovered and self._hoveredPrevious and self.onLeave then
+		self.onLeave()
+	end
 end
 
 --[[
 	tells a box that a mouse button was pressed. corresponds to love.mousepressed
-	also tells child boxes about mouse presses, but doesn't consider clipping/blocking (yet)
+	also tells child boxes about mouse presses
 ]]
 function Box:mousepressed(x, y, button, istouch, presses)
-	if not self.pressed and self.hovered then
-		self.pressed = button
+	if self.disabled then return end
+	if self.clipChildren and not self:containsPoint(x, y) then
+		return
 	end
-	for _, child in ipairs(self.children) do
-		child:mousepressed(x - self.x, y - self.y, button, istouch, presses)
+	for i = #self.children, 1, -1 do
+		local child = self.children[i]
+		if child:containsPoint(x - self.x, y - self.y) then
+			child:mousepressed(x - self.x, y - self.y, button, istouch, presses)
+			if not child.transparent then return end
+		end
+	end
+	if not self._pressed and self:containsPoint(x, y) then
+		self._pressed = button
+		if self.onClick then self.onClick(button) end
 	end
 end
 
 --[[
 	tells a box that a mouse button was released. corresponds to love.mousereleased
-	also tells child boxes about mouse releases, but doesn't consider clipping/blocking (yet)
+	also tells child boxes about mouse releases
 ]]
 function Box:mousereleased(x, y, button, istouch, presses)
-	if button == self.pressed then
-		self.pressed = false
-		if self.onPress and self.hovered then
-			self.onPress()
+	-- mouse releases should trigger regardless of whether the box is hovered or not,
+	-- so we don't bother with blocking/clipping checks here
+	if self.disabled then return end
+	if button == self._pressed then
+		self._pressed = false
+		if self.onPress and self._hovered then
+			self.onPress(button)
 		end
 	end
 	for _, child in ipairs(self.children) do
-		child:mousereleased(x - self.x, y - self.y, button, istouch, presses)
+		child:mousereleased(x, y, button, istouch, presses)
 	end
 end
 
--- draws the box's fill/outline
 function Box:drawSelf()
 	local _, _, width, height = self:getRect()
-	local style = self:_getCurrentStyle()
-	if style then
-		if style.outlineColor then
-			love.graphics.setColor(style.outlineColor)
-			love.graphics.setLineWidth(style.lineWidth or 1)
-			love.graphics.rectangle('line', 0, 0, width, height, style.radiusX, style.radiusY)
-		end
-		if style.fillColor then
-			love.graphics.setColor(style.fillColor)
-			love.graphics.rectangle('fill', 0, 0, width, height, style.radiusX, style.radiusY)
-		end
+	if self:getCurrentStyle 'fillColor' then
+		love.graphics.setColor(self:getCurrentStyle 'fillColor')
+		love.graphics.rectangle('fill', 0, 0, width, height,
+		self:getCurrentStyle 'radiusX', self:getCurrentStyle 'radiusY')
 	end
+	if self:getCurrentStyle 'outlineColor' then
+		love.graphics.setColor(self:getCurrentStyle 'outlineColor')
+		love.graphics.setLineWidth(self:getCurrentStyle 'lineWidth' or 1)
+		love.graphics.rectangle('line', 0, 0, width, height,
+			self:getCurrentStyle 'radiusX', self:getCurrentStyle 'radiusY')
+	end
+end
+
+function Box:stencil()
+	local _, _, width, height = self:getRect()
+	love.graphics.rectangle('fill', 0, 0, width, height,
+		self:getCurrentStyle 'radiusX', self:getCurrentStyle 'radiusY')
 end
 
 -- "pushes" a stencil onto the "stack". used for nested stencils
-function Box:pushStencil(stencilValue)
+function Box:_pushStencil(stencilValue)
 	love.graphics.push 'all'
-	local _, _, width, height = self:getRect()
-	local style = self:_getCurrentStyle()
-	love.graphics.stencil(function()
-		local radiusX = style and style.radiusX
-		local radiusY = style and style.radiusY
-		love.graphics.rectangle('fill', 0, 0, width, height, radiusX, radiusY)
-	end, 'increment', 1, true)
+	love.graphics.stencil(function() self:stencil() end, 'increment', 1, true)
 	love.graphics.setStencilTest('greater', stencilValue)
 end
 
 -- "pops" a stencil from the "stack". used for nested stencils
-function Box:popStencil()
-	local _, _, width, height = self:getRect()
-	local style = self:_getCurrentStyle()
-	love.graphics.stencil(function()
-		local radiusX = style and style.radiusX
-		local radiusY = style and style.radiusY
-		love.graphics.rectangle('fill', 0, 0, width, height, radiusX, radiusY)
-	end, 'decrement', 1, true)
+function Box:_popStencil()
+	love.graphics.stencil(function() self:stencil() end, 'decrement', 1, true)
 	love.graphics.pop()
 end
 
 -- draws the box and its children
 function Box:draw(stencilValue)
+	if self.hidden then return end
 	stencilValue = stencilValue or 0
 	love.graphics.push 'all'
 	love.graphics.translate(self:getRect())
 	self:drawSelf()
 	if self.clipChildren then
-		self:pushStencil(stencilValue)
+		self:_pushStencil(stencilValue)
 		for _, child in ipairs(self.children) do
 			child:draw(stencilValue + 1)
 		end
-		self:popStencil()
+		self:_popStencil()
 	else
 		for _, child in ipairs(self.children) do
 			child:draw(stencilValue)
@@ -352,40 +273,83 @@ function Box:draw(stencilValue)
 	love.graphics.pop()
 end
 
-Box.__index, Box.__newindex = getMetamethods(Box)
-
-function Box:_init(options, sizeIsOptional)
-	-- mouse state
-	self.hovered = false
-	self.pressed = false
-
-	-- options
-	assert(one(options.x, options.left, options.center, options.right))
-	assert(one(options.y, options.top, options.middle, options.bottom))
-	if not sizeIsOptional then
-		assert(options.width)
-		assert(options.height)
+function Box:__index(k)
+	if k == 'x' or k == 'left' then
+		return self:getX(0)
+	elseif k == 'center' then
+		return self:getX(.5)
+	elseif k == 'right' then
+		return self:getX(1)
+	elseif k == 'y' or k == 'top' then
+		return self:getY(0)
+	elseif k == 'middle' then
+		return self:getY(.5)
+	elseif k == 'bottom' then
+		return self:getY(1)
+	elseif k == 'width' then
+		return get(self._width)
+	elseif k == 'height' then
+		return get(self._height)
+	elseif k == 'clipChildren' then
+		return get(self._clipChildren)
+	elseif k == 'transparent' then
+		return get(self._transparent)
+	elseif k == 'hidden' then
+		return get(self._hidden)
+	elseif k == 'disabled' then
+		return get(self._disabled)
 	end
-	if options.width then self.width = options.width end
-	if options.height then self.height = options.height end
-	if options.x then self.x = options.x end
-	if options.left then self.left = options.left end
-	if options.center then self.center = options.center end
-	if options.right then self.right = options.right end
-	if options.y then self.y = options.y end
-	if options.top then self.top = options.top end
-	if options.middle then self.middle = options.middle end
-	if options.bottom then self.bottom = options.bottom end
-	self.onPress = options.onPress
-	self.style = options.style
-	self.children = options.children or {}
-	self.clipChildren = options.clipChildren
-	self.transparent = options.transparent
+	return Box[k]
+end
+
+function Box:__newindex(k, v)
+	if k == 'x' or k == 'left' then
+		self:setX(v, 0)
+	elseif k == 'center' then
+		self:setX(v, .5)
+	elseif k == 'right' then
+		self:setX(v, 1)
+	elseif k == 'y' or k == 'top' then
+		self:setY(v, 0)
+	elseif k == 'middle' then
+		self:setY(v, .5)
+	elseif k == 'bottom' then
+		self:setY(v, 1)
+	elseif k == 'width' then
+		self._width = v
+	elseif k == 'height' then
+		self._height = v
+	elseif k == 'clipChildren' then
+		self._clipChildren = v
+	elseif k == 'transparent' then
+		self._transparent = v
+	elseif k == 'hidden' then
+		self._hidden = v
+	elseif k == 'disabled' then
+		self._disabled = v
+	else
+		rawset(self, k, v)
+	end
 end
 
 function boxer.box(options)
-	local box = setmetatable({}, Box)
-	box:_init(options)
+	-- validate options
+	if count(options.x, options.left, options.center, options.right) > 1 then
+		error('Cannot provide more than one horizontal position property', 2)
+	end
+	if count(options.y, options.top, options.middle, options.bottom) > 1 then
+		error('Cannot provide more than one vertical position property', 2)
+	end
+	local box = setmetatable({
+		-- initial internal state
+		_hoveredPrevious = false,
+		_hovered = false,
+		_pressed = false,
+	}, Box)
+	-- set properties
+	box.x, box.y, box.width, box.height = 0, 0, 0, 0
+	for k, v in pairs(options) do box[k] = v end
+	box.children = box.children or {}
 	return box
 end
 
@@ -394,8 +358,12 @@ end
 	position to be relative to the box.
 ]]
 function boxer.wrap(options)
-	assert(options)
-	assert(options.children and #options.children > 0)
+	if not options then
+		error('Must provide an options table to boxer.wrap()', 2)
+	end
+	if not (options.children and #options.children > 0) then
+		error('Must provide at least one child to wrap', 2)
+	end
 	local padding = options.padding or 0
 	-- get the bounds of the box
 	local left = options.children[1].left
@@ -426,7 +394,7 @@ function boxer.wrap(options)
 			local oldY = child._y
 			child._y = function() return oldY() - top end
 		else
-			child._y = child._y - left
+			child._y = child._y - top
 		end
 	end
 	-- return the box
@@ -439,163 +407,232 @@ function boxer.wrap(options)
 	}
 end
 
---[[
-	--- Text ---
-	Draws text, as you might expect. The behavior differs from regular boxes
-	in that the width and height are products of the font, text string,
-	scaleX, and scaleY. Setting the width or height will change scaleX
-	and scaleY, respectively.
-]]
+local Text = {}
 
-local Text = {
-	properties = {
-		width = {
-			get = function(self)
-				return self.font:getWidth(self.text) * self.scaleX
-			end,
-			set = function(self, width)
-				self.scaleX = width / self.font:getWidth(self.text)
-			end,
-		},
-		height = {
-			get = function(self)
-				return self.font:getHeight() * self.scaleY
-			end,
-			set = function(self, height)
-				self.scaleY = height / self.font:getHeight()
-			end,
-		},
-		font = true,
-		text = true,
-		scaleX = true,
-		scaleY = true,
-	}
-}
-
-function Text:draw()
-	local style = self:_getCurrentStyle()
-	love.graphics.setColor(style and style.color or {1, 1, 1})
+function Text:drawSelf()
+	love.graphics.setColor(self:getCurrentStyle 'color' or {1, 1, 1})
 	love.graphics.setFont(self.font)
-	love.graphics.print(self.text, self.x, self.y, 0, self.scaleX, self.scaleY)
+	love.graphics.print(self.text, 0, 0, 0, self.scaleX, self.scaleY)
 end
 
-Text.__index, Text.__newindex = getMetamethods(Text, Box)
+function Text:__index(k)
+	if k == 'font' then
+		return get(self._font)
+	elseif k == 'text' then
+		return get(self._text)
+	elseif k == 'width' then
+		return self.font:getWidth(self.text) * self.scaleX
+	elseif k == 'height' then
+		return self.font:getHeight() * self.scaleY
+	elseif k == 'scaleX' then
+		return get(self._scaleX)
+	elseif k == 'scaleY' then
+		return get(self._scaleY)
+	elseif Text[k] then
+		return Text[k]
+	end
+	return Box.__index(self, k)
+end
 
-function Text:_init(options)
-	assert(options.text)
-	assert(options.font)
-	self.text = options.text
-	self.font = options.font
-	self.scaleX = options.scaleX or 1
-	self.scaleY = options.scaleY or self.scaleX
-	Box._init(self, options, true)
+function Text:__newindex(k, v)
+	if k == 'font' then
+		self._font = v
+	elseif k == 'text' then
+		self._text = v
+	elseif k == 'width' then
+		self.scaleX = v / self.font:getWidth(self.text)
+	elseif k == 'height' then
+		self.scaleY = v / self.font:getHeight()
+	elseif k == 'scaleX' then
+		self._scaleX = v
+	elseif k == 'scaleY' then
+		self._scaleY = v
+	else
+		Box.__newindex(self, k, v)
+	end
 end
 
 function boxer.text(options)
-	local text = setmetatable({}, Text)
-	text:_init(options)
+	-- validate options
+	if not options.text then
+		error('Must provide a text string', 2)
+	end
+	if not options.font then
+		error('Must provide a font', 2)
+	end
+	if count(options.x, options.left, options.center, options.right) > 1 then
+		error('Cannot provide more than one horizontal position property', 2)
+	end
+	if count(options.y, options.top, options.middle, options.bottom) > 1 then
+		error('Cannot provide more than one vertical position property', 2)
+	end
+	if count(options.width, options.scaleX) > 1 then
+		error('Cannot provide both width and scaleX', 2)
+	end
+	if count(options.height, options.scaleY) > 1 then
+		error('Cannot provide both height and scaleY', 2)
+	end
+	local text = setmetatable({
+		-- initial internal state
+		_hoveredPrevious = false,
+		_hovered = false,
+		_pressed = false,
+	}, Text)
+	-- set properties
+	text.text = options.text
+	text.font = options.font
+	text.x, text.y = 0, 0
+	text.scaleX, text.scaleY = 1, 1
+	text.transparent = true
+	for k, v in pairs(options) do text[k] = v end
+	text.children = text.children or {}
 	return text
 end
 
---[[
-	--- Paragraphs ---
-	Similar to the Text class, but uses the width property to define
-	how text should wrap. Height is readonly and determined from
-	the number of lines the text uses.
-]]
+local Paragraph = {}
 
-local Paragraph = {
-	properties = {
-		height = {
-			get = function(self)
-				local _, lines = self.font:getWrap(self.text, self.width)
-				return #lines * self.font:getHeight() * self.font:getLineHeight()
-			end,
-			set = function(self, height)
-				error('Cannot set height of a paragraph directly', 2)
-			end,
-		},
-		font = true,
-		text = true,
-		align = true,
-	}
-}
-
-function Paragraph:draw()
-	local style = self:_getCurrentStyle()
-	love.graphics.setColor(style and style.color or {1, 1, 1})
+function Paragraph:drawSelf()
+	love.graphics.setColor(self:getCurrentStyle 'color' or {1, 1, 1})
 	love.graphics.setFont(self.font)
-	love.graphics.printf(self.text, self.x, self.y, self.width, self.align)
+	love.graphics.printf(self.text, 0, 0, self.width, self.align)
 end
 
-Paragraph.__index, Paragraph.__newindex = getMetamethods(Paragraph, Box)
+function Paragraph:__index(k)
+	if k == 'font' then
+		return get(self._font)
+	elseif k == 'text' then
+		return get(self._text)
+	elseif k == 'width' then
+		return get(self._width)
+	elseif k == 'height' then
+		local _, lines = self.font:getWrap(self.text, self.width)
+		return #lines * self.font:getHeight() * self.font:getLineHeight()
+	elseif k == 'align' then
+		return get(self._align)
+	elseif Paragraph[k] then
+		return Paragraph[k]
+	end
+	return Box.__index(self, k)
+end
 
-function Paragraph:_init(options)
-	assert(options.text)
-	assert(options.font)
-	assert(options.width)
-	self.text = options.text
-	self.font = options.font
-	self.align = options.align
-	Box._init(self, options, true)
+function Paragraph:__newindex(k, v)
+	if k == 'font' then
+		self._font = v
+	elseif k == 'text' then
+		self._text = v
+	elseif k == 'width' then
+		self._width = v
+	elseif k == 'height' then
+		error('Cannot set height of a paragraph directly', 2)
+	elseif k == 'align' then
+		self._align = v
+	else
+		Box.__newindex(self, k, v)
+	end
 end
 
 function boxer.paragraph(options)
-	local paragraph = setmetatable({}, Paragraph)
-	paragraph:_init(options)
+	-- validate options
+	if not options.text then
+		error('Must provide a text string', 2)
+	end
+	if not options.font then
+		error('Must provide a font', 2)
+	end
+	if count(options.x, options.left, options.center, options.right) > 1 then
+		error('Cannot provide more than one horizontal position property', 2)
+	end
+	if count(options.y, options.top, options.middle, options.bottom) > 1 then
+		error('Cannot provide more than one vertical position property', 2)
+	end
+	if options.height then
+		error('Cannot set height of a paragraph directly', 2)
+	end
+	local paragraph = setmetatable({
+		-- initial internal state
+		_hoveredPrevious = false,
+		_hovered = false,
+		_pressed = false,
+	}, Paragraph)
+	-- set properties
+	paragraph.text = options.text
+	paragraph.font = options.font
+	paragraph.x, paragraph.y = 0, 0
+	paragraph.transparent = true
+	for k, v in pairs(options) do paragraph[k] = v end
+	paragraph.children = paragraph.children or {}
 	return paragraph
 end
 
---[[
-	--- Images ---
-	Draws an image. The image is stretched to fill the defined
-	width and height. Width and height can also be defined using
-	scaleX and scaleY.
-]]
+local Image = {}
 
-local Image = {
-	properties = {
-		width = {
-			get = function(self)
-				return self.image:getWidth() * self.scaleX
-			end,
-			set = function(self, width)
-				self.scaleX = width / self.image:getWidth()
-			end,
-		},
-		height = {
-			get = function(self)
-				return self.image:getHeight() * self.scaleY
-			end,
-			set = function(self, height)
-				self.scaleY = height / self.image:getHeight()
-			end,
-		},
-		image = true,
-		scaleX = true,
-		scaleY = true,
-	}
-}
-
-function Image:draw()
-	local style = self:_getCurrentStyle()
-	love.graphics.setColor(style and style.color or {1, 1, 1})
-	love.graphics.draw(self.image, self.x, self.y, 0, self.scaleX, self.scaleY)
+function Image:drawSelf()
+	love.graphics.setColor(self:getCurrentStyle 'color' or {1, 1, 1})
+	love.graphics.draw(self.image, 0, 0, 0, self.scaleX, self.scaleY)
 end
 
-Image.__index, Image.__newindex = getMetamethods(Image, Box)
+function Image:__index(k)
+	if k == 'image' then
+		return get(self._image)
+	elseif k == 'width' then
+		return self.image:getWidth() * self.scaleX
+	elseif k == 'height' then
+		return self.image:getHeight() * self.scaleY
+	elseif k == 'scaleX' then
+		return get(self._scaleX)
+	elseif k == 'scaleY' then
+		return get(self._scaleY)
+	elseif Image[k] then
+		return Image[k]
+	end
+	return Box.__index(self, k)
+end
 
-function Image:_init(options)
-	assert(options.image)
-	self.image = options.image
-	self.scaleX = options.scaleX or 1
-	self.scaleY = options.scaleY or self.scaleX
-	Box._init(self, options, true)
+function Image:__newindex(k, v)
+	if k == 'image' then
+		self._image = v
+	elseif k == 'width' then
+		self.scaleX = v / self.image:getWidth()
+	elseif k == 'height' then
+		self.scaleY = v / self.image:getHeight()
+	elseif k == 'scaleX' then
+		self._scaleX = v
+	elseif k == 'scaleY' then
+		self._scaleY = v
+	else
+		Box.__newindex(self, k, v)
+	end
 end
 
 function boxer.image(options)
-	local image = setmetatable({}, Image)
-	image:_init(options)
+	-- validate options
+	if not options.image then
+		error('Must provide an image', 2)
+	end
+	if count(options.x, options.left, options.center, options.right) > 1 then
+		error('Cannot provide more than one horizontal position property', 2)
+	end
+	if count(options.y, options.top, options.middle, options.bottom) > 1 then
+		error('Cannot provide more than one vertical position property', 2)
+	end
+	if count(options.width, options.scaleX) > 1 then
+		error('Cannot provide both width and scaleX', 2)
+	end
+	if count(options.height, options.scaleY) > 1 then
+		error('Cannot provide both height and scaleY', 2)
+	end
+	local image = setmetatable({
+		-- initial internal state
+		_hoveredPrevious = false,
+		_hovered = false,
+		_pressed = false,
+	}, Image)
+	-- set properties
+	image.image = options.image
+	image.x, image.y = 0, 0
+	image.scaleX, image.scaleY = 1, 1
+	for k, v in pairs(options) do image[k] = v end
+	image.children = image.children or {}
 	return image
 end
 
