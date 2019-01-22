@@ -1,19 +1,18 @@
 local boxer = require 'lib.boxer'
-local Button = require 'class.ui.button'
 local image = require 'image'
 local mainEditor = require 'state.main-editor'
 local Project = require 'class.project'
+local ToolbarButton = require 'class.ui.toolbar-button'
 
 local welcome = {}
 
 function welcome:enter()
-	self.button = Button {
+	self.button = ToolbarButton {
 		x = 50,
 		y = 50,
-		content = {
-			boxer.image {image = image.pencil, transparent = true},
-		},
+		image = image.pencil,
 		onPress = function() print 'hi!' end,
+		isActive = function() return love.keyboard.isDown 'space' end,
 	}
 end
 

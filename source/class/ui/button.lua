@@ -1,11 +1,13 @@
 local boxer = require 'lib.boxer'
 
+local defaultButtonPadding = 4
+
 return function(options)
 	local button
 	if options.content then
 		button = boxer.wrap {
 			children = options.content,
-			padding = options.padding or 16,
+			padding = options.padding or defaultButtonPadding,
 		}
 	else
 		button = boxer.box()
@@ -21,9 +23,24 @@ return function(options)
 	if options.width then button.width = options.width end
 	if options.height then button.height = options.height end
 	button.style = {
-		idle = {fillColor = {.2, .2, .2}},
-		hovered = {fillColor = {.4, .4, .4}},
-		pressed = {fillColor = {.15, .15, .15}},
+		idle = {fillColor = function()
+			if options.isActive and options.isActive() then
+				return .8, .8, .8
+			end
+			return .2, .2, .2
+		end},
+		hovered = {fillColor = function()
+			if options.isActive and options.isActive() then
+				return .8, .8, .8
+			end
+			return .4, .4, .4
+		end},
+		pressed = {fillColor = function()
+			if options.isActive and options.isActive() then
+				return .8, .8, .8
+			end
+			return .15, .15, .15
+		end},
 	}
 	button.onPress = options.onPress
 	return button
