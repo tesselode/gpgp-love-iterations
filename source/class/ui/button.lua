@@ -10,7 +10,7 @@ return function(options)
 			padding = options.padding or defaultButtonPadding,
 		}
 	else
-		button = boxer.box()
+		button = boxer.box {}
 	end
 	if options.x then button.x = options.x end
 	if options.left then button.left = options.left end
