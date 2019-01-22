@@ -1,4 +1,3 @@
-local gamestate = require 'lib.gamestate'
 local Grid = require 'class.grid'
 local Rect = require 'class.rect'
 
@@ -42,7 +41,7 @@ end
 
 function tilePicker:keypressed(key, scancode, isrepeat)
 	if key == 'space' or key == 'escape' then
-		gamestate.pop()
+		screenManager:pop()
 	end
 end
 

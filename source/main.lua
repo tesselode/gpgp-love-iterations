@@ -1,11 +1,11 @@
-local gamestate = require 'lib.gamestate'
+screenManager = require 'lib.roomy'.new()
 local welcome = require 'state.welcome'
 
 love.keyboard.setKeyRepeat(true)
 
 function love.load()
-	gamestate.registerEvents()
-	gamestate.switch(welcome)
+	screenManager:hook()
+	screenManager:switch(welcome)
 end
 
 function love.keypressed(key)

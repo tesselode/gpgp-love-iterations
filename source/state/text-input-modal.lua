@@ -1,5 +1,4 @@
 local font = require 'font'
-local gamestate = require 'lib.gamestate'
 local utf8 = require 'utf8'
 local util = require 'util'
 
@@ -46,9 +45,9 @@ function textInputModal:keypressed(key)
 	if key == 'end' then self.cursor = #self.text end
 	if key == 'return' then
 		if self.onConfirm then self.onConfirm(self.text) end
-		gamestate.pop()
+		screenManager:pop()
 	end
-	if key == 'escape' then gamestate.pop() end
+	if key == 'escape' then screenManager:pop() end
 end
 
 function textInputModal:drawText()

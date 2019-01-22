@@ -1,4 +1,3 @@
-local gamestate = require 'lib.gamestate'
 local mainEditor = require 'state.main-editor'
 local Project = require 'class.project'
 
@@ -8,7 +7,7 @@ function welcome:directorydropped(path)
 	local success = love.filesystem.mount(path, 'project')
 	if not success then return end
 	local project = Project(path, 'project')
-	gamestate.switch(mainEditor, project)
+	screenManager:switch(mainEditor, project)
 end
 
 function welcome:draw()

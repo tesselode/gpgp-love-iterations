@@ -1,4 +1,3 @@
-local gamestate = require 'lib.gamestate'
 local LevelEditor = require 'class.level-editor'
 local textInputModal = require 'state.text-input-modal'
 local TileLayer = require 'class.layer.tile'
@@ -21,7 +20,7 @@ end
 function main:save(saveAs)
 	local editor = self.editors[self.selectedEditor]
 	if (not editor.levelName) or saveAs then
-		gamestate.push(textInputModal,
+		screenManager:push(textInputModal,
 			'Enter a name for the level',
 			'',
 			function(name)
@@ -56,7 +55,7 @@ end
 function main:keypressed(key, scancode, isrepeat)
 	local selectedLayer = self:getCurrentEditor():getSelectedLayer()
 	if key == 'space' and selectedLayer:is(TileLayer) then
-		gamestate.push(
+		screenManager:push(
 			tilePicker,
 			self.project.tilesets[selectedLayer.data.tilesetName],
 			function(stamp) self:getCurrentEditor():setTileStamp(stamp) end
